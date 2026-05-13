@@ -26,46 +26,102 @@ CHANNELS = {
     "Cüneyt Özdemir": "@cuneytozdemir",
 }
 
-PROMPT_TEMPLATE = """
-Sana YouTube'da haber içeriği üreten bir kanalın videosunun transkriptini gönderiyorum. Senden isteğim bu transkripteki bütün haberleri ve detayları atlamadan bir rapor hazırlaman ve bana sunman.
-Sponsorukların, selamlamaların vs. değeri yok ama haber değeri taşıyan hiçbir bilgiyi atlamadığından emin ol. 
-Rapor anlaşılır ve akılda kalıcı olmalı. Buna göre videonun formatına uygun olan rapor formatını seç. Bilgilerin sunulma sırasını takip etmek zorunda değilsin. Eğer daha uygun olacaksa olay örgüsüne takip ederek bir rapor oluştur.
-Videolarda konuklar tarafından yapılan yorumları konuklara atfet ki rapordaki yorumların kimin yorumu olduğu anlaşılsın.
-Rapor başlangıç ve bitişinde herhangi bir selamlama, açıklama, soru önerisinde bulunma. Sadece raporu ver.
-
+PROMPT_TEMPLATE = """<transkript>
 Kanal: {channel_name}
 Video Başlığı: {video_title}
 
-<TRANSKRİPT>
 {transkript}
-</TRANSKRİPT>
-"""
+</transkript>
 
-CONSOLIDATION_PROMPT = """Sistem Rolü: Sen uzman bir haber editörü ve istihbarat analistisin. Sana çeşitli Türk YouTube haber yayınlarının bireysel özetlerini içeren, derlenmiş bir metin sunuyorum.
-Görevin: Bu raporun tamamını, farklı kanallardaki tekrar eden haber başlıklarını en üstte birleştirecek, geriye kalan kanala özel haberleri ise orijinal başlıkları altında bırakacak şekilde yeniden yapılandırmaktır. Bunu yaparken KESİNLİKLE hiçbir bilgi kaybı yaşanmamalıdır. Raporlardaki her bir detay, veri, alıntı ve kanala özgü yorumcu perspektifi eksiksiz bir şekilde korunmalıdır.
-Lütfen aşağıdaki yapılandırma kurallarına sıkı sıkıya uy:
-1. 📌 ORTAK GÜNDEM
+<görev>
+Yukarıdaki transkriptten, haber değeri taşıyan tüm bilgileri içeren bir yapılandırılmış rapor üret.
 
-* Raporun en üstünde bu başlığı oluştur.
-* Sunulan metinde birden fazla kaynak tarafından ele alınan haberleri, olayları veya temaları (Örn: Hürmüz Boğazı gerilimi veya AB açıklamaları) tespit et ve bu bölümün altına taşı.
-* Ortak konular için kapsayıcı bir başlık oluştur, olayın temel detaylarını özetle.
-* Ardından, bu olayla ilgili her bir kanalın/yorumcunun sunduğu özgün analizleri madde işaretleriyle listele ve yorumcunun adını kalın harflerle vurgula (Örn: "Cem Gürdeniz'in Yorumu:", "Cüneyt Özdemir'in Analizi:").
-2. 🎙️ KANALLARA ÖZEL HABERLER (Orijinal Başlıklar Altında)
+Raporda mutlaka yer alacaklar:
+- Her somut iddia, veri, sayı, tarih, isim, kurum, yer
+- Konuklar veya sunucu tarafından yapılan her yorum — yorumu yapan kişinin adıyla birlikte ("X'in yorumu: ...")
+- Olayların aktarıldığı bağlam ve kaynak gösterimleri
 
-* Ortak Gündem'e taşınmayan ve yalnızca tek bir kaynak tarafından ele alınan özel haberleri orijinal yerlerinde bırak.
-* Girdi metninde sana verilen orijinal kanal ve video başlıklarını (Örn: "7. [Cüneyt Özdemir] — Suriyeliler Gidince Üretim Durdu mu? (9 dk)") aynen koru.
-* Sadece o kanala ait olan benzersiz haberleri, bu orijinal başlıkların altında listelemeye devam et. (Eğer bir kanalın tüm haberleri Ortak Gündem'e taşındıysa, o kanalın başlığının altına "Tüm başlıklar Ortak Gündem'de birleştirilmiştir." şeklinde kısa bir not düşebilirsin).
-* Özette yer alan tüm madde işaretlerini, verileri ve analizleri orijinal halini bozmadan olduğu gibi koru.
-Kritik Kısıtlamalar:
+Hariç tutulacaklar (sadece bunlar):
+- Sponsor mesajları, reklamlar
+- Selamlama, kapanış, kanal tanıtımı, abone ol çağrıları
+- Yayın akışıyla ilgili teknik açıklamalar (örn. "şimdi şunu izleyeceğiz")
 
-* Kesinlikle aşırı özetleme veya kırpma yapma. Eğer iki kanal aynı olay hakkında farklı detaylar sunuyorsa, her ikisine de metinde yer ver.
-* Çıktının son derece okunaklı ve düzenli olmasını sağla. Bölümleri ayırmak için yatay çizgiler (`---`), vurgular için kalın metinler (`**...**`) ve kolay okunabilirlik için madde işaretleri kullan.
-* Rapor başlangıç ve bitişinde herhangi bir selamlama, açıklama, soru önerisinde bulunma. Sadece raporu ver.
+Format kuralları:
+- Konuyla ilgili başlıklar altında grupla. Transkriptin sunum sırasını takip etmek zorunda değilsin; olay örgüsüne göre en mantıklı sırayı seç.
+- Her başlık altında ilgili tüm detayları madde işaretleri veya akıcı paragraflarla aktar — hangisi daha okunaklıysa.
+- Önemli isimleri ve kurumları **kalın** yap.
+- Sayısal verileri (TL, %, tarih, oran) olduğu gibi koru.
 
-<RAPORLAR>
+Çıktı kuralları:
+- Rapor doğrudan ilk başlıkla başlasın. Önsöz, giriş cümlesi, "İşte rapor:" gibi ifadeler kullanma.
+- Rapor sonunda özet, kapanış cümlesi veya soru önerisi ekleme.
+- Sadece raporu üret.
+
+Yukarıdaki transkripte dayanarak şimdi raporu yaz.
+</görev>"""
+
+CONSOLIDATION_PROMPT = """<raporlar>
 {combined_reports}
-</RAPORLAR>
-"""
+</raporlar>
+
+<görev>
+Yukarıdaki raporları aşağıdaki mekanik prosedüre göre tek bir konsolide rapora çevir.
+
+═══ PROSEDÜR ═══
+
+ADIM 1 (içsel, çıktıya yazma):
+Raporlardaki her konuyu zihninde listele. Her konunun yanına o konuyu işleyen kanalları yaz. Konuları ikiye ayır:
+  A) İki veya daha fazla kanalda geçen → ORTAK
+  B) Sadece tek bir kanalda geçen → ÖZEL
+
+ADIM 2 — Her ORTAK konu için, o konuyu işleyen kanalların raporlarındaki bilgileri zihninde gruplandır:
+  • PAYLAŞILAN OLGULAR: Birden fazla kanalın aynı şekilde aktardığı temel bilgiler (olay, taraflar, sayılar, tarihler).
+  • KANAL ÖZGÜN KATKILARI: Her kanalın o konuda diğerlerinden farklı olarak söylediği şey — kendine özgü veri, analiz, yorum, kaynak, perspektif.
+
+ADIM 3 — Çıktıyı yaz.
+
+═══ ÇIKTI YAPISI ═══
+
+📌 ORTAK GÜNDEM
+───────────────
+[Her ORTAK konu için:]
+
+### [Konunun başlığı]
+**Olay:** [Paylaşılan olguların tamamı. Uzunluk olayın kapsamına göre belirlenir — küçük bir gelişme için kısa, çok parçalı bir olay için uzun paragraflar. Her isim, sayı, tarih ve temel iddia burada yer alır.]
+
+**Kanal katkıları:**
+- **[Kanal Adı] / [Yorumcunun adı varsa]:** [Bu kaynağın bu konuya EKLEDİĞİ özgün şey. Olay bölümünde geçen bilgileri tekrarlama — sadece bu kanalın özgün analizini, özgün verisini veya farklı perspektifini yaz.]
+- **[Sonraki kanal]:** [Aynı şekilde, sadece özgün katkı.]
+- [Konuyu işleyen her kanal için ayrı madde.]
+
+[Konular arası boşluk ve `---` ayraçı.]
+
+---
+
+🎙️ KANALLARA ÖZEL HABERLER
+───────────────────────────
+[Raporlardaki orijinal kanal başlık sırasını koru. SADECE özel haberi olan kanalları listele.]
+
+### [Orijinal başlık]
+[Bu kanalın sadece kendisinde geçen konularını, orijinal raporda göründükleri detay seviyesinde aktar. Her isim, sayı, alıntı korunur.]
+
+[Bir kanalın hiç özel haberi yoksa o kanalı bu bölümde listeleme — okur o kanalın katkısını Ortak Gündem içinde zaten görmüş olur.]
+
+═══ KESİN KURALLAR ═══
+
+1. Girdideki her özel isim (kişi, kurum, parti, yer), her sayı (TL, Euro, %, tarih, oran), her doğrudan alıntı ve kaynağına atfedilmiş yorum, konsolide raporda kaynağıyla birlikte en az bir kez geçmeli.
+2. Hiçbir bilgi konsolide raporda birden fazla kez geçmez. Bir bilgi en doğal oturduğu bölümde tek bir yerde durur. Tekrar yok.
+3. Kanal katkıları bölümünde "Olay" özetinde geçen bilgileri yeniden anlatma; sadece o kanalın özgün eklediğini yaz.
+4. Bir kaynağın katkısı kısaysa kısa olsun; ama "diğer kaynakla aynı" diye atlanmaz — özgün ifade biçimi/farklı vurgu varsa o korunur.
+5. Format: vurgular **kalın**, bölüm ayraçları `---`, listeler madde işaretiyle.
+
+═══ ÇIKTI DÜZENİ ═══
+
+Önsöz, açıklama yok. Doğrudan "📌 ORTAK GÜNDEM" başlığıyla başla.
+Kapanış, özet, soru önerisi yok. Son kanalın özel haberi biter, rapor biter.
+
+Şimdi yukarıdaki <raporlar> içeriğini kullanarak konsolide raporu üret.
+</görev>"""
 
 def is_short(video_id):
     res = requests.get(
@@ -127,7 +183,7 @@ def transkript_cek(video_id):
         time.sleep(10)
     return None
 
-def call_gemini(prompt):
+def call_gemini(prompt, max_tokens=24000):
     """Shared helper: tries each API key in order, returns text or None."""
     for key in GEMINI_API_KEYS:
         if not key:
@@ -139,9 +195,8 @@ def call_gemini(prompt):
                     model='gemini-3-flash-preview',
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        temperature=0.3,
-                        top_p=0.9,
-                        max_output_tokens=16000,
+                        temperature=1.0,
+                        max_output_tokens=max_tokens,
                         thinking_config=types.ThinkingConfig(
                             thinking_level=types.ThinkingLevel.HIGH
                         )
@@ -164,7 +219,7 @@ def analyze_video(video, transkript):
         video_title=video["title"],
         transkript=transkript
     )
-    result = call_gemini(prompt)
+    result = call_gemini(prompt, max_tokens=16000)
     if result:
         return result
     return f"⚠️ [{video['name']}] \"{video['title']}\" — Tüm API keyleri tükendi."
@@ -173,7 +228,7 @@ def consolidate_reports(combined_reports_text):
     """Sends all individual reports to Gemini for cross-channel consolidation."""
     print("\n🔄 Tüm raporlar birleştiriliyor (konsolidasyon)...")
     prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_reports_text)
-    result = call_gemini(prompt)
+    result = call_gemini(prompt, max_tokens=48000)
     if result:
         print("  ✅ Konsolidasyon tamamlandı.")
         return result

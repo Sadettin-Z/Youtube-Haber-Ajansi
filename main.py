@@ -174,6 +174,7 @@ def get_latest_video_list():
                         })
         except Exception as e:
             log(f"❌ HATA [{name}]: {e}")
+            log(f"   API yanıtı: {str(c_res)[:300]}", indent=1)
     log(f"📡 YouTube taraması tamamlandı, {len(found_videos)} uygun video bulundu.")
     return found_videos
 

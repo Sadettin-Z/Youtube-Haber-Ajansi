@@ -123,6 +123,18 @@ Kapanış, özet, soru önerisi yok. Son kanalın özel haberi biter, rapor bite
 Şimdi yukarıdaki <raporlar> içeriğini kullanarak konsolide raporu üret.
 </görev>"""
 
+
+def ts():
+    """Returns current timestamp string for logging."""
+    return datetime.now().strftime("%H:%M:%S")
+
+
+def log(msg, indent=0):
+    """Timestamped log line with flush."""
+    prefix = "  " * indent
+    print(f"[{ts()}] {prefix}{msg}", flush=True)
+
+
 def is_short(video_id):
     res = requests.get(
         f"https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={video_id}&key={YOUTUBE_API_KEY}"
@@ -134,7 +146,9 @@ def is_short(video_id):
     except Exception:
         return False, "? dk"
 
+
 def get_latest_video_list():
+    log("📡 YouTube'dan son videolar çekiliyor...")
     found_videos = []
     yesterday_dt = datetime.now(timezone.utc) - timedelta(days=1)
     for name, handle in CHANNELS.items():
@@ -159,38 +173,58 @@ def get_latest_video_list():
                             "duration": duration
                         })
         except Exception as e:
-            print(f"HATA: {name}: {e}")
+            log(f"❌ HATA [{name}]: {e}")
+    log(f"📡 YouTube taraması tamamlandı, {len(found_videos)} uygun video bulundu.")
     return found_videos
+
 
 def transkript_cek(video_id):
     for attempt in range(3):
+        t0 = time.time()
+        log(f"🎬 Apify transkript isteği (deneme {attempt+1}/3, video_id={video_id})...", indent=1)
         try:
             response = requests.post(
                 "https://api.apify.com/v2/acts/starvibe~youtube-video-transcript/run-sync-get-dataset-items",
                 params={"token": APIFY_API_KEY},
                 json={"youtube_url": f"https://www.youtube.com/watch?v={video_id}"},
-                timeout=60
+                timeout=120
             ).json()
+            elapsed = time.time() - t0
             if response and len(response) > 0:
                 data = response[0].get("transcript") or []
                 if data:
                     transkript = " ".join([t.get("text", "") for t in data])
+                    log(f"✓ Transkript alındı ({len(transkript):,} karakter, {elapsed:.1f}s)", indent=1)
                     return transkript
                 else:
-                    print(f"  ⚠️ Transkript boş geldi [{video_id}], deneme {attempt+1}/3")
+                    log(f"⚠️ Transkript boş geldi ({elapsed:.1f}s)", indent=1)
+            else:
+                log(f"⚠️ Apify boş yanıt verdi ({elapsed:.1f}s)", indent=1)
         except Exception as e:
-            print(f"  Apify hatası (deneme {attempt+1}/3): {e}")
-        time.sleep(10)
+            elapsed = time.time() - t0
+            log(f"❌ Apify hatası ({elapsed:.1f}s): {e}", indent=1)
+        if attempt < 2:
+            log(f"⏳ 10 saniye bekleniyor, tekrar denenecek...", indent=1)
+            time.sleep(10)
+    log(f"❌ Transkript çekilemedi, 3 deneme de başarısız oldu", indent=1)
     return None
 
-def call_gemini(prompt, max_tokens=24000):
+
+def call_gemini(prompt, max_tokens=24000, label="Gemini"):
     """Shared helper: tries each API key in order, returns text or None."""
-    for key in GEMINI_API_KEYS:
+    prompt_chars = len(prompt)
+    log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter, max_output: {max_tokens:,} token)", indent=1)
+
+    for key_idx, key in enumerate(GEMINI_API_KEYS, start=1):
         if not key:
+            log(f"⏭️ Key #{key_idx} boş, atlanıyor", indent=2)
             continue
+        log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
         client = genai.Client(api_key=key)
         for attempt in range(3):
+            t0 = time.time()
             try:
+                log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
                 response = client.models.generate_content(
                     model='gemini-3-flash-preview',
                     contents=prompt,
@@ -202,16 +236,36 @@ def call_gemini(prompt, max_tokens=24000):
                         )
                     )
                 )
+                elapsed = time.time() - t0
                 if response.text:
+                    out_chars = len(response.text)
+                    usage_info = ""
+                    try:
+                        if hasattr(response, "usage_metadata") and response.usage_metadata:
+                            u = response.usage_metadata
+                            in_tok = getattr(u, "prompt_token_count", "?")
+                            out_tok = getattr(u, "candidates_token_count", "?")
+                            think_tok = getattr(u, "thoughts_token_count", "?")
+                            usage_info = f", tokens: in={in_tok} out={out_tok} think={think_tok}"
+                    except Exception:
+                        pass
+                    log(f"✅ [{label}] Yanıt alındı ({elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
                     return response.text.strip()
+                else:
+                    log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
             except Exception as e:
-                if "RESOURCE_EXHAUSTED" in str(e):
-                    print(f"  Key exhausted, trying next key...")
+                elapsed = time.time() - t0
+                err_str = str(e)
+                if "RESOURCE_EXHAUSTED" in err_str:
+                    log(f"⛔ Key #{key_idx} kotası dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
                     break
                 wait = (attempt + 1) * 30
-                print(f"  API hatası (deneme {attempt+1}): {e} — {wait} saniye bekleniyor...")
+                log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
+                log(f"⏳ {wait} saniye bekleniyor...", indent=2)
                 time.sleep(wait)
+    log(f"❌ [{label}] Tüm key'ler ve denemeler tükendi", indent=1)
     return None
+
 
 def analyze_video(video, transkript):
     prompt = PROMPT_TEMPLATE.format(
@@ -219,23 +273,29 @@ def analyze_video(video, transkript):
         video_title=video["title"],
         transkript=transkript
     )
-    result = call_gemini(prompt, max_tokens=16000)
+    label = f"{video['name'][:20]} özet"
+    result = call_gemini(prompt, max_tokens=16000, label=label)
     if result:
         return result
     return f"⚠️ [{video['name']}] \"{video['title']}\" — Tüm API keyleri tükendi."
 
+
 def consolidate_reports(combined_reports_text):
     """Sends all individual reports to Gemini for cross-channel consolidation."""
-    print("\n🔄 Tüm raporlar birleştiriliyor (konsolidasyon)...")
+    log(f"")
+    log(f"🔄 KONSOLİDASYON başlatılıyor (toplam girdi: {len(combined_reports_text):,} karakter)")
     prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_reports_text)
-    result = call_gemini(prompt, max_tokens=48000)
+    result = call_gemini(prompt, max_tokens=48000, label="KONSOLİDASYON")
     if result:
-        print("  ✅ Konsolidasyon tamamlandı.")
+        log(f"✅ Konsolidasyon tamamlandı ({len(result):,} karakter)")
         return result
-    print("  ⚠️ Konsolidasyon başarısız, bireysel raporlar gönderiliyor.")
-    return combined_reports_text  # Fallback: send the unmerged version
+    log(f"⚠️ Konsolidasyon başarısız, bireysel raporlar gönderiliyor")
+    return combined_reports_text
+
 
 def send_to_discord(report):
+    log(f"📤 Discord'a gönderiliyor (toplam {len(report):,} karakter)...")
+    chunks_sent = 0
     while report:
         if len(report) <= 1900:
             chunk = report
@@ -248,47 +308,69 @@ def send_to_discord(report):
                 split_at = 1900
             chunk = report[:split_at]
             report = report[split_at:].lstrip()
-        requests.post(DISCORD_URL, json={"content": chunk})
+        try:
+            r = requests.post(DISCORD_URL, json={"content": chunk}, timeout=30)
+            if r.status_code >= 400:
+                log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
+            chunks_sent += 1
+        except Exception as e:
+            log(f"❌ Discord gönderim hatası: {e}", indent=1)
         time.sleep(0.5)
+    log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
+
 
 if __name__ == "__main__":
+    run_start = time.time()
+    log(f"🚀 BAŞLATILIYOR")
+
     videos = get_latest_video_list()
 
     if not videos:
-        print("Son 24 saatte yeni video bulunamadı.")
+        log("Son 24 saatte yeni video bulunamadı.")
     else:
-        print(f"Bulunan videolar ({len(videos)} adet):")
+        log(f"📋 Bulunan videolar ({len(videos)} adet):")
         for v in videos:
-            print(f"  - [{v['name']}] {v['title']}")
+            log(f"  - [{v['name']}] {v['title']} ({v['duration']})")
 
         all_reports = []
 
         for i, video in enumerate(videos):
-            print(f"\n[{i+1}/{len(videos)}] İşleniyor: [{video['name']}] {video['title']}")
+            video_start = time.time()
+            log(f"")
+            log(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            log(f"[{i+1}/{len(videos)}] İşleniyor: [{video['name']}] {video['title']}")
+            log(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
             transkript = transkript_cek(video["video_id"])
             if not transkript:
-                print(f"  ⚠️ Transkript alınamadı, atlanıyor.")
+                log(f"⚠️ Transkript alınamadı, video atlanıyor", indent=1)
                 continue
 
-            print(f"  ✓ Transkript alındı, analiz ediliyor...")
-            print(f"  📝 TRANSKRİPT (ilk 500 karakter):\n{transkript[:500]}...\n")
+            log(f"📝 İlk 300 karakter: {transkript[:300]}...", indent=1)
             report = analyze_video(video, transkript)
 
             video_section = f"**{len(all_reports) + 1}.** 📺 **[{video['name']}]** — {video['title']} `({video['duration']})`\n\n{report}"
             all_reports.append(video_section)
-            print(f"  ✅ Rapor hazırlandı.")
+            video_elapsed = time.time() - video_start
+            log(f"✅ Video tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
             time.sleep(2)
 
         if not all_reports:
-            print("Hiçbir video işlenemedi.")
+            log("❌ Hiçbir video işlenemedi.")
         else:
             current_date = datetime.now().strftime("%d.%m.%Y")
             combined_text = "\n\n---\n\n".join(all_reports)
 
-            # Final consolidation pass across all reports
             final_report_body = consolidate_reports(combined_text)
 
             full_report = f"📅 **{current_date}**\n\n{final_report_body}"
             send_to_discord(full_report)
-            print(f"\nİşlem tamamlandı. {len(all_reports)} video işlendi, konsolide rapor Discord'a gönderildi!")
+
+            total_elapsed = time.time() - run_start
+            mins = int(total_elapsed // 60)
+            secs = int(total_elapsed % 60)
+            log(f"")
+            log(f"🏁 İŞLEM TAMAMLANDI")
+            log(f"   • {len(all_reports)} video işlendi")
+            log(f"   • Toplam süre: {mins} dk {secs} sn")
+            log(f"   • Konsolide rapor Discord'a gönderildi")

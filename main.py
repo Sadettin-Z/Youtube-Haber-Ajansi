@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import requests
@@ -295,6 +296,7 @@ def consolidate_reports(combined_reports_text):
 
 
 def send_to_discord(report):
+    """Send the report to Discord as chunked text messages. Ping fires on the first chunk only."""
     log(f"📤 Discord'a gönderiliyor (toplam {len(report):,} karakter)...")
     chunks_sent = 0
     first = True
@@ -324,6 +326,24 @@ def send_to_discord(report):
             log(f"❌ Discord gönderim hatası: {e}", indent=1)
         time.sleep(0.5)
     log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
+
+
+def upload_report_to_discord(report_text, filename):
+    """POST a final message with the report attached as a .md file. No ping (already fired on first chunk)."""
+    log(f"📎 Discord'a dosya ekleniyor: {filename} ({len(report_text):,} karakter)...")
+    payload = {"content": "📄 **Tam rapor (Markdown):**"}
+    files = {
+        "payload_json": (None, json.dumps(payload), "application/json"),
+        "file": (filename, report_text.encode("utf-8"), "text/markdown"),
+    }
+    try:
+        r = requests.post(DISCORD_URL, files=files, timeout=60)
+        if r.status_code >= 400:
+            log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
+        else:
+            log(f"✅ Discord dosya yükleme tamamlandı")
+    except Exception as e:
+        log(f"❌ Discord dosya yükleme hatası: {e}", indent=1)
 
 
 if __name__ == "__main__":
@@ -372,12 +392,10 @@ if __name__ == "__main__":
 
             full_report = f"📅 **{current_date}**\n\n{final_report_body}"
 
-            report_path = f"Youtube haber analizi {datetime.now().strftime('%d %m %Y')}.md"
-            with open(report_path, "w", encoding="utf-8") as f:
-                f.write(full_report)
-            log(f"💾 Rapor dosyaya yazıldı: {report_path}")
-
             send_to_discord(full_report)
+
+            filename = f"Youtube haber analizi {datetime.now().strftime('%d %m %Y')}.md"
+            upload_report_to_discord(full_report, filename)
 
             total_elapsed = time.time() - run_start
             mins = int(total_elapsed // 60)

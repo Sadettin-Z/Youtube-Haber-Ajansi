@@ -17,7 +17,7 @@ GEMINI_API_KEYS = [
 
 CHANNELS = {
     "Serdar Akinan": "@serdarakinan",
-    "Erdem Atay": "@erdematayveryansintv",
+    "Erdem Atay": "@erdemataytv",
     "Veryansın Tv": "@VeryansinTv",
     "Onlar TV": "@onlartv",
     "Yılmaz Özdil": "@yilmaz_ozdil",
@@ -371,6 +371,12 @@ if __name__ == "__main__":
             final_report_body = consolidate_reports(combined_text)
 
             full_report = f"📅 **{current_date}**\n\n{final_report_body}"
+
+            report_path = f"Youtube haber analizi {datetime.now().strftime('%d %m %Y')}.md"
+            with open(report_path, "w", encoding="utf-8") as f:
+                f.write(full_report)
+            log(f"💾 Rapor dosyaya yazıldı: {report_path}")
+
             send_to_discord(full_report)
 
             total_elapsed = time.time() - run_start

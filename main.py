@@ -297,6 +297,7 @@ def consolidate_reports(combined_reports_text):
 def send_to_discord(report):
     log(f"📤 Discord'a gönderiliyor (toplam {len(report):,} karakter)...")
     chunks_sent = 0
+    first = True
     while report:
         if len(report) <= 1900:
             chunk = report
@@ -309,8 +310,13 @@ def send_to_discord(report):
                 split_at = 1900
             chunk = report[:split_at]
             report = report[split_at:].lstrip()
+        payload = {"content": chunk}
+        if first:
+            payload["content"] = f"<@331085172264927235>\n{chunk}"
+            payload["allowed_mentions"] = {"parse": ["users"]}
+            first = False
         try:
-            r = requests.post(DISCORD_URL, json={"content": chunk}, timeout=30)
+            r = requests.post(DISCORD_URL, json=payload, timeout=30)
             if r.status_code >= 400:
                 log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
             chunks_sent += 1

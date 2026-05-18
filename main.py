@@ -67,62 +67,37 @@ CONSOLIDATION_PROMPT = """<raporlar>
 </raporlar>
 
 <görev>
-Yukarıdaki raporları aşağıdaki mekanik prosedüre göre tek bir konsolide rapora çevir.
+Yukarıdaki raporlardan tek bir konsolide rapor üret. İki tasarım hedefi:
 
-═══ PROSEDÜR ═══
+**Tam kapsama:** Girdideki her özel isim (kişi, kurum, parti, yer), sayı (TL, %, tarih, oran), doğrudan alıntı, kaynağına atfedilmiş yorum ve kanalın aktardığı her iddia/olay konsolide raporda yer alır.
 
-ADIM 1 (içsel, çıktıya yazma):
-Raporlardaki her konuyu zihninde listele. Her konunun yanına o konuyu işleyen kanalları yaz. Konuları ikiye ayır:
-  A) İki veya daha fazla kanalda geçen → ORTAK
-  B) Sadece tek bir kanalda geçen → ÖZEL
+**Tek konum:** Her bilgi en doğal oturduğu yerde sadece bir kez yer alır. Aynı bilgi iki ayrı bölümde tekrarlanmaz.
 
-ADIM 2 — Her ORTAK konu için, o konuyu işleyen kanalların raporlarındaki bilgileri zihninde gruplandır:
-  • PAYLAŞILAN OLGULAR: Birden fazla kanalın aynı şekilde aktardığı temel bilgiler (olay, taraflar, sayılar, tarihler).
-  • KANAL ÖZGÜN KATKILARI: Her kanalın o konuda diğerlerinden farklı olarak söylediği şey — kendine özgü veri, analiz, yorum, kaynak, perspektif.
-
-ADIM 3 — Çıktıyı yaz.
-
-═══ ÇIKTI YAPISI ═══
+Çıktı yapısı:
 
 📌 ORTAK GÜNDEM
-───────────────
-[Her ORTAK konu için:]
 
-### [Konunun başlığı]
-**Olay:** [Paylaşılan olguların tamamı. Uzunluk olayın kapsamına göre belirlenir — küçük bir gelişme için kısa, çok parçalı bir olay için uzun paragraflar. Her isim, sayı, tarih ve temel iddia burada yer alır.]
+Birden fazla kanalın değindiği her konu için aşağıdaki şablon:
+
+### [Konu başlığı]
+**Olay:** Konuya dair paylaşılan tüm olgular — kim, ne, nerede, ne zaman, kaç, hangi taraflar. Bilgi yoğun bir konuda uzun, küçük bir gelişmede kısa.
 
 **Kanal katkıları:**
-- **[Kanal Adı] / [Yorumcunun adı varsa]:** [Bu kaynağın bu konuya EKLEDİĞİ özgün şey. Olay bölümünde geçen bilgileri tekrarlama — sadece bu kanalın özgün analizini, özgün verisini veya farklı perspektifini yaz.]
-- **[Sonraki kanal]:** [Aynı şekilde, sadece özgün katkı.]
-- [Konuyu işleyen her kanal için ayrı madde.]
-
-[Konular arası boşluk ve `---` ayraçı.]
+- **[Kanal Adı] / [Yorumcu adı varsa]:** Bu kanalın o konuya getirdiği ve Olay'da yer almayan her şey — özgün veri, alıntı, yorum, analiz, ek bağlam. Kanalın bu konuda 5 farklı katkısı varsa beşi de aynı madde içinde aktarılır.
+- Konuya değinen her kanal için ayrı madde.
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
-───────────────────────────
-[Raporlardaki orijinal kanal başlık sırasını koru. SADECE özel haberi olan kanalları listele.]
+
+Sadece tek bir kanalda geçen konuları, raporlardaki orijinal kanal sırasıyla listele.
 
 ### [Orijinal başlık]
-[Bu kanalın sadece kendisinde geçen konularını, orijinal raporda göründükleri detay seviyesinde aktar. Her isim, sayı, alıntı korunur.]
+Bu kanalın sadece kendisinde geçen konularının hepsi, orijinal detay seviyesinde.
 
-[Bir kanalın hiç özel haberi yoksa o kanalı bu bölümde listeleme — okur o kanalın katkısını Ortak Gündem içinde zaten görmüş olur.]
+Format: önemli isimler ve kurumlar **kalın**, bölümler `---` ile ayrılır, listeler madde işaretiyle.
 
-═══ KESİN KURALLAR ═══
-
-1. Girdideki her özel isim (kişi, kurum, parti, yer), her sayı (TL, Euro, %, tarih, oran), her doğrudan alıntı ve kaynağına atfedilmiş yorum, konsolide raporda kaynağıyla birlikte en az bir kez geçmeli.
-2. Hiçbir bilgi konsolide raporda birden fazla kez geçmez. Bir bilgi en doğal oturduğu bölümde tek bir yerde durur. Tekrar yok.
-3. Kanal katkıları bölümünde "Olay" özetinde geçen bilgileri yeniden anlatma; sadece o kanalın özgün eklediğini yaz.
-4. Bir kaynağın katkısı kısaysa kısa olsun; ama "diğer kaynakla aynı" diye atlanmaz — özgün ifade biçimi/farklı vurgu varsa o korunur.
-5. Format: vurgular **kalın**, bölüm ayraçları `---`, listeler madde işaretiyle.
-
-═══ ÇIKTI DÜZENİ ═══
-
-Önsöz, açıklama yok. Doğrudan "📌 ORTAK GÜNDEM" başlığıyla başla.
-Kapanış, özet, soru önerisi yok. Son kanalın özel haberi biter, rapor biter.
-
-Şimdi yukarıdaki <raporlar> içeriğini kullanarak konsolide raporu üret.
+Yukarıdaki <raporlar> içeriğine dayanarak konsolide raporu üret. Önsöz veya "İşte rapor:" gibi giriş cümleleri ve kapanış özeti yazma — doğrudan "📌 ORTAK GÜNDEM" başlığıyla başla.
 </görev>"""
 
 

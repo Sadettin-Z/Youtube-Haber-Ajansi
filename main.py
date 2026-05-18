@@ -383,6 +383,7 @@ if __name__ == "__main__":
             log(f"  - [{v['name']}] {v['title']} ({v['duration']})")
 
         all_reports = []
+        processed_videos = []
 
         for i, video in enumerate(videos):
             video_start = time.time()
@@ -401,6 +402,7 @@ if __name__ == "__main__":
 
             video_section = f"**{len(all_reports) + 1}.** 📺 **[{video['name']}]** — {video['title']} `({video['duration']})`\n\n{report}"
             all_reports.append(video_section)
+            processed_videos.append(video)
             video_elapsed = time.time() - video_start
             log(f"✅ Video tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
             time.sleep(2)
@@ -413,7 +415,17 @@ if __name__ == "__main__":
 
             final_report_body = consolidate_reports(combined_text)
 
-            full_report = f"📅 **{current_date}**\n\n{final_report_body}"
+            videos_list = "\n".join(
+                f"- **[{v['name']}]** {v['title']} `({v['duration']})`"
+                for v in processed_videos
+            )
+            full_report = (
+                f"📅 **{current_date}**\n\n"
+                f"📺 **İncelenen Videolar ({len(processed_videos)} adet):**\n"
+                f"{videos_list}\n\n"
+                f"---\n\n"
+                f"{final_report_body}"
+            )
 
             send_to_discord(full_report)
 

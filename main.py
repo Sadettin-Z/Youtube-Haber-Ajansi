@@ -328,10 +328,10 @@ def send_to_discord(report):
     log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
 
 
-def upload_report_to_discord(report_text, filename):
+def upload_report_to_discord(report_text, filename, message):
     """POST a final message with the report attached as a .md file. No ping (already fired on first chunk)."""
     log(f"📎 Discord'a dosya ekleniyor: {filename} ({len(report_text):,} karakter)...")
-    payload = {"content": "📄 **Tam rapor (Markdown):**"}
+    payload = {"content": message}
     files = {
         "payload_json": (None, json.dumps(payload), "application/json"),
         "file": (filename, report_text.encode("utf-8"), "text/markdown"),
@@ -394,8 +394,11 @@ if __name__ == "__main__":
 
             send_to_discord(full_report)
 
-            filename = f"Youtube haber analizi {datetime.now().strftime('%d %m %Y')}.md"
-            upload_report_to_discord(full_report, filename)
+            upload_report_to_discord(
+                full_report,
+                "Rapor.md",
+                f"**Youtube {datetime.now().strftime('%d %m %Y')}**",
+            )
 
             total_elapsed = time.time() - run_start
             mins = int(total_elapsed // 60)

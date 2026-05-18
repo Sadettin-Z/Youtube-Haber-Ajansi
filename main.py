@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 import requests
 import isodate
@@ -315,7 +316,7 @@ def send_to_discord(report):
         payload = {"content": chunk}
         if first:
             payload["content"] = f"<@331085172264927235>\n{chunk}"
-            payload["allowed_mentions"] = {"parse": ["users"]}
+            payload["allowed_mentions"] = {"parse": [], "users": ["331085172264927235"]}
             first = False
         try:
             r = requests.post(DISCORD_URL, json=payload, timeout=30)
@@ -326,6 +327,15 @@ def send_to_discord(report):
             log(f"❌ Discord gönderim hatası: {e}", indent=1)
         time.sleep(0.5)
     log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
+
+
+def strip_markdown(text):
+    """Strip markdown formatting so the uploaded file reads cleanly in Discord's preview."""
+    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'`([^`]+)`', r'\1', text)
+    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    return text
 
 
 def upload_report_to_discord(report_text, filename, message):
@@ -395,7 +405,7 @@ if __name__ == "__main__":
             send_to_discord(full_report)
 
             upload_report_to_discord(
-                full_report,
+                strip_markdown(full_report),
                 "Rapor.md",
                 f"**Youtube {datetime.now().strftime('%d %m %Y')}**",
             )

@@ -330,11 +330,24 @@ def send_to_discord(report):
 
 
 def strip_markdown(text):
-    """Strip markdown formatting so the uploaded file reads cleanly in Discord's preview."""
-    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    """Convert markdown to decorated plain text: underlined headings, UPPERCASE labels, • bullets."""
+    text = re.sub(r'^\*\s+', '- ', text, flags=re.MULTILINE)
+
+    def heading_repl(m):
+        title = m.group(1).strip()
+        underline = "─" * min(len(title), 60)
+        return f"\n{title}\n{underline}\n"
+
+    text = re.sub(r'^#{1,6}\s+(.+)$', heading_repl, text, flags=re.MULTILINE)
     text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
     text = re.sub(r'`([^`]+)`', r'\1', text)
     text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    text = re.sub(r'^Olay:', 'OLAY:', text, flags=re.MULTILINE)
+    text = re.sub(r'^Kanal katkıları:', 'KANAL KATKILARI:', text, flags=re.MULTILINE)
+    text = re.sub(r'^- ', '• ', text, flags=re.MULTILINE)
+    text = re.sub(r'^(?!• )(.+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)
+    text = re.sub(r'(^• .+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)
+    text = re.sub(r'\n{3,}', '\n\n', text)
     return text
 
 

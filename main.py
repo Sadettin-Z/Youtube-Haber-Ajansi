@@ -51,7 +51,6 @@ Hariç tutulacaklar (sadece bunlar):
 Format kuralları:
 - Konuyla ilgili başlıklar altında grupla. Transkriptin sunum sırasını takip etmek zorunda değilsin; olay örgüsüne göre en mantıklı sırayı seç.
 - Her başlık altında ilgili tüm detayları madde işaretleri veya akıcı paragraflarla aktar — hangisi daha okunaklıysa.
-- Önemli isimleri ve kurumları **kalın** yap.
 - Sayısal verileri (TL, %, tarih, oran) olduğu gibi koru.
 
 Çıktı kuralları:
@@ -95,7 +94,7 @@ Sadece tek bir kanalda geçen konuları, raporlardaki orijinal kanal sırasıyla
 ### [Orijinal başlık]
 Bu kanalın sadece kendisinde geçen konularının hepsi, orijinal detay seviyesinde.
 
-Format: önemli isimler ve kurumlar **kalın**, bölümler `---` ile ayrılır, listeler madde işaretiyle.
+Format: bölümler `---` ile ayrılır, listeler madde işaretiyle.
 
 Yukarıdaki <raporlar> içeriğine dayanarak konsolide raporu üret. Önsöz veya "İşte rapor:" gibi giriş cümleleri ve kapanış özeti yazma — doğrudan "📌 ORTAK GÜNDEM" başlığıyla başla.
 </görev>"""
@@ -377,6 +376,7 @@ if __name__ == "__main__":
 
             video_section = f"**{len(all_reports) + 1}.** 📺 **[{video['name']}]** — {video['title']} `({video['duration']})`\n\n{report}"
             all_reports.append(video_section)
+            video["transkript"] = transkript
             processed_videos.append(video)
             video_elapsed = time.time() - video_start
             log(f"✅ Video tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
@@ -418,3 +418,14 @@ if __name__ == "__main__":
             log(f"   • {len(all_reports)} video işlendi")
             log(f"   • Toplam süre: {mins} dk {secs} sn")
             log(f"   • Konsolide rapor Discord'a gönderildi")
+
+            print()
+            print("=" * 70)
+            print("TAM TRANSKRİPTLER")
+            print("=" * 70)
+            for i, v in enumerate(processed_videos, 1):
+                print()
+                print(f"[{i}/{len(processed_videos)}] {v['name']} — {v['title']}")
+                print("-" * 70)
+                print(v.get("transkript", "(transkript yok)"))
+                print()

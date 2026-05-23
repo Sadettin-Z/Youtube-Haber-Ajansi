@@ -31,19 +31,18 @@ CHANNELS = {
 
 PROMPT_TEMPLATE = """<görev>
 Aşağıda {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkripti bulunmaktadır.
-Amacın, bu transkriptteki HİÇBİR somut bilgiyi, veriyi veya yorumu kaybetmeden yapılandırılmış bir döküm çıkarmaktır. Özetleme YAPMA; tüm detayları koruyarak aktar.
+Amacın, bu transkriptteki somut bilgileri, verileri ve yorumları yapılandırılmış ancak OKUNABİLİRLİĞİ YÜKSEK ve BAĞLAMI KOPMAMIŞ bir döküm haline getirmektir.
 
 UYGULAMA ADIMLARI:
-1. KRONOLOJİK İLERLE: Transkripti baştan sona, konuşulma sırasına göre takip et. Konuları gruplamaya veya mantıksal bir sıraya sokmaya çalışma.
-2. Geçilen her yeni gündem maddesini/konuyu bir alt başlık (###) yap.
-3. O konu altındaki her somut iddiayı, sayıyı (TL, %, tarih vb.), kurum/kişi adını ve spesifik yorumu madde işaretleriyle (-) listele. Cümleleri uzun tutabilirsin.
-4. Yorumları mutlaka kimin yaptığını belirterek yaz (Örn: "X'in yorumu: ...").
+1. KRONOLOJİK İLERLE: Transkripti baştan sona takip et. Geçilen her yeni gündem maddesini/konuyu bir alt başlık (###) yap.
+2. BAĞLAMI KORU: Konuşmacının iddialarını, sayıları ve spesifik yorumları madde işaretleriyle (-) listele. Ancak bu maddeler asla havada kalmasın. Bir metafor (örn: "ölüm öpücüğü") veya sert bir iddia varsa, konuşmacının bunu HANGİ SEBEPLE söylediğini veya neye dayandırdığını mutlaka aynı madde içinde, tam ve anlaşılır bir cümleyle açıkla. Telgraf gibi kısa cümleler kurma; okuyan kişi videoyu izlemeden tam olarak ne demek istendiğini anlayabilsin.
+3. Yorumları "X'in iddiasına/analizine göre: ..." formatında aktar.
 
-HARİÇ TUTULACAKLAR (Sadece bunlar):
-- Sponsor mesajları, reklamlar, abone ol çağrıları, selamlama/kapanış.
+HARİÇ TUTULACAKLAR:
+- Sponsor mesajları, reklamlar, selamlama/kapanış.
 
 ÇIKTI FORMATI:
-- Doğrudan ilk konu başlığı ile başla. Giriş, önsöz veya kapanış cümlesi yazma.
+- Doğrudan ilk konu başlığı ile başla. Giriş cümlesi yazma.
 </görev>
 
 <transkript>
@@ -56,29 +55,29 @@ CONSOLIDATION_PROMPT = """<raporlar>
 
 <görev>
 Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları TEK bir konsolide rapor haline getireceksin. 
-Bu bir "özetleme" işlemi DEĞİLDİR; bir "eksiksiz birleştirme" işlemidir. Orijinal raporlardaki hiçbir madde, sayı, isim veya alıntı silinmeyecektir.
 
 YAPI VE KURALLAR:
-Tüm raporları dikkatlice oku. Aynı olayı/haberi birden fazla kanal işlemişse "ORTAK GÜNDEM"e, sadece tek bir kanal işlemişse "KANALLARA ÖZEL HABERLER"e ekle. Aşağıdaki şablonu BİREBİR kullan:
+Tüm raporları oku. Aynı SOMUT OLAYI (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "ORTAK GÜNDEM"e, sadece tek bir kanal işlemişse "KANALLARA ÖZEL HABERLER"e ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
+
+Aşağıdaki şablonu BİREBİR kullan:
 
 📌 ORTAK GÜNDEM
 
-### [Konu Başlığı]
-**Olay:** Kanalların bahsettiği ortak olayın kısa özeti.
+### [Spesifik Konu Başlığı]
+**Olayın Arka Planı:** (Bu konunun neden gündem olduğunu, meselenin özünü ve tarafların genel durumunu anlatan, okuyucuyu aydınlatacak en az 3-4 cümlelik doyurucu ve akıcı bir paragraf yaz. Asla tek cümleyle geçiştirme.)
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** Orijinal raporda bu kanalın ilgili konuya dair verdiği TÜM detaylar, sayılar, özel isimler ve yorumlar burada listelenmelidir. Orijinal maddeleri aynen taşı.
+- **[Kanal Adı] / [Yorumcu]:** Orijinal rapordaki maddeleri, bağlamını ve okunabilirliğini bozmadan buraya aktar. Okuyan kişi cümlenin mantığını kolayca kavramalıdır.
 - **[Diğer Kanal Adı]:** ...
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
-### [Kanal Adı] — [Konu / Video Başlığı]
-- Orijinal raporda yer alan ve ortak gündeme girmeyen TÜM başlıklar ve alt maddeler, orijinal detay seviyesinde (sayılar, isimler, alıntılar korunarak) buraya aktarılır. Hiçbir konu "önemsiz" denilerek atlanamaz.
+### [Kanal Adı] — [Konu Başlığı]
+- (Ortak gündeme girmeyen konuları, yine bağlamını ve anlaşılırlığını koruyarak tam cümleler halinde buraya aktar.)
 
 ÇIKTI FORMATI:
-- Metni sıkıştırma. Çıktının çok uzun olması beklenen ve istenen bir durumdur.
-- Doğrudan "📌 ORTAK GÜNDEM" ile başla.
+- Metni çok kısa özetlere dönüştürme. Akıcı bir haber bülteni/raporu dili kullan. Doğrudan "📌 ORTAK GÜNDEM" ile başla.
 </görev>"""
 
 FINAL_MERGE_PROMPT = """<batch_raporları>
@@ -86,33 +85,31 @@ FINAL_MERGE_PROMPT = """<batch_raporları>
 </batch_raporları>
 
 <görev>
-Yukarıda kendi içinde birleştirilmiş "grup (batch)" raporları bulunmaktadır. Bunları TEK bir nihai rapora dönüştüreceksin.
-Amacın metinleri yeniden yazmak veya özetlemek DEĞİL; verileri doğru başlıklara eksiksiz şekilde TAŞIMAKTIR.
+Yukarıda kendi içinde birleştirilmiş "grup" raporları bulunmaktadır. Bunları okunabilirliği yüksek, TEK bir nihai rapora dönüştüreceksin.
 
 ADIMLAR VE KURALLAR:
-1. Girdi raporlarındaki tüm konuları tara. Farklı batch raporlarında "Özel" veya "Ortak" olarak kalmış ama aslında AYNI olayı anlatan konuları bul ve nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir.
-2. Sadece ve sadece TEK bir kanalın bahsettiği konuları nihai raporun "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
-3. TAŞIMA KURALI: Batch raporlarındaki her bir alt maddeyi, her sayıyı, her özel ismi ve yorumu KESİNLİKLE nihai rapora aktar. Girdide olup çıktıda olmayan hiçbir detay kalmamalıdır.
+1. Girdi raporlarındaki tüm konuları tara. Sadece GERÇEKTEN AYNI somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (Örn: "Devletin Rolü") yaratma.
+2. Sadece tek bir kanalın bahsettiği konuları "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
+3. Girdilerdeki hiçbir bağlamı, açıklayıcı sebebi veya detaylı ifadeyi silme. 
 
 ÇIKTI ŞABLONU:
 
 📌 ORTAK GÜNDEM
 
-### [Konu Başlığı]
-**Olay:** Çekirdek bilgi.
+### [Spesifik Konu Başlığı]
+**Olayın Arka Planı:** (Girdi raporlarındaki arka plan metinlerini birleştirerek, olayı bilmeyen birine anlatır gibi doyurucu ve net bir paragraf oluştur.)
 **Kanal Katkıları:**
-- **[Kanal Adı]:** Girdi raporundaki ilgili kanalın tüm maddeleri eksiksiz taşınır.
+- **[Kanal Adı]:** İlgili kanalın tüm maddeleri eksiksiz ve mantıklı bir bütünlük içinde taşınır. Cümleler havada kalmamalıdır.
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
 ### [Kanal Adı] — [Konu Başlığı]
-- Girdi raporlarındaki tüm detaylar eksiksiz taşınır.
+- (İlgili detaylar bağlamıyla birlikte taşınır.)
 
 ÇIKTI KURALLARI:
-- Doğrudan "📌 ORTAK GÜNDEM" ile başla.
-- Asla bilgiyi yoğunlaştırmaya veya özetlemeye çalışma; orijinal metinlerin detay zenginliğini birebir yansıt.
+- Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.
 </görev>"""
 
 

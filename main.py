@@ -31,18 +31,26 @@ CHANNELS = {
 
 PROMPT_TEMPLATE = """<görev>
 Aşağıda {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkripti bulunmaktadır.
-Amacın, bu transkriptteki somut bilgileri, verileri ve yorumları yapılandırılmış ancak OKUNABİLİRLİĞİ YÜKSEK ve BAĞLAMI KOPMAMIŞ bir döküm haline getirmektir.
+Amacın, bu videoyu izlemeyen birine, videodaki BÜTÜN bilgileri (sayılar, isimler, iddialar) hiçbir eksik olmadan, mantıklı bir olay örgüsü içinde ve yüksek okunabilirlikle aktarmaktır.
+Rapora hiçbir yorum ekleme.
 
-UYGULAMA ADIMLARI:
-1. KRONOLOJİK İLERLE: Transkripti baştan sona takip et. Geçilen her yeni gündem maddesini/konuyu bir alt başlık (###) yap.
-2. BAĞLAMI KORU: Konuşmacının iddialarını, sayıları ve spesifik yorumları madde işaretleriyle (-) listele. Ancak bu maddeler asla havada kalmasın. Bir metafor (örn: "ölüm öpücüğü") veya sert bir iddia varsa, konuşmacının bunu HANGİ SEBEPLE söylediğini veya neye dayandırdığını mutlaka aynı madde içinde, tam ve anlaşılır bir cümleyle açıkla. Telgraf gibi kısa cümleler kurma; okuyan kişi videoyu izlemeden tam olarak ne demek istendiğini anlayabilsin.
-3. Yorumları "X'in iddiasına/analizine göre: ..." formatında aktar.
+Bunu başarmak için, bir insanın yapacağı gibi şu iki aşamalı yöntemi KESİNLİKLE uygulamak zorundasın:
 
-HARİÇ TUTULACAKLAR:
-- Sponsor mesajları, reklamlar, selamlama/kapanış.
+### AŞAMA 1: KONULARA AYIRMA VE İÇİNİ DOLDURMA (Veri Kaybını Önleme)
+1. Transkripti baştan sona tara. Konuşulan farklı olayları/gündem maddelerini tespit et.
+2. Tespit ettiğin her bir konu için bir başlık aç.
+3. O konuyla ilgili videoda geçen HER TÜRLÜ spesifik detayı, sayıyı, ismi, iddiayı ve havada kalan benzetmeleri (örn: "ölüm öpücüğü") o başlığın altına ham notlar/maddeler halinde doldur. 
+4. Bu aşamada akıcı olmana gerek yok, amacın "bölümleri oluşturmak ve içlerini transkriptteki verilerle tıka basa doldurmaktır".
+5. Bu ham taslağı KESİNLİKLE <taslak> ... </taslak> etiketleri arasına yaz.
+
+### AŞAMA 2: NİHAİ RAPOR (Mantık Sırası ve Okunabilirlik)
+1. Şimdi transkripti unut ve sadece <taslak> bölümünde kendi oluşturduğun o bölümlere ve içindeki verilere odaklan.
+2. Taslaktaki her bir bölümü, akıcı, profesyonel ve mantık sırasına oturtulmuş bir olay örgüsüne dönüştür. (Örn: Önce iddiayı, sonra sebebini anlat).
+3. Taslağına koyduğun hiçbir ismi, sayıyı veya benzetmeyi dışarıda bırakma; hepsini tam ve anlaşılır cümlelerle bu akıcı metne yedir.
+4. Bu nihai raporu <rapor> ... </rapor> etiketleri arasına yaz.
 
 ÇIKTI FORMATI:
-- Doğrudan ilk konu başlığı ile başla. Giriş cümlesi yazma.
+Sadece ve doğrudan <taslak> etiketiyle başla, ardından <rapor> etiketini oluştur. Başka hiçbir giriş cümlesi kullanma.
 </görev>
 
 <transkript>
@@ -218,7 +226,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini"):
             try:
                 log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
                 response = client.models.generate_content(
-                    model='gemini-3-flash-preview',
+                    model='gemini-3.5-flash',
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         temperature=0.3,
@@ -268,6 +276,9 @@ def analyze_video(video, transkript):
     label = f"{video['name'][:20]} özet"
     result = call_gemini(prompt, max_tokens=16000, label=label)
     if result:
+        rapor_match = re.search(r"<rapor>(.*?)</rapor>", result, re.DOTALL)
+        if rapor_match:
+            return rapor_match.group(1).strip()
         return result
     return f"⚠️ [{video['name']}] \"{video['title']}\" — Tüm API keyleri tükendi."
 

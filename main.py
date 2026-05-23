@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import re
 import time
@@ -25,78 +26,93 @@ CHANNELS = {
     "Yılmaz Özdil": "@yilmaz_ozdil",
     "Cem Gürdeniz": "@cemgurdenizz",
     "Caspian Report": "@CaspianReport",
-    "Cüneyt Özdemir": "@cuneytozdemir",
+    "Fatih Altaylı": "@fatihaltayli",
 }
 
-PROMPT_TEMPLATE = """<transkript>
-Kanal: {channel_name}
-Video Başlığı: {video_title}
+PROMPT_TEMPLATE = """<görev>
+Aşağıda {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkripti bulunmaktadır.
+Amacın, bu transkriptteki HİÇBİR somut bilgiyi, veriyi veya yorumu kaybetmeden yapılandırılmış bir döküm çıkarmaktır. Özetleme YAPMA; tüm detayları koruyarak aktar.
 
+UYGULAMA ADIMLARI:
+1. KRONOLOJİK İLERLE: Transkripti baştan sona, konuşulma sırasına göre takip et. Konuları gruplamaya veya mantıksal bir sıraya sokmaya çalışma.
+2. Geçilen her yeni gündem maddesini/konuyu bir alt başlık (###) yap.
+3. O konu altındaki her somut iddiayı, sayıyı (TL, %, tarih vb.), kurum/kişi adını ve spesifik yorumu madde işaretleriyle (-) listele. Cümleleri uzun tutabilirsin.
+4. Yorumları mutlaka kimin yaptığını belirterek yaz (Örn: "X'in yorumu: ...").
+
+HARİÇ TUTULACAKLAR (Sadece bunlar):
+- Sponsor mesajları, reklamlar, abone ol çağrıları, selamlama/kapanış.
+
+ÇIKTI FORMATI:
+- Doğrudan ilk konu başlığı ile başla. Giriş, önsöz veya kapanış cümlesi yazma.
+</görev>
+
+<transkript>
 {transkript}
-</transkript>
-
-<görev>
-Yukarıdaki transkriptten, haber değeri taşıyan tüm bilgileri içeren bir yapılandırılmış rapor üret.
-
-Raporda mutlaka yer alacaklar:
-- Her somut iddia, veri, sayı, tarih, isim, kurum, yer
-- Konuklar veya sunucu tarafından yapılan her yorum — yorumu yapan kişinin adıyla birlikte ("X'in yorumu: ...")
-- Olayların aktarıldığı bağlam ve kaynak gösterimleri
-
-Hariç tutulacaklar (sadece bunlar):
-- Sponsor mesajları, reklamlar
-- Selamlama, kapanış, kanal tanıtımı, abone ol çağrıları
-- Yayın akışıyla ilgili teknik açıklamalar (örn. "şimdi şunu izleyeceğiz")
-
-Format kuralları:
-- Konuyla ilgili başlıklar altında grupla. Transkriptin sunum sırasını takip etmek zorunda değilsin; olay örgüsüne göre en mantıklı sırayı seç.
-- Her başlık altında ilgili tüm detayları madde işaretleri veya akıcı paragraflarla aktar — hangisi daha okunaklıysa.
-- Sayısal verileri (TL, %, tarih, oran) olduğu gibi koru.
-
-Çıktı kuralları:
-- Rapor doğrudan ilk başlıkla başlasın. Önsöz, giriş cümlesi, "İşte rapor:" gibi ifadeler kullanma.
-- Rapor sonunda özet, kapanış cümlesi veya soru önerisi ekleme.
-- Sadece raporu üret.
-
-Yukarıdaki transkripte dayanarak şimdi raporu yaz.
-</görev>"""
+</transkript>"""
 
 CONSOLIDATION_PROMPT = """<raporlar>
 {combined_reports}
 </raporlar>
 
 <görev>
-Yukarıdaki raporlardan tek bir konsolide rapor üret. İki tasarım hedefi:
+Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları TEK bir konsolide rapor haline getireceksin. 
+Bu bir "özetleme" işlemi DEĞİLDİR; bir "eksiksiz birleştirme" işlemidir. Orijinal raporlardaki hiçbir madde, sayı, isim veya alıntı silinmeyecektir.
 
-**Tam kapsama:** Girdideki her özel isim (kişi, kurum, parti, yer), sayı (TL, %, tarih, oran), doğrudan alıntı, kaynağına atfedilmiş yorum ve kanalın aktardığı her iddia/olay konsolide raporda yer alır.
-
-**Tek konum:** Her bilgi en doğal oturduğu yerde sadece bir kez yer alır. Aynı bilgi iki ayrı bölümde tekrarlanmaz.
-
-Çıktı yapısı:
+YAPI VE KURALLAR:
+Tüm raporları dikkatlice oku. Aynı olayı/haberi birden fazla kanal işlemişse "ORTAK GÜNDEM"e, sadece tek bir kanal işlemişse "KANALLARA ÖZEL HABERLER"e ekle. Aşağıdaki şablonu BİREBİR kullan:
 
 📌 ORTAK GÜNDEM
 
-Birden fazla kanalın değindiği her konu için aşağıdaki şablon:
-
-### [Konu başlığı]
-**Olay:** Konuya dair paylaşılan tüm olgular — kim, ne, nerede, ne zaman, kaç, hangi taraflar. Bilgi yoğun bir konuda uzun, küçük bir gelişmede kısa.
-
-**Kanal katkıları:**
-- **[Kanal Adı] / [Yorumcu adı varsa]:** Bu kanalın o konuya getirdiği ve Olay'da yer almayan her şey — özgün veri, alıntı, yorum, analiz, ek bağlam. Kanalın bu konuda 5 farklı katkısı varsa beşi de aynı madde içinde aktarılır.
-- Konuya değinen her kanal için ayrı madde.
+### [Konu Başlığı]
+**Olay:** Kanalların bahsettiği ortak olayın kısa özeti.
+**Kanal Katkıları:**
+- **[Kanal Adı] / [Yorumcu]:** Orijinal raporda bu kanalın ilgili konuya dair verdiği TÜM detaylar, sayılar, özel isimler ve yorumlar burada listelenmelidir. Orijinal maddeleri aynen taşı.
+- **[Diğer Kanal Adı]:** ...
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
-Sadece tek bir kanalda geçen konuları, raporlardaki orijinal kanal sırasıyla listele.
+### [Kanal Adı] — [Konu / Video Başlığı]
+- Orijinal raporda yer alan ve ortak gündeme girmeyen TÜM başlıklar ve alt maddeler, orijinal detay seviyesinde (sayılar, isimler, alıntılar korunarak) buraya aktarılır. Hiçbir konu "önemsiz" denilerek atlanamaz.
 
-### [Orijinal başlık]
-Bu kanalın sadece kendisinde geçen konularının hepsi, orijinal detay seviyesinde.
+ÇIKTI FORMATI:
+- Metni sıkıştırma. Çıktının çok uzun olması beklenen ve istenen bir durumdur.
+- Doğrudan "📌 ORTAK GÜNDEM" ile başla.
+</görev>"""
 
-Format: bölümler `---` ile ayrılır, listeler madde işaretiyle.
+FINAL_MERGE_PROMPT = """<batch_raporları>
+{batch_reports}
+</batch_raporları>
 
-Yukarıdaki <raporlar> içeriğine dayanarak konsolide raporu üret. Önsöz veya "İşte rapor:" gibi giriş cümleleri ve kapanış özeti yazma — doğrudan "📌 ORTAK GÜNDEM" başlığıyla başla.
+<görev>
+Yukarıda kendi içinde birleştirilmiş "grup (batch)" raporları bulunmaktadır. Bunları TEK bir nihai rapora dönüştüreceksin.
+Amacın metinleri yeniden yazmak veya özetlemek DEĞİL; verileri doğru başlıklara eksiksiz şekilde TAŞIMAKTIR.
+
+ADIMLAR VE KURALLAR:
+1. Girdi raporlarındaki tüm konuları tara. Farklı batch raporlarında "Özel" veya "Ortak" olarak kalmış ama aslında AYNI olayı anlatan konuları bul ve nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir.
+2. Sadece ve sadece TEK bir kanalın bahsettiği konuları nihai raporun "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
+3. TAŞIMA KURALI: Batch raporlarındaki her bir alt maddeyi, her sayıyı, her özel ismi ve yorumu KESİNLİKLE nihai rapora aktar. Girdide olup çıktıda olmayan hiçbir detay kalmamalıdır.
+
+ÇIKTI ŞABLONU:
+
+📌 ORTAK GÜNDEM
+
+### [Konu Başlığı]
+**Olay:** Çekirdek bilgi.
+**Kanal Katkıları:**
+- **[Kanal Adı]:** Girdi raporundaki ilgili kanalın tüm maddeleri eksiksiz taşınır.
+
+---
+
+🎙️ KANALLARA ÖZEL HABERLER
+
+### [Kanal Adı] — [Konu Başlığı]
+- Girdi raporlarındaki tüm detaylar eksiksiz taşınır.
+
+ÇIKTI KURALLARI:
+- Doğrudan "📌 ORTAK GÜNDEM" ile başla.
+- Asla bilgiyi yoğunlaştırmaya veya özetlemeye çalışma; orijinal metinlerin detay zenginliğini birebir yansıt.
 </görev>"""
 
 
@@ -168,13 +184,15 @@ def transkript_cek(video_id):
             ).json()
             elapsed = time.time() - t0
             if response and len(response) > 0:
-                data = response[0].get("transcript") or []
-                if data:
-                    transkript = " ".join([t.get("text", "") for t in data])
-                    log(f"✓ Transkript alındı ({len(transkript):,} karakter, {elapsed:.1f}s)", indent=1)
+                all_segments = []
+                for item in response:
+                    all_segments.extend(item.get("transcript") or [])
+                if all_segments:
+                    transkript = " ".join([t.get("text", "") for t in all_segments])
+                    log(f"✓ Transkript alındı ({len(transkript):,} karakter, {len(response)} item / {len(all_segments)} segment, {elapsed:.1f}s)", indent=1)
                     return transkript
                 else:
-                    log(f"⚠️ Transkript boş geldi ({elapsed:.1f}s)", indent=1)
+                    log(f"⚠️ Transkript boş geldi ({len(response)} item ama hiçbirinde 'transcript' yok, {elapsed:.1f}s)", indent=1)
             else:
                 log(f"⚠️ Apify boş yanıt verdi ({elapsed:.1f}s)", indent=1)
         except Exception as e:
@@ -206,7 +224,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini"):
                     model='gemini-3-flash-preview',
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        temperature=1.0,
+                        temperature=0.3,
                         max_output_tokens=max_tokens,
                         thinking_config=types.ThinkingConfig(
                             thinking_level=types.ThinkingLevel.HIGH
@@ -257,17 +275,67 @@ def analyze_video(video, transkript):
     return f"⚠️ [{video['name']}] \"{video['title']}\" — Tüm API keyleri tükendi."
 
 
-def consolidate_reports(combined_reports_text):
-    """Sends all individual reports to Gemini for cross-channel consolidation."""
+def split_into_batches(items, target_size=3):
+    """Split into balanced batches. e.g. n=7, target=3 → sizes [3,2,2]."""
+    n = len(items)
+    if n <= target_size:
+        return [items]
+    num_batches = math.ceil(n / target_size)
+    base = n // num_batches
+    extra = n % num_batches
+    batches = []
+    idx = 0
+    for i in range(num_batches):
+        size = base + (1 if i < extra else 0)
+        batches.append(items[idx:idx + size])
+        idx += size
+    return batches
+
+
+def consolidate_reports(reports_list):
+    """Batch consolidation: group reports into ~3, consolidate each batch, then merge."""
     log(f"")
-    log(f"🔄 KONSOLİDASYON başlatılıyor (toplam girdi: {len(combined_reports_text):,} karakter)")
-    prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_reports_text)
-    result = call_gemini(prompt, max_tokens=48000, label="KONSOLİDASYON")
-    if result:
-        log(f"✅ Konsolidasyon tamamlandı ({len(result):,} karakter)")
-        return result
-    log(f"⚠️ Konsolidasyon başarısız, bireysel raporlar gönderiliyor")
-    return combined_reports_text
+
+    if len(reports_list) <= 3:
+        combined_text = "\n\n---\n\n".join(reports_list)
+        log(f"🔄 KONSOLİDASYON başlatılıyor ({len(reports_list)} rapor, {len(combined_text):,} karakter)")
+        prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_text)
+        result = call_gemini(prompt, max_tokens=48000, label="KONSOLİDASYON")
+        if result:
+            log(f"✅ Konsolidasyon tamamlandı ({len(result):,} karakter)")
+            return result
+        log(f"⚠️ Konsolidasyon başarısız, bireysel raporlar gönderiliyor")
+        return combined_text
+
+    batches = split_into_batches(reports_list, target_size=3)
+    log(f"🔄 BATCH KONSOLİDASYON başlatılıyor ({len(reports_list)} rapor → {len(batches)} batch: {[len(b) for b in batches]})")
+
+    batch_outputs = []
+    for i, batch in enumerate(batches, 1):
+        batch_text = "\n\n---\n\n".join(batch)
+        log(f"")
+        log(f"📦 Batch {i}/{len(batches)} işleniyor ({len(batch)} rapor, {len(batch_text):,} karakter)")
+        prompt = CONSOLIDATION_PROMPT.format(combined_reports=batch_text)
+        result = call_gemini(prompt, max_tokens=32000, label=f"Batch {i}/{len(batches)}")
+        if result:
+            log(f"✅ Batch {i} tamamlandı ({len(result):,} karakter)")
+            batch_outputs.append(result)
+        else:
+            log(f"⚠️ Batch {i} başarısız, ham raporlar fallback olarak kullanılacak")
+            batch_outputs.append(batch_text)
+
+    log(f"")
+    merge_input = "\n\n=== BATCH AYIRICI ===\n\n".join(
+        f"[BATCH {i+1}]\n\n{out}" for i, out in enumerate(batch_outputs)
+    )
+    log(f"🔀 FİNAL BİRLEŞTİRME başlatılıyor ({len(batch_outputs)} batch raporu, {len(merge_input):,} karakter)")
+    prompt = FINAL_MERGE_PROMPT.format(batch_reports=merge_input)
+    final = call_gemini(prompt, max_tokens=48000, label="FİNAL BİRLEŞTİRME")
+    if final:
+        log(f"✅ Final birleştirme tamamlandı ({len(final):,} karakter)")
+        return final
+    log(f"⚠️ Final birleştirme başarısız, batch çıktıları yan yana gönderiliyor")
+    return "\n\n---\n\n".join(batch_outputs)
 
 
 def send_to_discord(report):
@@ -386,9 +454,8 @@ if __name__ == "__main__":
             log("❌ Hiçbir video işlenemedi.")
         else:
             current_date = datetime.now().strftime("%d.%m.%Y")
-            combined_text = "\n\n---\n\n".join(all_reports)
 
-            final_report_body = consolidate_reports(combined_text)
+            final_report_body = consolidate_reports(all_reports)
 
             videos_list = "\n".join(
                 f"- **[{v['name']}]** {v['title']} `({v['duration']})`"
@@ -419,13 +486,16 @@ if __name__ == "__main__":
             log(f"   • Toplam süre: {mins} dk {secs} sn")
             log(f"   • Konsolide rapor Discord'a gönderildi")
 
-            print()
-            print("=" * 70)
-            print("TAM TRANSKRİPTLER")
-            print("=" * 70)
-            for i, v in enumerate(processed_videos, 1):
-                print()
-                print(f"[{i}/{len(processed_videos)}] {v['name']} — {v['title']}")
-                print("-" * 70)
-                print(v.get("transkript", "(transkript yok)"))
-                print()
+            transcript_filename = f"transkriptler_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+            total_chars = 0
+            with open(transcript_filename, "w", encoding="utf-8") as f:
+                for i, v in enumerate(processed_videos, 1):
+                    text = v.get("transkript", "(transkript yok)")
+                    total_chars += len(text)
+                    f.write("=" * 70 + "\n")
+                    f.write(f"[{i}/{len(processed_videos)}] {v['name']} — {v['title']} ({v['duration']})\n")
+                    f.write(f"https://www.youtube.com/watch?v={v['video_id']}\n")
+                    f.write("=" * 70 + "\n\n")
+                    f.write(text)
+                    f.write("\n\n")
+            log(f"📝 Transkriptler dosyaya yazıldı: {transcript_filename} ({total_chars:,} karakter)")

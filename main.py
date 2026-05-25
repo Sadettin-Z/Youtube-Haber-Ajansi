@@ -29,17 +29,21 @@ CHANNELS = {
     "Fatih Altaylı": "@fatihaltayli",
 }
 
-PROMPT_TEMPLATE = """<görev>
-Aşağıda {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkripti bulunmaktadır.
-Amacın, bu videoyu izlemeyen birine, videodaki BÜTÜN bilgileri (sayılar, isimler, iddialar) hiçbir eksik olmadan, mantıklı bir olay örgüsü içinde ve yüksek okunabilirlikle aktarmaktır.
-Rapora hiçbir yorum ekleme.
+PROMPT_TEMPLATE = """<transkript>
+{transkript}
+</transkript>
+
+<görev>
+Yukarıdaki transkript, {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkriptidir.
+Amacın, bu videoyu izlemeyen birine, transkriptteki BÜTÜN bilgileri (sayılar, isimler, iddialar) hiçbir eksik olmadan, mantıklı bir olay örgüsü içinde ve yüksek okunabilirlikle aktarmaktır.
+Rapora asla kendi yorumunu ekleme.
 
 Bunu başarmak için, bir insanın yapacağı gibi şu iki aşamalı yöntemi KESİNLİKLE uygulamak zorundasın:
 
 ### AŞAMA 1: KONULARA AYIRMA VE İÇİNİ DOLDURMA (Veri Kaybını Önleme)
 1. Transkripti baştan sona tara. Konuşulan farklı olayları/gündem maddelerini tespit et.
 2. Tespit ettiğin her bir konu için bir başlık aç.
-3. O konuyla ilgili videoda geçen HER TÜRLÜ spesifik detayı, sayıyı, ismi, iddiayı ve havada kalan benzetmeleri (örn: "ölüm öpücüğü") o başlığın altına ham notlar/maddeler halinde doldur. 
+3. O konuyla ilgili videoda geçen HER TÜRLÜ spesifik detayı, sayıyı, ismi, iddiayı ve havada kalan benzetmeleri (örn: "ölüm öpücüğü") o başlığın altına ham notlar/maddeler halinde doldur.
 4. Bu aşamada akıcı olmana gerek yok, amacın "bölümleri oluşturmak ve içlerini transkriptteki verilerle tıka basa doldurmaktır".
 5. Bu ham taslağı KESİNLİKLE <taslak> ... </taslak> etiketleri arasına yaz.
 
@@ -51,11 +55,7 @@ Bunu başarmak için, bir insanın yapacağı gibi şu iki aşamalı yöntemi KE
 
 ÇIKTI FORMATI:
 Sadece ve doğrudan <taslak> etiketiyle başla, ardından <rapor> etiketini oluştur. Başka hiçbir giriş cümlesi kullanma.
-</görev>
-
-<transkript>
-{transkript}
-</transkript>"""
+</görev>"""
 
 CONSOLIDATION_PROMPT = """<raporlar>
 {combined_reports}
@@ -63,6 +63,7 @@ CONSOLIDATION_PROMPT = """<raporlar>
 
 <görev>
 Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları TEK bir konsolide rapor haline getireceksin. 
+Rapora asla kendi yorumunu ekleme.
 
 YAPI VE KURALLAR:
 Tüm raporları oku. Aynı SOMUT OLAYI (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "ORTAK GÜNDEM"e, sadece tek bir kanal işlemişse "KANALLARA ÖZEL HABERLER"e ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
@@ -119,6 +120,34 @@ ADIMLAR VE KURALLAR:
 ÇIKTI KURALLARI:
 - Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.
 </görev>"""
+
+
+# Filtre kriterleri: video raporu güncel gündem haberlerine odaklı mı?
+# Tutucu bias — tereddütteyse TUT, sadece bariz olarak gündem dışı içerik ATILSIN.
+INTERESTS = """
+Filtreleme kriterleri: video raporu güncel gündem haberlerine odaklı mı?
+
+TUT (güncel gündem):
+- Belirli, somut güncel siyasi olaylar — yeni kararlar, açıklamalar, atamalar, istifalar
+- Türkiye siyaseti, dış politikası, ekonomisi — son haftalardaki gelişmeler
+- Uluslararası çatışmalar, savaşlar, barış görüşmeleri (güncel)
+- Ekonomik krizler, döviz/faiz hareketleri, makroekonomik gelişmeler
+- Soruşturmalar, davalar, mahkeme kararları (kamu yararı olan)
+- Yolsuzluk, skandallar, ifşalar
+- Önemli sosyal/siyasi hareketler, protestolar
+- Yorumcu/uzmanın BELİRLİ bir güncel olaya odaklanan analizleri
+
+AT (güncel gündem değil):
+- Genel teorik veya tarihsel analizler — "finans kapital nedir", "Osmanlı nasıl çöktü" gibi belirli güncel olaya bağlı olmayan içerikler
+- Felsefi/ideolojik söyleşiler, zamansız tartışmalar
+- Sanatçı, oyuncu, şarkıcı, sporcu söyleşileri, magazin, biyografik içerik
+- Kişisel hikayeler, anılar, hayata bakış, motivasyon sohbetleri
+- Açıklayıcı/eğitim içeriği (güncel olaya bağlı değilse)
+- Spor analizleri, eğlence, lifestyle, sağlık tavsiyeleri
+- Reklam, sponsor içeriği, kanal duyuruları
+
+Tereddütteyse TUT — sadece bariz olarak gündem dışı olanları AT.
+""".strip()
 
 
 def ts():
@@ -210,10 +239,21 @@ def transkript_cek(video_id):
     return None
 
 
-def call_gemini(prompt, max_tokens=24000, label="Gemini"):
-    """Shared helper: tries each API key in order, returns text or None."""
+def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
+    """Shared helper: tries each API key in order, returns text or None.
+    If response_schema is provided, the model is forced to return JSON matching the schema."""
     prompt_chars = len(prompt)
     log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter, max_output: {max_tokens:,} token)", indent=1)
+
+    config_kwargs = {
+        "max_output_tokens": max_tokens,
+        "thinking_config": types.ThinkingConfig(
+            thinking_level=types.ThinkingLevel.HIGH
+        ),
+    }
+    if response_schema is not None:
+        config_kwargs["response_mime_type"] = "application/json"
+        config_kwargs["response_schema"] = response_schema
 
     for key_idx, key in enumerate(GEMINI_API_KEYS, start=1):
         if not key:
@@ -228,13 +268,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini"):
                 response = client.models.generate_content(
                     model='gemini-3.5-flash',
                     contents=prompt,
-                    config=types.GenerateContentConfig(
-                        temperature=0.3,
-                        max_output_tokens=max_tokens,
-                        thinking_config=types.ThinkingConfig(
-                            thinking_level=types.ThinkingLevel.HIGH
-                        )
-                    )
+                    config=types.GenerateContentConfig(**config_kwargs)
                 )
                 elapsed = time.time() - t0
                 if response.text:
@@ -346,6 +380,60 @@ def consolidate_reports(reports_list):
     return "\n\n---\n\n".join(batch_outputs)
 
 
+def filter_video_reports(items):
+    """Drop video reports that don't match INTERESTS. items: list of {video, report}.
+    Returns filtered list. On filter failure, returns the original list (don't lose work)."""
+    if not items:
+        return items
+
+    payload = "\n\n=== VIDEO AYIRICI ===\n\n".join(
+        f"[{i}] KANAL: {it['video']['name']}\n"
+        f"BAŞLIK: {it['video']['title']}\n\n"
+        f"RAPOR:\n{it['report']}"
+        for i, it in enumerate(items)
+    )
+
+    schema = {
+        "type": "object",
+        "properties": {
+            "drop_indices": {
+                "type": "array",
+                "items": {"type": "integer"},
+            },
+        },
+        "required": ["drop_indices"],
+    }
+
+    prompt = (
+        f"{payload}\n\n"
+        f"{INTERESTS}\n\n"
+        "Yukarıdaki video raporlarını yukarıdaki kriterlere göre değerlendir. "
+        "AT kategorisine giren videoların indekslerini döndür. "
+        "Tereddütteysen indekse koyma — sadece bariz gündem dışı olanları at."
+    )
+
+    log(f"")
+    log(f"🔍 İLGİ FİLTRESİ başlatılıyor ({len(items)} video değerlendiriliyor)")
+    try:
+        result = call_gemini(prompt, max_tokens=2000, label="FİLTRE", response_schema=schema)
+        if not result:
+            log(f"⚠️ Filtre çağrısı sonuçsuz, tüm raporlar tutuluyor")
+            return items
+        data = json.loads(result)
+        drop = {i for i in data.get("drop_indices", []) if 0 <= i < len(items)}
+    except Exception as e:
+        log(f"⚠️ Filtre hatası ({e}); tüm raporlar tutuluyor")
+        return items
+
+    kept = [it for i, it in enumerate(items) if i not in drop]
+    log(f"✅ Filtre: {len(kept)}/{len(items)} tutuldu, {len(drop)} atıldı")
+    if drop:
+        for i in sorted(drop):
+            v = items[i]['video']
+            log(f"⊘ ATILDI [{v['name']}] {v['title'][:60]}", indent=1)
+    return kept
+
+
 def send_to_discord(report):
     """Send the report to Discord as chunked text messages. Ping fires on the first chunk only."""
     log(f"📤 Discord'a gönderiliyor (toplam {len(report):,} karakter)...")
@@ -432,8 +520,7 @@ if __name__ == "__main__":
         for v in videos:
             log(f"  - [{v['name']}] {v['title']} ({v['duration']})")
 
-        all_reports = []
-        processed_videos = []
+        analyzed = []  # her eleman: {"video": video, "report": report}
 
         for i, video in enumerate(videos):
             video_start = time.time()
@@ -449,18 +536,26 @@ if __name__ == "__main__":
 
             log(f"📝 İlk 300 karakter: {transkript[:300]}...", indent=1)
             report = analyze_video(video, transkript)
-
-            video_section = f"**{len(all_reports) + 1}.** 📺 **[{video['name']}]** — {video['title']} `({video['duration']})`\n\n{report}"
-            all_reports.append(video_section)
             video["transkript"] = transkript
-            processed_videos.append(video)
+            analyzed.append({"video": video, "report": report})
             video_elapsed = time.time() - video_start
             log(f"✅ Video tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
             time.sleep(2)
 
-        if not all_reports:
+        if not analyzed:
             log("❌ Hiçbir video işlenemedi.")
         else:
+            analyzed = filter_video_reports(analyzed)
+            if not analyzed:
+                log("❌ İlgi filtresi tüm videoları eledi, rapor üretilmiyor.")
+
+        if analyzed:
+            all_reports = [
+                f"**{idx}.** 📺 **[{it['video']['name']}]** — {it['video']['title']} `({it['video']['duration']})`\n\n{it['report']}"
+                for idx, it in enumerate(analyzed, 1)
+            ]
+            processed_videos = [it["video"] for it in analyzed]
+
             current_date = datetime.now().strftime("%d.%m.%Y")
 
             final_report_body = consolidate_reports(all_reports)

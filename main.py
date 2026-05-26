@@ -17,7 +17,7 @@ GEMINI_API_KEYS = [
     os.getenv("GEMINI_API_KEY_2"),
     os.getenv("GEMINI_API_KEY_3"),
 ]
-
+#1
 CHANNELS = {
     "Serdar Akinan": "@serdarakinan",
     "Erdem Atay": "@erdemataytv",

@@ -74,6 +74,7 @@ Kısıtlar:
 - Transkriptte olmayan bağlam, sebep veya referans ekleme. Kendi yorumun yok.
 - Dil: transkriptin dili (Türkçe ise Türkçe).
 - Format: akıcı paragraflar. Madde işareti sadece gerçekten liste niteliğindeki bilgi için.
+- Bilgi eksikliği YASAK: Kompaktlık veya akıcılık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Kısalık daha az kelime demektir, daha az bilgi değil. Şüphedeysen bilgiyi koru.
 
 Örnek — kısa bir transkript parçası ve ideal raporu:
 
@@ -100,7 +101,13 @@ Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları t
 Amaç:
 Raporu okuyan biri, hangi kanalın hangi olayı nasıl ele aldığını net görebilsin. Girdi raporlarındaki hiçbir somut detay (isim, sayı, tarih, alıntı, argüman, gerekçe) kaybolmasın. Anlatı akıcı ve takip edilebilir olmalı.
 
-Önemli kural: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Şu kalıplar yasak: "X belirtmiştir. X ayrıca ifade etmiştir. X bunu da vurgulamıştır." — tek cümlede X'in söylediklerini toparla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: aynı bilgiyi yarı uzunlukta veriyorsan iyi yapıyorsundur.
+
+Önemli kural 3 — ORTAK BİLGİ ARKA PLANDA, ÖZGÜN BİLGİ KATKIDA: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Olayın Arka Planı"nda BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı, kanala has yorum). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
+
+Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa arka planda, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma. Kısa rapor = az kelime, AYNI bilgi miktarı.
 
 Yapı ve kurallar:
 Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
@@ -110,17 +117,29 @@ Aşağıdaki şablonu birebir kullan:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** Girdi raporlarında olayla ilgili verilen arka plan bilgisini birleştirip akıcı bir paragraf yap. Sadece girdilerde geçen aktörler, zamanlama, sebepler ve bağlam yazılır. Eğer girdiler bir bağlamı kapsamıyorsa, o bilgiyi uydurma — kısa tut veya o cümleyi atla. Doyurucu olsun diye dış bilgi getirme.
+**Olayın Arka Planı:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** İlgili kanalın o olaya dair söylediği her şey — argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler, benzetmeler. Bağlamı ve mantık zincirini koru (x dedi çünkü y, buna karşılık z). Sadece konunun adını söyleyip geçme; somut olarak ne dediğini aktar.
+- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Arka planda zaten yazılmış ortak bilgileri burada tekrar yazma. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... aynı zamanda... bunun yanında..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 - **[Diğer Kanal Adı]:** ...
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
-### [Kanal Adı] — [Konu Başlığı]
-- Ortak gündeme girmeyen konuyu, bağlamını ve detaylarını koruyarak tam cümleler halinde aktar. Yorumcunun argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler eksiksiz olsun. Birden fazla konu varsa her biri için ayrı başlık aç.
+### [Kanal Adı]
+
+**[Konu 1 Başlığı]**
+Konunun bağlamı ve detayları akıcı paragraflar halinde. Yorumcunun argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler eksiksiz olsun.
+
+**[Konu 2 Başlığı]**
+Aynı şekilde.
+
+### [Diğer Kanal Adı]
+
+**[Konu Başlığı]**
+Detaylar.
+
+Önemli: Aynı kanalın birden fazla konusu varsa hepsi tek bir "### [Kanal Adı]" başlığı altında toplanır. Her konu için ayrı kanal başlığı açma — kanal başlığı bir kere, altında konu alt-başlıkları.
 
 Kısıtlar:
 - Girdi raporlarındaki hiçbir somut detay (isim, sayı, tarih, alıntı, gerekçe) bırakılmasın.
@@ -139,7 +158,13 @@ Yukarıda kendi içinde birleştirilmiş "grup" raporları bulunmaktadır. Bunla
 Amaç:
 Final rapor, girdi raporlarındaki tüm somut detayları (isim, sayı, tarih, alıntı, argüman, gerekçe) eksiksiz korusun. Anlatı akıcı ve takip edilebilir olsun. Aynı olayı anlatan farklı kanalları doğru bir şekilde birleştir.
 
-Önemli kural: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Şu kalıplar yasak: "X belirtmiştir. X ayrıca ifade etmiştir. X bunu da vurgulamıştır." — tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut.
+
+Önemli kural 3 — ORTAK BİLGİ ARKA PLANDA, ÖZGÜN BİLGİ KATKIDA: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Olayın Arka Planı"nda BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
+
+Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa arka planda, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma. Kısa rapor = az kelime, AYNI bilgi miktarı.
 
 Adımlar ve kurallar:
 1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma.
@@ -151,16 +176,28 @@ Adımlar ve kurallar:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** Girdi raporlarında olayla ilgili verilen arka plan bilgisini birleştirip akıcı bir paragraf yap. Sadece girdilerde geçen aktörler, zamanlama, sebepler ve bağlam yazılır. Eğer girdiler bir bağlamı kapsamıyorsa, o bilgiyi uydurma — kısa tut veya o cümleyi atla. Doyurucu olsun diye dış bilgi getirme.
+**Olayın Arka Planı:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Sadece girdilerde geçenler — dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** İlgili kanalın tüm maddeleri eksiksiz ve mantıklı bir bütünlük içinde taşınır. Cümleler havada kalmamalı. Argüman, isim, sayı, alıntı, gerekçe korunur.
+- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Arka planda zaten yazılmış ortak bilgileri burada tekrar yazma. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... bunun yanında... aynı zamanda..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
-### [Kanal Adı] — [Konu Başlığı]
-- İlgili detaylar bağlamıyla birlikte taşınır.
+### [Kanal Adı]
+
+**[Konu 1 Başlığı]**
+İlgili detaylar bağlamıyla birlikte akıcı paragraflar halinde.
+
+**[Konu 2 Başlığı]**
+Aynı şekilde.
+
+### [Diğer Kanal Adı]
+
+**[Konu Başlığı]**
+Detaylar.
+
+Önemli: Aynı kanalın birden fazla konusu varsa hepsi tek bir "### [Kanal Adı]" başlığı altında toplanır. Her konu için ayrı kanal başlığı açma.
 
 Kısıtlar:
 - Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.

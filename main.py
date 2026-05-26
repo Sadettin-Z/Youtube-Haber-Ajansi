@@ -9,8 +9,6 @@ from datetime import datetime, timedelta, timezone
 from google import genai
 from google.genai import types
 
-from scraper import normalize_turkish_chars
-
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DISCORD_URL = os.getenv("DISCORD_WEBHOOK_URL")
 APIFY_API_KEY = os.getenv("APIFY_API_KEY")
@@ -331,7 +329,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
                     except Exception:
                         pass
                     log(f"✅ [{label}] Yanıt alındı ({elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
-                    return normalize_turkish_chars(response.text.strip())
+                    return response.text.strip()
                 else:
                     log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
             except Exception as e:

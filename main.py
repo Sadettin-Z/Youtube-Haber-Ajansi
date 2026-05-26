@@ -9,6 +9,8 @@ from datetime import datetime, timedelta, timezone
 from google import genai
 from google.genai import types
 
+from scraper import normalize_turkish_chars
+
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DISCORD_URL = os.getenv("DISCORD_WEBHOOK_URL")
 APIFY_API_KEY = os.getenv("APIFY_API_KEY")
@@ -35,26 +37,57 @@ PROMPT_TEMPLATE = """<transkript>
 
 <görev>
 Yukarıdaki transkript, {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkriptidir.
-Amacın, bu videoyu izlemeyen birine, transkriptteki BÜTÜN bilgileri (sayılar, isimler, iddialar) hiçbir eksik olmadan, mantıklı bir olay örgüsü içinde ve yüksek okunabilirlikle aktarmaktır.
-Rapora asla kendi yorumunu ekleme.
 
-Bunu başarmak için, bir insanın yapacağı gibi şu iki aşamalı yöntemi KESİNLİKLE uygulamak zorundasın:
+Amaç:
+Bu videoyu izlemeyen biri, raporu okuduktan sonra videoyu izleyen biriyle aynı bilgiye ulaşsın. Aktarım okuyucu dostu, akılda kalıcı ve olay akışını takip eden bir anlatı olmalı — kuru bir bilgi dökümü değil. Rapora asla kendi yorumunu, çıkarımını veya yorumcunun söylemediği bir şeyi ekleme.
 
-### AŞAMA 1: KONULARA AYIRMA VE İÇİNİ DOLDURMA (Veri Kaybını Önleme)
-1. Transkripti baştan sona tara. Konuşulan farklı olayları/gündem maddelerini tespit et.
-2. Tespit ettiğin her bir konu için bir başlık aç.
-3. O konuyla ilgili videoda geçen HER TÜRLÜ spesifik detayı, sayıyı, ismi, iddiayı ve havada kalan benzetmeleri (örn: "ölüm öpücüğü") o başlığın altına ham notlar/maddeler halinde doldur.
-4. Bu aşamada akıcı olmana gerek yok, amacın "bölümleri oluşturmak ve içlerini transkriptteki verilerle tıka basa doldurmaktır".
-5. Bu ham taslağı KESİNLİKLE <taslak> ... </taslak> etiketleri arasına yaz.
+Yöntem:
 
-### AŞAMA 2: NİHAİ RAPOR (Mantık Sırası ve Okunabilirlik)
-1. Şimdi transkripti unut ve sadece <taslak> bölümünde kendi oluşturduğun o bölümlere ve içindeki verilere odaklan.
-2. Taslaktaki her bir bölümü, akıcı, profesyonel ve mantık sırasına oturtulmuş bir olay örgüsüne dönüştür. (Örn: Önce iddiayı, sonra sebebini anlat).
-3. Taslağına koyduğun hiçbir ismi, sayıyı veya benzetmeyi dışarıda bırakma; hepsini tam ve anlaşılır cümlelerle bu akıcı metne yedir.
-4. Bu nihai raporu <rapor> ... </rapor> etiketleri arasına yaz.
+### Aşama 1: Hikayeleri tespit et (konu değil, hikaye)
+Transkripti baştan sona oku. Yorumcunun gündeme getirdiği diskret hikayeleri tespit et.
+Bir hikaye şu bileşenlere sahip bir bütündür: aktör (kim?), eylem (ne yaptı/oldu?), bağlam (neden, hangi koşullarda?), iddia/sonuç (yorumcunun değerlendirmesi).
+"Ekonomi" tek başına hikaye değildir; "Merkez bankasının 23 Mayıs'taki faiz kararı ve piyasa tepkisi" bir hikayedir.
+Her hikaye için <taslak> içinde bir başlık aç.
 
-ÇIKTI FORMATI:
-Sadece ve doğrudan <taslak> etiketiyle başla, ardından <rapor> etiketini oluştur. Başka hiçbir giriş cümlesi kullanma.
+### Aşama 2: Hikayelerin içini doldur (eksiksiz)
+Her hikayeye, transkriptte o hikayeyle ilgili her bilgiyi doldur:
+- Tüm isimler (tam ad, rol, unvan)
+- Tüm sayılar, tarihler, parasal değerler, yüzdeler
+- Tüm doğrudan alıntılar (yorumcunun veya videodaki diğer kişilerin)
+- Yorumcunun argümanı: hangi iddia, hangi gerekçe, hangi karşı argüman
+- Kullanılan benzetmeler, metaforlar, tarihsel/güncel referanslar
+- Yorumcunun ileri sürdüğü olası sonuçlar/çıkarımlar
+Bu aşamada eksiksiz olmak akıcı olmaktan önemlidir. Maddeler halinde, ham not gibi yaz. Bu taslağı <taslak> ... </taslak> arasına koy.
+
+### Aşama 3: Hikayeyi anlatıya dönüştür (okunabilir rapor)
+Her hikayeyi şu mantıkla akıcı bir anlatıya çevir:
+1. Açılış — olayı 1-2 cümlede tanımla; okuyucu kim/ne/ne zaman'ı hemen anlasın.
+2. Bağlam — neden gündemde, daha önce ne oldu, ilgili aktörler nasıl konumlanıyor.
+3. Gelişim — yorumcunun argümanını adım adım aktar; mantık zincirini koru ("x oldu çünkü y, buna karşılık z söylendi").
+4. Detaylar — sayılar, alıntılar, isimler anlatı içine yedirilmiş şekilde. Liste değil, akıcı paragraf.
+5. Sonuç — yorumcunun çıkarımları veya değerlendirmeleri (varsa).
+Taslaktaki hiçbir isim/sayı/alıntı/gerekçe rapora geçmeden silinmesin.
+Her hikaye için ayrı bir alt başlık. Bu nihai raporu <rapor> ... </rapor> arasına yaz.
+
+Kısıtlar:
+- Yorumcunun argümanını çarpıtma, basitleştirme veya yumuşatma.
+- Transkriptte olmayan bağlam, sebep veya referans ekleme. Kendi yorumun yok.
+- Dil: transkriptin dili (Türkçe ise Türkçe).
+- Format: akıcı paragraflar. Madde işareti sadece gerçekten liste niteliğindeki bilgi için.
+
+Örnek — kısa bir transkript parçası ve ideal raporu:
+
+<örnek_transkript>
+Şimdi bakın, dün gece Merkez Bankası bir duyuru yaptı. Faizi 250 baz puan birden indirdiler. 50'den 47,5'e. Bu beklenmedik bir hamleydi çünkü piyasa beklentisi sadece 100 baz puan civarındaydı. Açıklamada Karahan "enflasyon eğilimi olumlu" dedi ama dolar bir gecede 35,80'den 36,20'ye fırladı. Yani piyasa karara güvenmedi. Erdoğan ise sabah konuşmasında "ekonomide normalleşme dönemi" diyerek bu indirimi savundu. Aslında bu 2024'ten beri uygulanan yüksek faiz politikasının bir dönüm noktası. Hatırlarsanız 2023'te Şimşek geldiğinde faizi 8,5'tan 50'ye çıkarmıştık.
+</örnek_transkript>
+
+<örnek_rapor>
+### Merkez Bankası'nın Sürpriz Faiz İndirimi
+Türkiye Cumhuriyet Merkez Bankası, dün gece politika faizini 250 baz puan birden indirerek yüzde 50'den yüzde 47,5'a düşürdü. Karar piyasa için sürpriz oldu — beklenti yalnızca 100 baz puan civarındaydı. Banka Başkanı Fatih Karahan açıklamasında "enflasyon eğilimi olumlu" ifadesini kullandı; ancak piyasa tepkisi tersine işledi: dolar/TL bir gece içinde 35,80'den 36,20'ye yükseldi, yani piyasa karara güven göstermedi. Cumhurbaşkanı Erdoğan sabah konuşmasında indirimi "ekonomide normalleşme dönemi" sözleriyle savundu. Yorumcu, bu indirimi 2024'ten beri sürdürülen yüksek faiz politikasının dönüm noktası olarak konumlandırıyor ve 2023'te Mehmet Şimşek'in göreve gelmesiyle faizin yüzde 8,5'tan yüzde 50'ye çıkarıldığı sürece atıf yapıyor.
+</örnek_rapor>
+
+Çıktı formatı:
+Doğrudan <taslak> etiketiyle başla, ardından <rapor> etiketini oluştur. Başka hiçbir giriş cümlesi kullanma.
 </görev>"""
 
 CONSOLIDATION_PROMPT = """<raporlar>
@@ -62,20 +95,24 @@ CONSOLIDATION_PROMPT = """<raporlar>
 </raporlar>
 
 <görev>
-Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları TEK bir konsolide rapor haline getireceksin. 
-Rapora asla kendi yorumunu ekleme.
+Yukarıda farklı kanallara ait video raporları bulunmaktadır. Bu raporları tek bir konsolide rapor haline getireceksin.
 
-YAPI VE KURALLAR:
-Tüm raporları oku. Aynı SOMUT OLAYI (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "ORTAK GÜNDEM"e, sadece tek bir kanal işlemişse "KANALLARA ÖZEL HABERLER"e ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
+Amaç:
+Raporu okuyan biri, hangi kanalın hangi olayı nasıl ele aldığını net görebilsin. Girdi raporlarındaki hiçbir somut detay (isim, sayı, tarih, alıntı, argüman, gerekçe) kaybolmasın. Anlatı akıcı ve takip edilebilir olmalı.
 
-Aşağıdaki şablonu BİREBİR kullan:
+Önemli kural: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+
+Yapı ve kurallar:
+Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
+
+Aşağıdaki şablonu birebir kullan:
 
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** (Bu konunun neden gündem olduğunu, meselenin özünü ve tarafların genel durumunu anlatan, okuyucuyu aydınlatacak en az 3-4 cümlelik doyurucu ve akıcı bir paragraf yaz. Asla tek cümleyle geçiştirme.)
+**Olayın Arka Planı:** Girdi raporlarında olayla ilgili verilen arka plan bilgisini birleştirip akıcı bir paragraf yap. Sadece girdilerde geçen aktörler, zamanlama, sebepler ve bağlam yazılır. Eğer girdiler bir bağlamı kapsamıyorsa, o bilgiyi uydurma — kısa tut veya o cümleyi atla. Doyurucu olsun diye dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** Orijinal rapordaki maddeleri, bağlamını ve okunabilirliğini bozmadan buraya aktar. Okuyan kişi cümlenin mantığını kolayca kavramalıdır.
+- **[Kanal Adı] / [Yorumcu]:** İlgili kanalın o olaya dair söylediği her şey — argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler, benzetmeler. Bağlamı ve mantık zincirini koru (x dedi çünkü y, buna karşılık z). Sadece konunun adını söyleyip geçme; somut olarak ne dediğini aktar.
 - **[Diğer Kanal Adı]:** ...
 
 ---
@@ -83,10 +120,13 @@ Aşağıdaki şablonu BİREBİR kullan:
 🎙️ KANALLARA ÖZEL HABERLER
 
 ### [Kanal Adı] — [Konu Başlığı]
-- (Ortak gündeme girmeyen konuları, yine bağlamını ve anlaşılırlığını koruyarak tam cümleler halinde buraya aktar.)
+- Ortak gündeme girmeyen konuyu, bağlamını ve detaylarını koruyarak tam cümleler halinde aktar. Yorumcunun argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler eksiksiz olsun. Birden fazla konu varsa her biri için ayrı başlık aç.
 
-ÇIKTI FORMATI:
-- Metni çok kısa özetlere dönüştürme. Akıcı bir haber bülteni/raporu dili kullan. Doğrudan "📌 ORTAK GÜNDEM" ile başla.
+Kısıtlar:
+- Girdi raporlarındaki hiçbir somut detay (isim, sayı, tarih, alıntı, gerekçe) bırakılmasın.
+- Girdi raporlarında olmayan hiçbir bilgi rapora eklenmez. Dış bilgi, training-data bilgisi, "okuyucunun bilmesi gereken bağlam" uydurması yok.
+- Metni çok kısa özetlere dönüştürme. Akıcı bir haber bülteni dili kullan.
+- Doğrudan "📌 ORTAK GÜNDEM" ile başla. Başka hiçbir giriş cümlesi kullanma.
 </görev>"""
 
 FINAL_MERGE_PROMPT = """<batch_raporları>
@@ -94,31 +134,38 @@ FINAL_MERGE_PROMPT = """<batch_raporları>
 </batch_raporları>
 
 <görev>
-Yukarıda kendi içinde birleştirilmiş "grup" raporları bulunmaktadır. Bunları okunabilirliği yüksek, TEK bir nihai rapora dönüştüreceksin.
+Yukarıda kendi içinde birleştirilmiş "grup" raporları bulunmaktadır. Bunları okunabilirliği yüksek, tek bir nihai rapora dönüştüreceksin.
 
-ADIMLAR VE KURALLAR:
-1. Girdi raporlarındaki tüm konuları tara. Sadece GERÇEKTEN AYNI somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (Örn: "Devletin Rolü") yaratma.
+Amaç:
+Final rapor, girdi raporlarındaki tüm somut detayları (isim, sayı, tarih, alıntı, argüman, gerekçe) eksiksiz korusun. Anlatı akıcı ve takip edilebilir olsun. Aynı olayı anlatan farklı kanalları doğru bir şekilde birleştir.
+
+Önemli kural: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
+
+Adımlar ve kurallar:
+1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma.
 2. Sadece tek bir kanalın bahsettiği konuları "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
-3. Girdilerdeki hiçbir bağlamı, açıklayıcı sebebi veya detaylı ifadeyi silme. 
+3. Girdilerdeki hiçbir bağlamı, açıklayıcı sebebi, detaylı ifadeyi, isim, sayı, alıntı veya argümanı silme. Birleştirirken yoğunlaştır ama bilgi atma.
 
-ÇIKTI ŞABLONU:
+Çıktı şablonu:
 
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** (Girdi raporlarındaki arka plan metinlerini birleştirerek, olayı bilmeyen birine anlatır gibi doyurucu ve net bir paragraf oluştur.)
+**Olayın Arka Planı:** Girdi raporlarında olayla ilgili verilen arka plan bilgisini birleştirip akıcı bir paragraf yap. Sadece girdilerde geçen aktörler, zamanlama, sebepler ve bağlam yazılır. Eğer girdiler bir bağlamı kapsamıyorsa, o bilgiyi uydurma — kısa tut veya o cümleyi atla. Doyurucu olsun diye dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** İlgili kanalın tüm maddeleri eksiksiz ve mantıklı bir bütünlük içinde taşınır. Cümleler havada kalmamalıdır.
+- **[Kanal Adı]:** İlgili kanalın tüm maddeleri eksiksiz ve mantıklı bir bütünlük içinde taşınır. Cümleler havada kalmamalı. Argüman, isim, sayı, alıntı, gerekçe korunur.
 
 ---
 
 🎙️ KANALLARA ÖZEL HABERLER
 
 ### [Kanal Adı] — [Konu Başlığı]
-- (İlgili detaylar bağlamıyla birlikte taşınır.)
+- İlgili detaylar bağlamıyla birlikte taşınır.
 
-ÇIKTI KURALLARI:
+Kısıtlar:
 - Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.
+- Girdi raporlarındaki hiçbir somut detay düşürülmez.
+- Girdi raporlarında olmayan hiçbir bilgi rapora eklenmez. Dış bilgi, training-data bilgisi, "okuyucunun bilmesi gereken bağlam" uydurması yok.
 </görev>"""
 
 
@@ -127,7 +174,7 @@ ADIMLAR VE KURALLAR:
 INTERESTS = """
 Filtreleme kriterleri: video raporu güncel gündem haberlerine odaklı mı?
 
-TUT (güncel gündem):
+Tut (güncel gündem):
 - Belirli, somut güncel siyasi olaylar — yeni kararlar, açıklamalar, atamalar, istifalar
 - Türkiye siyaseti, dış politikası, ekonomisi — son haftalardaki gelişmeler
 - Uluslararası çatışmalar, savaşlar, barış görüşmeleri (güncel)
@@ -135,9 +182,9 @@ TUT (güncel gündem):
 - Soruşturmalar, davalar, mahkeme kararları (kamu yararı olan)
 - Yolsuzluk, skandallar, ifşalar
 - Önemli sosyal/siyasi hareketler, protestolar
-- Yorumcu/uzmanın BELİRLİ bir güncel olaya odaklanan analizleri
+- Yorumcu/uzmanın belirli bir güncel olaya odaklanan analizleri
 
-AT (güncel gündem değil):
+At (güncel gündem değil):
 - Genel teorik veya tarihsel analizler — "finans kapital nedir", "Osmanlı nasıl çöktü" gibi belirli güncel olaya bağlı olmayan içerikler
 - Felsefi/ideolojik söyleşiler, zamansız tartışmalar
 - Sanatçı, oyuncu, şarkıcı, sporcu söyleşileri, magazin, biyografik içerik
@@ -146,7 +193,7 @@ AT (güncel gündem değil):
 - Spor analizleri, eğlence, lifestyle, sağlık tavsiyeleri
 - Reklam, sponsor içeriği, kanal duyuruları
 
-Tereddütteyse TUT — sadece bariz olarak gündem dışı olanları AT.
+Tereddütteysen tut — sadece bariz olarak gündem dışı olanları at.
 """.strip()
 
 
@@ -284,7 +331,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
                     except Exception:
                         pass
                     log(f"✅ [{label}] Yanıt alındı ({elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
-                    return response.text.strip()
+                    return normalize_turkish_chars(response.text.strip())
                 else:
                     log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
             except Exception as e:

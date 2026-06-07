@@ -116,7 +116,7 @@ Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşa
 Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
 
 Yapı ve kurallar:
-Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
+Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem, aynı süreç) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut: ör. "Özel'in parti kurma stratejisi" ile "Özel'in eşit yurttaşlık açıklaması" aynı cluster'a girmez. Şüphedeysen ayrı cluster yap.
 
 Aşağıdaki şablonu birebir kullan:
 
@@ -125,7 +125,7 @@ Aşağıdaki şablonu birebir kullan:
 ### [Spesifik Konu Başlığı]
 **Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... aynı zamanda... bunun yanında..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Her ayrı alt-iddiayı kendi cümlesiyle yaz; aynı iddiayı farklı kelimelerle tekrar etme ama farklı alt-iddiaları ayrı cümlelere böl. Alt-iddialar arasındaki neden-sonuç ilişkisini bağlaçlarla ("çünkü", "bu yüzden", "buna karşılık", "ardından", "ne var ki") koru. "Ayrıca... aynı zamanda... bunun yanında..." kalıbı yasak; bu kalıp farklı alt-iddiaları bir cümleye dolduran doldurma anlamına gelir. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 - **[Diğer Kanal Adı]:** ...
 
 ---
@@ -176,7 +176,7 @@ Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşa
 Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
 
 Adımlar ve kurallar:
-1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma.
+1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut. Şüphedeysen ayrı cluster yap.
 2. Sadece tek bir kanalın bahsettiği konuları "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
 3. Girdilerdeki hiçbir bağlamı, açıklayıcı sebebi, detaylı ifadeyi, isim, sayı, alıntı veya argümanı silme. Birleştirirken yoğunlaştır ama bilgi atma.
 
@@ -187,7 +187,7 @@ Adımlar ve kurallar:
 ### [Spesifik Konu Başlığı]
 **Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Sadece girdilerde geçenler — dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... bunun yanında... aynı zamanda..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Her ayrı alt-iddiayı kendi cümlesiyle yaz; aynı iddiayı farklı kelimelerle tekrar etme ama farklı alt-iddiaları ayrı cümlelere böl. Alt-iddialar arasındaki neden-sonuç ilişkisini bağlaçlarla ("çünkü", "bu yüzden", "buna karşılık", "ardından", "ne var ki") koru. "Ayrıca... bunun yanında... aynı zamanda..." kalıbı yasak; bu kalıp farklı alt-iddiaları bir cümleye dolduran doldurma anlamına gelir. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 
 ---
 

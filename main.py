@@ -65,7 +65,7 @@ Her hikayeyi şu mantıkla akıcı bir anlatıya çevir:
 2. Bağlam — neden gündemde, daha önce ne oldu, ilgili aktörler nasıl konumlanıyor.
 3. Gelişim — yorumcunun argümanını adım adım aktar; mantık zincirini koru ("x oldu çünkü y, buna karşılık z söylendi").
 4. Detaylar — sayılar, alıntılar, isimler anlatı içine yedirilmiş şekilde. Liste değil, akıcı paragraf.
-5. Sonuç — yorumcunun çıkarımları veya değerlendirmeleri (varsa).
+5. Sonuç — yorumcunun çıkarımı veya değerlendirmesi (varsa); çıkarımı doğrudan iddia olarak yaz, "yorumcu konumlandırıyor / değerlendiriyor" kalıbı kurma.
 Taslaktaki hiçbir isim/sayı/alıntı/gerekçe rapora geçmeden silinmesin.
 Her hikaye için ayrı bir alt başlık. Bu nihai raporu <rapor> ... </rapor> arasına yaz.
 
@@ -75,6 +75,7 @@ Kısıtlar:
 - Dil: transkriptin dili (Türkçe ise Türkçe).
 - Format: akıcı paragraflar. Madde işareti sadece gerçekten liste niteliğindeki bilgi için.
 - Bilgi eksikliği YASAK: Kompaktlık veya akıcılık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Kısalık daha az kelime demektir, daha az bilgi değil. Şüphedeysen bilgiyi koru.
+- Dil doğrudan: kanal/yorumcu adı raporun üst bilgisinde zaten var. "Yorumcu X diyor / iddia ediyor / konumlandırıyor / atıf yapıyor / savunmaktadır / belirtmektedir" kalıplarını kullanma. İddiayı doğrudan cümleye dök: "Bu indirim, yüksek faiz politikasının dönüm noktasıdır" şeklinde. Konuşan bir başkasıysa (yorumcunun aktardığı bir kişi) o kişiyi öznede tut: "Karahan açıklamasında ... dedi". Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir") hiç kullanma.
 
 Örnek — kısa bir transkript parçası ve ideal raporu:
 
@@ -84,7 +85,7 @@ Kısıtlar:
 
 <örnek_rapor>
 ### Merkez Bankası'nın Sürpriz Faiz İndirimi
-Türkiye Cumhuriyet Merkez Bankası, dün gece politika faizini 250 baz puan birden indirerek yüzde 50'den yüzde 47,5'a düşürdü. Karar piyasa için sürpriz oldu — beklenti yalnızca 100 baz puan civarındaydı. Banka Başkanı Fatih Karahan açıklamasında "enflasyon eğilimi olumlu" ifadesini kullandı; ancak piyasa tepkisi tersine işledi: dolar/TL bir gece içinde 35,80'den 36,20'ye yükseldi, yani piyasa karara güven göstermedi. Cumhurbaşkanı Erdoğan sabah konuşmasında indirimi "ekonomide normalleşme dönemi" sözleriyle savundu. Yorumcu, bu indirimi 2024'ten beri sürdürülen yüksek faiz politikasının dönüm noktası olarak konumlandırıyor ve 2023'te Mehmet Şimşek'in göreve gelmesiyle faizin yüzde 8,5'tan yüzde 50'ye çıkarıldığı sürece atıf yapıyor.
+Türkiye Cumhuriyet Merkez Bankası, dün gece politika faizini 250 baz puan birden indirerek yüzde 50'den yüzde 47,5'a düşürdü. Karar piyasa için sürpriz oldu — beklenti yalnızca 100 baz puan civarındaydı. Banka Başkanı Fatih Karahan açıklamasında "enflasyon eğilimi olumlu" ifadesini kullandı; ancak piyasa tepkisi tersine işledi: dolar/TL bir gece içinde 35,80'den 36,20'ye yükseldi, yani piyasa karara güven göstermedi. Cumhurbaşkanı Erdoğan sabah konuşmasında indirimi "ekonomide normalleşme dönemi" sözleriyle savundu. Bu indirim, 2024'ten beri sürdürülen yüksek faiz politikasının dönüm noktasıdır; 2023'te Mehmet Şimşek'in göreve gelmesiyle faiz yüzde 8,5'tan yüzde 50'ye çıkarılmıştı.
 </örnek_rapor>
 
 Çıktı formatı:
@@ -103,11 +104,16 @@ Raporu okuyan biri, hangi kanalın hangi olayı nasıl ele aldığını net gör
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Şu kalıplar yasak: "X belirtmiştir. X ayrıca ifade etmiştir. X bunu da vurgulamıştır." — tek cümlede X'in söylediklerini toparla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: aynı bilgiyi yarı uzunlukta veriyorsan iyi yapıyorsundur.
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: aynı bilgiyi yarı uzunlukta veriyorsan iyi yapıyorsundur.
 
-Önemli kural 3 — ORTAK BİLGİ ARKA PLANDA, ÖZGÜN BİLGİ KATKIDA: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Olayın Arka Planı"nda BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı, kanala has yorum). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
+Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı, kanala has yorum). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
-Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa arka planda, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma. Kısa rapor = az kelime, AYNI bilgi miktarı.
+Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
+Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz. Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
+
+Örnek dönüşüm:
+Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
+Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
 
 Yapı ve kurallar:
 Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme.
@@ -117,9 +123,9 @@ Aşağıdaki şablonu birebir kullan:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
+**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Arka planda zaten yazılmış ortak bilgileri burada tekrar yazma. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... aynı zamanda... bunun yanında..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... aynı zamanda... bunun yanında..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 - **[Diğer Kanal Adı]:** ...
 
 ---
@@ -129,7 +135,7 @@ Aşağıdaki şablonu birebir kullan:
 ### [Kanal Adı]
 
 **[Konu 1 Başlığı]**
-Konunun bağlamı ve detayları akıcı paragraflar halinde. Yorumcunun argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler eksiksiz olsun.
+Konunun bağlamı ve detayları akıcı paragraflar halinde. Yorumcunun argümanı, kullandığı isimler, sayılar, alıntılar, gerekçeler eksiksiz olsun. Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
 
 **[Konu 2 Başlığı]**
 Aynı şekilde.
@@ -142,8 +148,6 @@ Detaylar.
 Önemli: Aynı kanalın birden fazla konusu varsa hepsi tek bir "### [Kanal Adı]" başlığı altında toplanır. Her konu için ayrı kanal başlığı açma — kanal başlığı bir kere, altında konu alt-başlıkları.
 
 Kısıtlar:
-- Girdi raporlarındaki hiçbir somut detay (isim, sayı, tarih, alıntı, gerekçe) bırakılmasın.
-- Girdi raporlarında olmayan hiçbir bilgi rapora eklenmez. Dış bilgi, training-data bilgisi, "okuyucunun bilmesi gereken bağlam" uydurması yok.
 - Metni çok kısa özetlere dönüştürme. Akıcı bir haber bülteni dili kullan.
 - Doğrudan "📌 ORTAK GÜNDEM" ile başla. Başka hiçbir giriş cümlesi kullanma.
 </görev>"""
@@ -160,11 +164,16 @@ Final rapor, girdi raporlarındaki tüm somut detayları (isim, sayı, tarih, al
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Şu kalıplar yasak: "X belirtmiştir. X ayrıca ifade etmiştir. X bunu da vurgulamıştır." — tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut.
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut.
 
-Önemli kural 3 — ORTAK BİLGİ ARKA PLANDA, ÖZGÜN BİLGİ KATKIDA: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Olayın Arka Planı"nda BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
+Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
-Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa arka planda, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma. Kısa rapor = az kelime, AYNI bilgi miktarı.
+Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
+Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz. Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
+
+Örnek dönüşüm:
+Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
+Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
 
 Adımlar ve kurallar:
 1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma.
@@ -176,9 +185,9 @@ Adımlar ve kurallar:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Olayın Arka Planı:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Sadece girdilerde geçenler — dış bilgi getirme.
+**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Sadece girdilerde geçenler — dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Arka planda zaten yazılmış ortak bilgileri burada tekrar yazma. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... bunun yanında... aynı zamanda..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Yorumcunun söylediklerini sıkı paketle, tek cümlede topla, "ayrıca... bunun yanında... aynı zamanda..." zinciri kurma. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 
 ---
 
@@ -187,7 +196,7 @@ Adımlar ve kurallar:
 ### [Kanal Adı]
 
 **[Konu 1 Başlığı]**
-İlgili detaylar bağlamıyla birlikte akıcı paragraflar halinde.
+İlgili detaylar bağlamıyla birlikte akıcı paragraflar halinde. Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
 
 **[Konu 2 Başlığı]**
 Aynı şekilde.
@@ -201,8 +210,6 @@ Detaylar.
 
 Kısıtlar:
 - Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.
-- Girdi raporlarındaki hiçbir somut detay düşürülmez.
-- Girdi raporlarında olmayan hiçbir bilgi rapora eklenmez. Dış bilgi, training-data bilgisi, "okuyucunun bilmesi gereken bağlam" uydurması yok.
 </görev>"""
 
 
@@ -374,8 +381,22 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
             except Exception as e:
                 elapsed = time.time() - t0
                 err_str = str(e)
-                if "RESOURCE_EXHAUSTED" in err_str:
+                err_lower = err_str.lower()
+                quota_hit = "RESOURCE_EXHAUSTED" in err_str or any(
+                    s in err_lower for s in ("429", "quota", "rate limit", "rate_limit", "exhausted")
+                )
+                transient = any(s in err_lower for s in (
+                    "503", "502", "504", "unavailable", "overloaded", "high demand",
+                    "deadline", "timeout", "timed out", "cancelled", "canceled",
+                    "server disconnected", "remoteprotocolerror", "connection reset",
+                    "connection aborted", "connection closed", "broken pipe",
+                    "incomplete read", "empty response",
+                ))
+                if quota_hit:
                     log(f"⛔ Key #{key_idx} kotası dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
+                    break
+                if transient:
+                    log(f"🔁 Key #{key_idx} geçici hata ({elapsed:.1f}s): {err_str[:200]} — sıradaki key'e geçiliyor", indent=2)
                     break
                 wait = (attempt + 1) * 30
                 log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
@@ -564,8 +585,8 @@ def strip_markdown(text):
     text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
     text = re.sub(r'`([^`]+)`', r'\1', text)
     text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
-    text = re.sub(r'^Olay:', 'OLAY:', text, flags=re.MULTILINE)
-    text = re.sub(r'^Kanal katkıları:', 'KANAL KATKILARI:', text, flags=re.MULTILINE)
+    text = re.sub(r'^Ortak Bilgiler:', 'ORTAK BİLGİLER:', text, flags=re.MULTILINE)
+    text = re.sub(r'^Kanal Katkıları:', 'KANAL KATKILARI:', text, flags=re.MULTILINE)
     text = re.sub(r'^- ', '• ', text, flags=re.MULTILINE)
     text = re.sub(r'^(?!• )(.+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)
     text = re.sub(r'(^• .+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)

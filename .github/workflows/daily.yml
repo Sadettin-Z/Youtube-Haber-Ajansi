@@ -1,4 +1,4 @@
-name: Gunluk Haber Raporu
+name: Youtube Haber Ajansı
 on:
   schedule:
     - cron: '0 5 * * *'

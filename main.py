@@ -633,10 +633,11 @@ def _safe_filename(name, max_len=100):
     return name[:max_len].rstrip(" .") or "Rapor"
 
 
-def split_report_into_files(report_body):
+def split_report_into_files(report_body, channel_videos=None):
     """Parse the consolidated report into (filename, text) parts:
     one file per ORTAK GÜNDEM topic (filename = title + covering channels),
-    then one file per channel from KANALLARA ÖZEL HABERLER.
+    then one file per channel from KANALLARA ÖZEL HABERLER, named
+    "<video title(s)> - <channel>" when channel_videos (channel → [titles]) is given.
     Returns None if the text doesn't follow the expected template (caller falls back)."""
     if "ORTAK GÜNDEM" not in report_body:
         return None
@@ -688,7 +689,15 @@ def split_report_into_files(report_body):
         body = clean_block("\n".join(lines[1:]))
         if not channel or not body:
             continue
-        add_file(channel, f"### {channel}\n\n{body}")
+        # Filename: "<video title(s)> - <channel>". The LLM may append "/ Yorumcu"
+        # to the heading, so match on the part before the slash.
+        base = channel
+        if channel_videos:
+            ch_key = channel.split("/")[0].strip()
+            titles = channel_videos.get(ch_key)
+            if titles:
+                base = f"{', '.join(titles)} - {ch_key}"
+        add_file(base, f"### {channel}\n\n{body}")
 
     return files or None
 
@@ -798,7 +807,10 @@ if __name__ == "__main__":
             send_to_discord(full_report)
 
             header_msg = f"**Youtube {datetime.now().strftime('%d %m %Y')}**"
-            report_files = split_report_into_files(final_report_body)
+            channel_videos = {}
+            for v in processed_videos:
+                channel_videos.setdefault(v["name"], []).append(v["title"])
+            report_files = split_report_into_files(final_report_body, channel_videos)
             if report_files:
                 parts = [(fname, strip_markdown(text)) for fname, text in report_files]
                 upload_report_files_to_discord(parts, header_msg)

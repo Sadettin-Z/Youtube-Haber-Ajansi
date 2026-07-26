@@ -51,31 +51,21 @@ Bu videoyu izlemeyen biri, raporu okuduktan sonra videoyu izleyen biriyle aynı 
 
 Yöntem:
 
-### Aşama 1: Hikayeleri tespit et (konu değil, hikaye)
+### Aşama 1: Hikayeleri ve malzemeyi tespit et (düşünme aşamanda — çıktına yazma)
 Transkripti baştan sona oku. Yorumcunun gündeme getirdiği diskret hikayeleri tespit et.
 Bir hikaye şu bileşenlere sahip bir bütündür: aktör (kim?), eylem (ne yaptı/oldu?), bağlam (neden, hangi koşullarda?), iddia/sonuç (yorumcunun değerlendirmesi).
 "Ekonomi" tek başına hikaye değildir; "Merkez bankasının 23 Mayıs'taki faiz kararı ve piyasa tepkisi" bir hikayedir.
-Her hikaye için <taslak> içinde bir başlık aç.
+Her hikaye için transkriptteki ilgili her bilgiyi topla: tüm isimler (tam ad, rol, unvan); tüm sayılar, tarihler, parasal değerler, yüzdeler; tüm doğrudan alıntılar; yorumcunun argümanı (iddia, gerekçe, karşı argüman); benzetmeler ve tarihsel/güncel referanslar; yorumcunun ileri sürdüğü sonuçlar/çıkarımlar. Bu hazırlık düşünme aşamanda kalır, çıktına yazılmaz.
 
-### Aşama 2: Hikayelerin içini doldur (eksiksiz)
-Her hikayeye, transkriptte o hikayeyle ilgili her bilgiyi doldur:
-- Tüm isimler (tam ad, rol, unvan)
-- Tüm sayılar, tarihler, parasal değerler, yüzdeler
-- Tüm doğrudan alıntılar (yorumcunun veya videodaki diğer kişilerin)
-- Yorumcunun argümanı: hangi iddia, hangi gerekçe, hangi karşı argüman
-- Kullanılan benzetmeler, metaforlar, tarihsel/güncel referanslar
-- Yorumcunun ileri sürdüğü olası sonuçlar/çıkarımlar
-Bu aşamada eksiksiz olmak akıcı olmaktan önemlidir. Maddeler halinde, ham not gibi yaz. Bu taslağı <taslak> ... </taslak> arasına koy.
-
-### Aşama 3: Hikayeyi anlatıya dönüştür (okunabilir rapor)
+### Aşama 2: Hikayeyi anlatıya dönüştür (okunabilir rapor)
 Her hikayeyi şu mantıkla akıcı bir anlatıya çevir:
 1. Açılış — olayı 1-2 cümlede tanımla; okuyucu kim/ne/ne zaman'ı hemen anlasın.
 2. Bağlam — neden gündemde, daha önce ne oldu, ilgili aktörler nasıl konumlanıyor.
 3. Gelişim — yorumcunun argümanını adım adım aktar; mantık zincirini koru ("x oldu çünkü y, buna karşılık z söylendi").
 4. Detaylar — sayılar, alıntılar, isimler anlatı içine yedirilmiş şekilde. Liste değil, akıcı paragraf.
 5. Sonuç — yorumcunun çıkarımı veya değerlendirmesi (varsa); çıkarımı doğrudan iddia olarak yaz, "yorumcu konumlandırıyor / değerlendiriyor" kalıbı kurma.
-Taslaktaki hiçbir isim/sayı/alıntı/gerekçe rapora geçmeden silinmesin.
-Her hikaye için ayrı bir alt başlık. Bu nihai raporu <rapor> ... </rapor> arasına yaz.
+Tespit ettiğin hiçbir isim/sayı/alıntı/gerekçe rapora geçmeden silinmesin.
+Her hikaye için ayrı bir alt başlık. Raporu <rapor> ... </rapor> arasına yaz.
 
 Kısıtlar:
 - Yorumcunun argümanını çarpıtma, basitleştirme veya yumuşatma.
@@ -83,7 +73,7 @@ Kısıtlar:
 - Dil: transkriptin dili (Türkçe ise Türkçe).
 - Format: akıcı paragraflar. Madde işareti sadece gerçekten liste niteliğindeki bilgi için.
 - Bilgi eksikliği YASAK: Kompaktlık veya akıcılık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Kısalık daha az kelime demektir, daha az bilgi değil. Şüphedeysen bilgiyi koru.
-- Dil doğrudan: kanal/yorumcu adı raporun üst bilgisinde zaten var. "Yorumcu X diyor / iddia ediyor / konumlandırıyor / atıf yapıyor / savunmaktadır / belirtmektedir" kalıplarını kullanma. İddiayı doğrudan cümleye dök: "Bu indirim, yüksek faiz politikasının dönüm noktasıdır" şeklinde. Konuşan bir başkasıysa (yorumcunun aktardığı bir kişi) o kişiyi öznede tut: "Karahan açıklamasında ... dedi". Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir") hiç kullanma.
+- Dil doğrudan: kanal/yorumcu adı raporun üst bilgisinde zaten var. "Yorumcu X diyor / iddia ediyor / konumlandırıyor / atıf yapıyor / savunmaktadır / belirtmektedir" kalıplarını kullanma. İddiayı doğrudan cümleye dök: "Bu indirim, yüksek faiz politikasının dönüm noktası" şeklinde. Konuşan bir başkasıysa (yorumcunun aktardığı bir kişi) o kişiyi öznede tut: "Karahan açıklamasında ... dedi". Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir") hiç kullanma.
 
 Örnek — kısa bir transkript parçası ve ideal raporu:
 
@@ -93,11 +83,11 @@ Kısıtlar:
 
 <örnek_rapor>
 ### Merkez Bankası'nın Sürpriz Faiz İndirimi
-Türkiye Cumhuriyet Merkez Bankası, dün gece politika faizini 250 baz puan birden indirerek yüzde 50'den yüzde 47,5'a düşürdü. Karar piyasa için sürpriz oldu — beklenti yalnızca 100 baz puan civarındaydı. Banka Başkanı Fatih Karahan açıklamasında "enflasyon eğilimi olumlu" ifadesini kullandı; ancak piyasa tepkisi tersine işledi: dolar/TL bir gece içinde 35,80'den 36,20'ye yükseldi, yani piyasa karara güven göstermedi. Cumhurbaşkanı Erdoğan sabah konuşmasında indirimi "ekonomide normalleşme dönemi" sözleriyle savundu. Bu indirim, 2024'ten beri sürdürülen yüksek faiz politikasının dönüm noktasıdır; 2023'te Mehmet Şimşek'in göreve gelmesiyle faiz yüzde 8,5'tan yüzde 50'ye çıkarılmıştı.
+Türkiye Cumhuriyet Merkez Bankası, dün gece politika faizini 250 baz puan birden indirerek yüzde 50'den yüzde 47,5'a düşürdü. Karar piyasa için sürpriz oldu — beklenti yalnızca 100 baz puan civarındaydı. Banka Başkanı Fatih Karahan açıklamasında "enflasyon eğilimi olumlu" ifadesini kullandı; ancak piyasa tepkisi tersine işledi: dolar/TL bir gece içinde 35,80'den 36,20'ye yükseldi, yani piyasa karara güven göstermedi. Cumhurbaşkanı Erdoğan sabah konuşmasında indirimi "ekonomide normalleşme dönemi" sözleriyle savundu. Bu indirim, 2024'ten beri sürdürülen yüksek faiz politikasının dönüm noktası; 2023'te Mehmet Şimşek'in göreve gelmesiyle faiz yüzde 8,5'tan yüzde 50'ye çıkarılmıştı.
 </örnek_rapor>
 
 Çıktı formatı:
-Doğrudan <taslak> etiketiyle başla, ardından <rapor> etiketini oluştur. Başka hiçbir giriş cümlesi kullanma.
+Doğrudan <rapor> etiketiyle başla. Başka hiçbir giriş cümlesi kullanma.
 </görev>"""
 
 CONSOLIDATION_PROMPT = """<raporlar>
@@ -112,13 +102,11 @@ Raporu okuyan biri, hangi kanalın hangi olayı nasıl ele aldığını net gör
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
+Önemli kural 2 — TEKRAR YOK, BİLGİ KAYBI YOK: Aynı bilgiyi farklı cümlelerle tekrar etme; aynı olayı önce genel sonra detaylı diye iki kere anlatma. Ama hiçbir somut bilgiyi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) atma — her bilgi raporun BİR yerinde mutlaka geçer: ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Şüphedeysen bilgiyi koru. Kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
 
 Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı, kanala has yorum). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
-Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
-Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
-
+Önemli kural 4 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak").
 Örnek dönüşüm:
 Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
 Doğru: "Özel mitinglerde ivme kazandı; bu ivme Kılıçdaroğlu'nun konumundan bağımsız."
@@ -138,9 +126,9 @@ Aşağıdaki şablonu birebir kullan:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
+**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Her ayrı alt-iddiayı kendi cümlesiyle yaz; aynı iddiayı farklı kelimelerle tekrar etme ama farklı alt-iddiaları ayrı cümlelere böl. Alt-iddialar arasındaki neden-sonuç ilişkisini bağlaçlarla ("çünkü", "bu yüzden", "buna karşılık", "ardından", "ne var ki") koru. "Ayrıca... aynı zamanda... bunun yanında..." kalıbı yasak; bu kalıp farklı alt-iddiaları bir cümleye dolduran doldurma anlamına gelir. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları, kanala has yorumu. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 - **[Diğer Kanal Adı]:** ...
 
 ---
@@ -179,13 +167,11 @@ Final rapor, girdi raporlarındaki tüm somut detayları (isim, sayı, tarih, al
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut; kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
+Önemli kural 2 — TEKRAR YOK, BİLGİ KAYBI YOK: Aynı bilgiyi farklı cümlelerle tekrar etme; aynı olayı önce genel sonra detaylı diye iki kere anlatma. Ama hiçbir somut bilgiyi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) atma — her bilgi raporun BİR yerinde mutlaka geçer: ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Şüphedeysen bilgiyi koru. Kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
 
 Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
-Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
-Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
-
+Önemli kural 4 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak").
 Örnek dönüşüm:
 Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
 Doğru: "Özel mitinglerde ivme kazandı; bu ivme Kılıçdaroğlu'nun konumundan bağımsız."
@@ -202,9 +188,9 @@ Adımlar ve kurallar:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf, her cümle yeni bilgi. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi ortak bilgiyi hangi kaynakların verdiğini her cümlede belirt. Sadece girdilerde geçenler — dış bilgi getirme.
+**Ortak Bilgiler:** Birden fazla kanalın ortaklaştığı tüm bilgiler buraya — olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalda geçen detaylar BİR KEZ burada yazılır. Akıcı tek bir paragraf. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Sadece girdilerde geçenler — dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Her ayrı alt-iddiayı kendi cümlesiyle yaz; aynı iddiayı farklı kelimelerle tekrar etme ama farklı alt-iddiaları ayrı cümlelere böl. Alt-iddialar arasındaki neden-sonuç ilişkisini bağlaçlarla ("çünkü", "bu yüzden", "buna karşılık", "ardından", "ne var ki") koru. "Ayrıca... bunun yanında... aynı zamanda..." kalıbı yasak; bu kalıp farklı alt-iddiaları bir cümleye dolduran doldurma anlamına gelir. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı]:** SADECE bu kanala özgü olan kısım — özgün argümanı, başka kanalda geçmeyen iddiaları, özel kaynakları/alıntıları. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 
 ---
 
@@ -226,7 +212,7 @@ Detaylar.
 Önemli: Aynı kanalın birden fazla konusu varsa hepsi tek bir "### [Kanal Adı]" başlığı altında toplanır. Her konu için ayrı kanal başlığı açma.
 
 Kısıtlar:
-- Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı, profesyonel bir rapor dili kullan.
+- Doğrudan "📌 ORTAK GÜNDEM" ile başla. Akıcı bir haber bülteni dili kullan.
 </görev>"""
 
 
@@ -433,7 +419,7 @@ def analyze_video(video, transkript):
     label = f"{video['name'][:20]} özet"
     result = call_gemini(prompt, label=label)
     if result:
-        rapor_match = re.search(r"<rapor>(.*?)</rapor>", result, re.DOTALL)
+        rapor_match = re.search(r"<rapor>(.*?)(?:</rapor>|$)", result, re.DOTALL)
         if rapor_match:
             return rapor_match.group(1).strip()
         return result

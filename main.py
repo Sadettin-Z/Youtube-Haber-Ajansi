@@ -9,14 +9,22 @@ from datetime import datetime, timedelta, timezone
 from google import genai
 from google.genai import types
 
+# Load keys/.env when running locally; on GitHub Actions the secrets come from the environment.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), "keys", ".env"), override=True, encoding="utf-8-sig")
+except ImportError:
+    pass
+
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DISCORD_URL = os.getenv("DISCORD_WEBHOOK_URL")
 APIFY_API_KEY = os.getenv("APIFY_API_KEY")
-GEMINI_API_KEYS = [
-    os.getenv("GEMINI_API_KEY_1"),
-    os.getenv("GEMINI_API_KEY_2"),
-    os.getenv("GEMINI_API_KEY_3"),
-]
+GEMINI_API_KEYS = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(1, 5)) if k]
+if not GEMINI_API_KEYS:
+    _fallback = os.getenv("GEMINI_API_KEY")
+    if _fallback:
+        GEMINI_API_KEYS = [_fallback]
+
 
 CHANNELS = {
     "Serdar Akinan": "@serdarakinan",
@@ -104,19 +112,26 @@ Raporu okuyan biri, hangi kanalın hangi olayı nasıl ele aldığını net gör
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: aynı bilgiyi yarı uzunlukta veriyorsan iyi yapıyorsundur.
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi (isim, sayı, alıntı, argüman, neden, sonuç) içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut: kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
 
 Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı, kanala has yorum). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
 Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
-Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz. Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
+Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
 
 Örnek dönüşüm:
 Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
-Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
+Doğru: "Özel mitinglerde ivme kazandı; bu ivme Kılıçdaroğlu'nun konumundan bağımsız."
 
 Yapı ve kurallar:
-Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem, aynı süreç) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut: ör. "Özel'in parti kurma stratejisi" ile "Özel'in eşit yurttaşlık açıklaması" aynı cluster'a girmez. Şüphedeysen ayrı cluster yap.
+Tüm raporları oku. Aynı somut olayı (örneğin sadece 'Erdoğan' kelimesi geçmesini değil, 'Erdoğan'ın X açıklaması' gibi spesifik bir olayı) birden fazla kanal işlemişse "📌 ORTAK GÜNDEM" bölümüne, sadece tek bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne ekle. ORTAK GÜNDEM içindeki konuları kapsama göre sırala: en çok kanalın işlediği konu en üstte olacak şekilde azalan sırada diz; eşitlikte sıra serbest. Birbiriyle ilgisiz konuları zorlama başlıklar altında birleştirme. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem, aynı süreç) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut: ör. "Özel'in parti kurma stratejisi" ile "Özel'in eşit yurttaşlık açıklaması" aynı cluster'a girmez. Şüphedeysen ayrı cluster yap.
+
+Başlık kuralı — ORTAK GÜNDEM konu başlıkları:
+Başlık okuru içeriğe çekmeli ama dürüst kalmalı. İyi başlık spesifiktir ve haberin asıl gerilimini taşır: somut aktör + somut eylem + hikayedeki çarpıcı unsur (beklenmedik sonuç, çelişki, rakam, cepheleşme). Aktif fiil kullan, en önemli bilgiyi başa koy. Merak uyandırabilirsin ama başlığın işaret ettiği şey raporda net şekilde cevaplanmalı; bilgiyi saklayan kalıplar ("Bakın ne oldu", "Şok karar", "Bunu kimse beklemiyordu"), ünlem/BÜYÜK HARF vurgusu ve cevapsız soru başlığı yasak. Abartı sıfat yerine haberin kendi çarpıcı gerçeğini kullan; çarpıcılık uydurulmaz, rapordaki bilgiden gelir.
+Örnek:
+- Fazla düz: "Merkez Bankası Faiz Kararı"
+- Clickbait: "Merkez Bankası'ndan ŞOK Karar — Piyasalar Alt Üst!"
+- Doğru: "Beklenti 100 Baz Puandı: Merkez Bankası 250 İndirdi, Dolar 36'yı Aştı"
 
 Aşağıdaki şablonu birebir kullan:
 
@@ -164,21 +179,23 @@ Final rapor, girdi raporlarındaki tüm somut detayları (isim, sayı, tarih, al
 
 Önemli kural 1 — DIŞ BİLGİ YOK: Bu rapor sadece yukarıdaki girdi raporlarındaki bilgileri kullanır. Kendi eğitim verinden veya dış kaynaklardan hiçbir bilgi (kişi rolü, olay tarihi, arka plan açıklaması, tarihsel referans) eklemezsin. Girdide olmayan bir şey raporda yok — uydurma, tahmin etme, "bilineni" doldurma.
 
-Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut.
+Önemli kural 2 — TEKRAR YOK, YOĞUNLUK ESAS: Aynı bilgiyi farklı cümlelerle tekrar etme. Her cümle YENİ bir somut bilgi içermeli. Aynı özneyi peş peşe cümlelerde işleme — bir kaynağın söylediklerini tek cümlede topla. Aynı olayı önce genel sonra detaylı diye iki kere anlatma. Bilgi yoğunluğu yüksek, kelime sayısı düşük tut; kısalığı kelime tasarrufundan kazan, bilgi atarak değil.
 
 Önemli kural 3 — ORTAK BİLGİLER BÖLÜMÜNDE ORTAK, KATKILARDA ÖZGÜN: Birden fazla kanalın PAYLAŞTIĞI bilgiler (olay özeti, ortak aktörler, ortak gerçekler, ortak alıntılar, birden çok kanalın benzer şekilde aktardığı detaylar) "Ortak Bilgiler" bölümünde BİR KEZ yazılır. Her kanalın katkısında sadece o kanala ÖZGÜ kısım kalır (özel argüman, özel iddia, başka kanalda olmayan isim/sayı/alıntı). Bu yapı sayesinde aynı bilgi raporda dört-beş kere tekrar edilmek zorunda kalmaz.
 
 Önemli kural 4 — BİLGİ EKSİKLİĞİ KESİNLİKLE YASAK: Kompaktlık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Her bilgi raporun BİR yerinde mutlaka geçer — ortaksa Ortak Bilgiler'de, özgünse kanal katkısında. Tekrar yasağı = aynı bilgiyi farklı kelimelerle yeniden YAZMAMA; bilgiyi DÜŞÜRME değil. Şüpheye düştüğün her durumda bilgiyi koru, atma.
-Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz. Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
+Önemli kural 5 — ÇIPLAK BİLGİ, EDEBİ ÜSLUP YASAK: Yorumcuların metaforlarını ("müthiş dalga", "siyasi rüzgar", "ayı bacağı yelken metaforu", "kasırga", "deprem", "mührünü vurdu", "damga vurdu", "yankı uyandırdı") rapora KOPYALAMA. Bunlar bilgi taşımaz, sadece üslup. Metafor görürsen metaforu at, arkasındaki somut iddiayı yaz; atarken cümleler arasındaki neden-sonuç bağını koru ("çünkü", "bu yüzden", "buna karşılık"). Süs sıfatlarını ("büyük", "olağanüstü", "müthiş", "kritik", "tarihi", "çarpıcı") nedeni belirtilmeden kullanma — sıfat varsa onu doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede olmalı. Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "savunmaktadır", "vurgulamaktadır", "öne sürmektedir") hiç kullanma. Aktarım fiili kullanma yeri sadece **Ortak Bilgiler** bölümüdür ve orada bile düz olur ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor", "X: ..."). Kanal Katkıları ve Kanallara Özel Haberler bölümlerinde aktarım fiili hiç kullanma — kanal adı başlıkta; iddiayı doğrudan cümleye dök ("Özel miting yapacak", "İstiklal Partisi kurulacak"). Her cümle bir somut iddia veya gerçek.
 
 Örnek dönüşüm:
 Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, Kılıçdaroğlu'nun konumundan bağımsız olarak yeni bir siyasi rüzgar yaratmıştır."
-Doğru: "Özel mitinglerde ivme kazandı, ivme Kılıçdaroğlu'ndan bağımsız."
+Doğru: "Özel mitinglerde ivme kazandı; bu ivme Kılıçdaroğlu'nun konumundan bağımsız."
 
 Adımlar ve kurallar:
-1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut. Şüphedeysen ayrı cluster yap.
+1. Girdi raporlarındaki tüm konuları tara. Sadece gerçekten aynı somut haberi/olayı anlatan konuları nihai raporun "📌 ORTAK GÜNDEM" kısmında birleştir. Zorlama soyut başlıklar (örn. "Devletin Rolü") yaratma. Aynı kişi/kurum adının iki haberde geçmesi cluster için YETERSİZ — cluster aynı somut olayı (aynı karar, aynı açıklama, aynı eylem) ele almalı. İki haber aynı kişiyi farklı bağlamlarda anıyorsa onları ayrı tut. Şüphedeysen ayrı cluster yap. ORTAK GÜNDEM içindeki konuları kapsama göre sırala: en çok kanalın işlediği konu en üstte olacak şekilde azalan sırada diz; eşitlikte sıra serbest.
 2. Sadece tek bir kanalın bahsettiği konuları "🎙️ KANALLARA ÖZEL HABERLER" kısmında topla.
 3. Girdilerdeki hiçbir bağlamı, açıklayıcı sebebi, detaylı ifadeyi, isim, sayı, alıntı veya argümanı silme. Birleştirirken yoğunlaştır ama bilgi atma.
+4. Başlık kuralı — ORTAK GÜNDEM konu başlıkları: Başlık okuru içeriğe çekmeli ama dürüst kalmalı. İyi başlık spesifiktir ve haberin asıl gerilimini taşır: somut aktör + somut eylem + hikayedeki çarpıcı unsur (beklenmedik sonuç, çelişki, rakam, cepheleşme). Aktif fiil kullan, en önemli bilgiyi başa koy. Merak uyandırabilirsin ama başlığın işaret ettiği şey raporda net şekilde cevaplanmalı; bilgiyi saklayan kalıplar ("Bakın ne oldu", "Şok karar", "Bunu kimse beklemiyordu"), ünlem/BÜYÜK HARF vurgusu ve cevapsız soru başlığı yasak. Abartı sıfat yerine haberin kendi çarpıcı gerçeğini kullan; çarpıcılık uydurulmaz, rapordaki bilgiden gelir.
+   Örnek — Fazla düz: "Merkez Bankası Faiz Kararı" / Clickbait: "Merkez Bankası'ndan ŞOK Karar — Piyasalar Alt Üst!" / Doğru: "Beklenti 100 Baz Puandı: Merkez Bankası 250 İndirdi, Dolar 36'yı Aştı"
 
 Çıktı şablonu:
 
@@ -254,7 +271,8 @@ def log(msg, indent=0):
 
 def is_short(video_id):
     res = requests.get(
-        f"https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={video_id}&key={YOUTUBE_API_KEY}"
+        f"https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={video_id}&key={YOUTUBE_API_KEY}",
+        timeout=30
     ).json()
     try:
         duration = res["items"][0]["contentDetails"]["duration"]
@@ -269,13 +287,16 @@ def get_latest_video_list():
     found_videos = []
     yesterday_dt = datetime.now(timezone.utc) - timedelta(days=1)
     for name, handle in CHANNELS.items():
+        c_res = None
         try:
             c_res = requests.get(
-                f"https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={handle}&key={YOUTUBE_API_KEY}"
+                f"https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={handle}&key={YOUTUBE_API_KEY}",
+                timeout=30
             ).json()
             uploads_id = c_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
             res = requests.get(
-                f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId={uploads_id}&maxResults=5&key={YOUTUBE_API_KEY}"
+                f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId={uploads_id}&maxResults=5&key={YOUTUBE_API_KEY}",
+                timeout=30
             ).json()
             for item in res.get("items", []):
                 pub_date = datetime.strptime(item["snippet"]["publishedAt"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
@@ -291,7 +312,8 @@ def get_latest_video_list():
                         })
         except Exception as e:
             log(f"❌ HATA [{name}]: {e}")
-            log(f"   API yanıtı: {str(c_res)[:300]}", indent=1)
+            if c_res is not None:
+                log(f"   API yanıtı: {str(c_res)[:300]}", indent=1)
     log(f"📡 YouTube taraması tamamlandı, {len(found_videos)} uygun video bulundu.")
     return found_videos
 
@@ -330,14 +352,13 @@ def transkript_cek(video_id):
     return None
 
 
-def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
+def call_gemini(prompt, label="Gemini", response_schema=None):
     """Shared helper: tries each API key in order, returns text or None.
     If response_schema is provided, the model is forced to return JSON matching the schema."""
     prompt_chars = len(prompt)
-    log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter, max_output: {max_tokens:,} token)", indent=1)
+    log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter)", indent=1)
 
     config_kwargs = {
-        "max_output_tokens": max_tokens,
         "thinking_config": types.ThinkingConfig(
             thinking_level=types.ThinkingLevel.HIGH
         ),
@@ -347,9 +368,6 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
         config_kwargs["response_schema"] = response_schema
 
     for key_idx, key in enumerate(GEMINI_API_KEYS, start=1):
-        if not key:
-            log(f"⏭️ Key #{key_idx} boş, atlanıyor", indent=2)
-            continue
         log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
         client = genai.Client(api_key=key)
         for attempt in range(3):
@@ -357,7 +375,7 @@ def call_gemini(prompt, max_tokens=24000, label="Gemini", response_schema=None):
             try:
                 log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash',
+                    model='gemini-3.6-flash',
                     contents=prompt,
                     config=types.GenerateContentConfig(**config_kwargs)
                 )
@@ -413,7 +431,7 @@ def analyze_video(video, transkript):
         transkript=transkript
     )
     label = f"{video['name'][:20]} özet"
-    result = call_gemini(prompt, max_tokens=16000, label=label)
+    result = call_gemini(prompt, label=label)
     if result:
         rapor_match = re.search(r"<rapor>(.*?)</rapor>", result, re.DOTALL)
         if rapor_match:
@@ -447,7 +465,7 @@ def consolidate_reports(reports_list):
         combined_text = "\n\n---\n\n".join(reports_list)
         log(f"🔄 KONSOLİDASYON başlatılıyor ({len(reports_list)} rapor, {len(combined_text):,} karakter)")
         prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_text)
-        result = call_gemini(prompt, max_tokens=48000, label="KONSOLİDASYON")
+        result = call_gemini(prompt, label="KONSOLİDASYON")
         if result:
             log(f"✅ Konsolidasyon tamamlandı ({len(result):,} karakter)")
             return result
@@ -463,7 +481,7 @@ def consolidate_reports(reports_list):
         log(f"")
         log(f"📦 Batch {i}/{len(batches)} işleniyor ({len(batch)} rapor, {len(batch_text):,} karakter)")
         prompt = CONSOLIDATION_PROMPT.format(combined_reports=batch_text)
-        result = call_gemini(prompt, max_tokens=32000, label=f"Batch {i}/{len(batches)}")
+        result = call_gemini(prompt, label=f"Batch {i}/{len(batches)}")
         if result:
             log(f"✅ Batch {i} tamamlandı ({len(result):,} karakter)")
             batch_outputs.append(result)
@@ -477,7 +495,7 @@ def consolidate_reports(reports_list):
     )
     log(f"🔀 FİNAL BİRLEŞTİRME başlatılıyor ({len(batch_outputs)} batch raporu, {len(merge_input):,} karakter)")
     prompt = FINAL_MERGE_PROMPT.format(batch_reports=merge_input)
-    final = call_gemini(prompt, max_tokens=48000, label="FİNAL BİRLEŞTİRME")
+    final = call_gemini(prompt, label="FİNAL BİRLEŞTİRME")
     if final:
         log(f"✅ Final birleştirme tamamlandı ({len(final):,} karakter)")
         return final
@@ -520,7 +538,7 @@ def filter_video_reports(items):
     log(f"")
     log(f"🔍 İLGİ FİLTRESİ başlatılıyor ({len(items)} video değerlendiriliyor)")
     try:
-        result = call_gemini(prompt, max_tokens=2000, label="FİLTRE", response_schema=schema)
+        result = call_gemini(prompt, label="FİLTRE", response_schema=schema)
         if not result:
             log(f"⚠️ Filtre çağrısı sonuçsuz, tüm raporlar tutuluyor")
             return items
@@ -561,13 +579,26 @@ def send_to_discord(report):
             payload["content"] = f"<@331085172264927235>\n{chunk}"
             payload["allowed_mentions"] = {"parse": [], "users": ["331085172264927235"]}
             first = False
-        try:
-            r = requests.post(DISCORD_URL, json=payload, timeout=30)
-            if r.status_code >= 400:
-                log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
-            chunks_sent += 1
-        except Exception as e:
-            log(f"❌ Discord gönderim hatası: {e}", indent=1)
+        attempts = 0
+        while True:
+            attempts += 1
+            try:
+                r = requests.post(DISCORD_URL, json=payload, timeout=30)
+                if r.status_code == 429 and attempts < 3:
+                    try:
+                        retry = r.json().get("retry_after", 5)
+                    except Exception:
+                        retry = 5
+                    log(f"⚠️ Discord rate-limit, {retry}s bekleniyor (deneme {attempts}/3)", indent=1)
+                    time.sleep(float(retry) + 0.5)
+                    continue
+                if r.status_code >= 400:
+                    log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
+                chunks_sent += 1
+                break
+            except Exception as e:
+                log(f"❌ Discord gönderim hatası: {e}", indent=1)
+                break
         time.sleep(0.5)
     log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
 
@@ -594,22 +625,109 @@ def strip_markdown(text):
     return text
 
 
-def upload_report_to_discord(report_text, filename, message):
-    """POST a final message with the report attached as a .md file. No ping (already fired on first chunk)."""
-    log(f"📎 Discord'a dosya ekleniyor: {filename} ({len(report_text):,} karakter)...")
+def _safe_filename(name, max_len=100):
+    """Strip characters Discord/Windows reject and cap the length."""
+    name = re.sub(r"[\\/]", "-", name)
+    name = re.sub(r'[:*?"<>|\n\r\t]', "", name)
+    name = re.sub(r"\s+", " ", name).strip(" .")
+    return name[:max_len].rstrip(" .") or "Rapor"
+
+
+def split_report_into_files(report_body):
+    """Parse the consolidated report into (filename, text) parts:
+    one file per ORTAK GÜNDEM topic (filename = title + covering channels),
+    then one file per channel from KANALLARA ÖZEL HABERLER.
+    Returns None if the text doesn't follow the expected template (caller falls back)."""
+    if "ORTAK GÜNDEM" not in report_body:
+        return None
+
+    ozel_match = re.search(r"^.*KANALLARA ÖZEL HABERLER.*$", report_body, re.MULTILINE)
+    if ozel_match:
+        ortak_part = report_body[:ozel_match.start()]
+        ozel_part = report_body[ozel_match.end():]
+    else:
+        ortak_part = report_body
+        ozel_part = ""
+
+    def clean_block(text):
+        # drop trailing --- separators left over from the template
+        return re.sub(r"(?m)^\s*-{3,}\s*$", "", text).strip()
+
+    files = []
+    used_names = set()
+
+    def add_file(base_name, text):
+        fname = _safe_filename(base_name)
+        n = 2
+        while fname.lower() in used_names:
+            fname = _safe_filename(base_name, max_len=95) + f" ({n})"
+            n += 1
+        used_names.add(fname.lower())
+        files.append((fname + ".md", text))
+
+    for block in re.split(r"^###\s+", ortak_part, flags=re.MULTILINE)[1:]:
+        lines = block.splitlines()
+        title = lines[0].strip().strip("*").strip()
+        body = clean_block("\n".join(lines[1:]))
+        if not title or not body:
+            continue
+        # channel names come from the "Kanal Katkıları" bullets: - **Kanal / Yorumcu:** ...
+        channels = []
+        for line in lines[1:]:
+            cm = re.match(r"\s*-\s*\*\*(.+?):?\*\*", line)
+            if cm:
+                ch = cm.group(1).split("/")[0].strip().strip(":")
+                if ch and ch not in channels:
+                    channels.append(ch)
+        base = f"{title} - {', '.join(channels)}" if channels else title
+        add_file(base, f"### {title}\n\n{body}")
+
+    for block in re.split(r"^###\s+", ozel_part, flags=re.MULTILINE)[1:]:
+        lines = block.splitlines()
+        channel = lines[0].strip().strip("*").strip()
+        body = clean_block("\n".join(lines[1:]))
+        if not channel or not body:
+            continue
+        add_file(channel, f"### {channel}\n\n{body}")
+
+    return files or None
+
+
+def upload_report_files_to_discord(parts, message):
+    """Upload (filename, text) parts as attachments. Discord allows max 10 files per
+    message, so parts go out in batches; the message text rides on the first batch only."""
+    total_chars = sum(len(t) for _, t in parts)
+    log(f"📎 Discord'a {len(parts)} dosya yükleniyor ({total_chars:,} karakter)...")
+    for batch_no, start in enumerate(range(0, len(parts), 10), 1):
+        batch = parts[start:start + 10]
+        content = message if start == 0 else f"{message} (devam {batch_no})"
+        _upload_file_batch(batch, content)
+
+
+def _upload_file_batch(batch, message):
     payload = {"content": message}
-    files = {
-        "payload_json": (None, json.dumps(payload), "application/json"),
-        "file": (filename, report_text.encode("utf-8"), "text/markdown"),
-    }
-    try:
-        r = requests.post(DISCORD_URL, files=files, timeout=60)
-        if r.status_code >= 400:
-            log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
-        else:
-            log(f"✅ Discord dosya yükleme tamamlandı")
-    except Exception as e:
-        log(f"❌ Discord dosya yükleme hatası: {e}", indent=1)
+    files = {"payload_json": (None, json.dumps(payload), "application/json")}
+    for i, (fname, text) in enumerate(batch):
+        files[f"files[{i}]"] = (fname, text.encode("utf-8"), "text/markdown")
+    for attempt in range(1, 4):
+        try:
+            r = requests.post(DISCORD_URL, files=files, timeout=60)
+            if r.status_code == 429 and attempt < 3:
+                try:
+                    retry = r.json().get("retry_after", 5)
+                except Exception:
+                    retry = 5
+                log(f"⚠️ Discord rate-limit, {retry}s bekleniyor (deneme {attempt}/3)", indent=1)
+                time.sleep(float(retry) + 0.5)
+                continue
+            if r.status_code >= 400:
+                log(f"⚠️ Discord {r.status_code}: {r.text[:200]}", indent=1)
+            else:
+                log(f"✅ Discord dosya yükleme tamamlandı")
+            return
+        except Exception as e:
+            log(f"❌ Discord dosya yükleme hatası: {e}", indent=1)
+            return
 
 
 if __name__ == "__main__":
@@ -679,11 +797,16 @@ if __name__ == "__main__":
 
             send_to_discord(full_report)
 
-            upload_report_to_discord(
-                strip_markdown(full_report),
-                "Rapor.md",
-                f"**Youtube {datetime.now().strftime('%d %m %Y')}**",
-            )
+            header_msg = f"**Youtube {datetime.now().strftime('%d %m %Y')}**"
+            report_files = split_report_into_files(final_report_body)
+            if report_files:
+                parts = [(fname, strip_markdown(text)) for fname, text in report_files]
+                upload_report_files_to_discord(parts, header_msg)
+            else:
+                log("⚠️ Rapor şablona ayrıştırılamadı, tek dosya olarak yükleniyor")
+                upload_report_files_to_discord(
+                    [("Rapor.md", strip_markdown(full_report))], header_msg
+                )
 
             total_elapsed = time.time() - run_start
             mins = int(total_elapsed // 60)

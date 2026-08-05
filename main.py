@@ -1,3 +1,4 @@
+import io
 import json
 import math
 import os
@@ -6,6 +7,17 @@ import time
 import requests
 import isodate
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont as RLTTFont
+from reportlab.platypus import (HRFlowable, Paragraph, SimpleDocTemplate,
+                                Spacer)
 from google import genai
 from google.genai import types
 
@@ -39,23 +51,73 @@ CHANNELS = {
     "Murat Yetkin": "@muratyetkinreport",
 }
 
+# ============================================================================
+# KÖŞE YAZISI KAYNAĞI
+# Dünkü yazıları çeker ve transkriptmiş gibi sisteme verir.
+# GitHub Actions runner'ları UTC çalışır; saat dilimi aşağıda AÇIKÇA verildiği
+# için "dün" her koşulda İstanbul takvimine göre hesaplanır.
+# Cron UTC'dir: 09:00 İstanbul için workflow'da  cron: '0 6 * * *'
+# ============================================================================
+
+# Türkiye kalıcı olarak UTC+3, yaz saati uygulaması yok → sabit offset yeterli.
+ISTANBUL_TZ = timezone(timedelta(hours=3))
+
+ARTICLE_SOURCES = [
+    {
+        # Bu ad rapordaki "kanal" adı olur. YouTube'daki "Fatih Altaylı"
+        # kanalından ayrışsın diye parantezli: aksi halde konsolidasyon
+        # aşamasında video ile yazı aynı kanal sanılır.
+        "name": "Fatih Altaylı (Köşe Yazısı)",
+        "list_url": "https://fatihaltayli.com.tr/yazilar/fatih-altayli/kose-yazilari",
+        # 1. grup = yol, 2. grup = YYYY-AA-GG tarihi. Hem mutlak hem göreli href.
+        "link_pattern": r'href="(?:https?://fatihaltayli\.com\.tr)?'
+                        r'(/yazarlar/fatih-altayli/(\d{4}-\d{2}-\d{2})/[^"#?\s]+)"',
+    },
+]
+
+HTTP_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "tr-TR,tr;q=0.9",
+}
+
+# Gövdeye karışmaması gereken tek satırlık arayüz metinleri (tam eşleşme).
+_SKIP_LINES = {
+    "köşe yazıları", "spor yazıları", "otomobil yazıları", "fatih altaylı",
+    "linki kopyala", "link", "yazı içeriği", "son yazılar", "geçmiş yazılar",
+    "videolar", "yazılar", "kanallar", "diğer", "sosyal medya", "tümü",
+    "prev", "next", "youtube",
+}
+
+# Bu ifadelerden biri görülünce gövde bitmiştir; sonrası ilgili yazılar/footer.
+_STOP_MARKERS = (
+    "x'te yanıtla", "geçmiş yazılar",
+    "youtube kanalına abone", "tüm hakları saklıdır",
+)
+
+# "Ağustos 3, 2026" biçimindeki tarih satırı.
+_DATE_LINE_RE = re.compile(r"^[A-Za-zÇĞİÖŞÜçğıöşü]+\s+\d{1,2},\s+\d{4}$")
+
+
 PROMPT_TEMPLATE = """<transkript>
 {transkript}
 </transkript>
 
 <görev>
-Yukarıdaki transkript, {channel_name} kanalında yayınlanan "{video_title}" başlıklı videonun transkriptidir.
+Yukarıdaki metin, {source_line}
 
 Amaç:
-Bu videoyu izlemeyen biri, raporu okuduktan sonra videoyu izleyen biriyle aynı bilgiye ulaşsın. Aktarım okuyucu dostu, akılda kalıcı ve olay akışını takip eden bir anlatı olmalı — kuru bir bilgi dökümü değil. Rapora asla kendi yorumunu, çıkarımını veya yorumcunun söylemediği bir şeyi ekleme.
+Bu içeriği görmeyen biri, raporu okuduktan sonra içeriği görmüş biriyle aynı bilgiye ulaşsın. Aktarım okuyucu dostu, akılda kalıcı ve olay akışını takip eden bir anlatı olmalı — kuru bir bilgi dökümü değil. Rapora asla kendi yorumunu, çıkarımını veya yorumcunun söylemediği bir şeyi ekleme.
 
 Yöntem:
 
 ### Aşama 1: Hikayeleri ve malzemeyi tespit et (düşünme aşamanda — çıktına yazma)
-Transkripti baştan sona oku. Yorumcunun gündeme getirdiği diskret hikayeleri tespit et.
+Metni baştan sona oku. Yorumcunun gündeme getirdiği diskret hikayeleri tespit et.
 Bir hikaye şu bileşenlere sahip bir bütündür: aktör (kim?), eylem (ne yaptı/oldu?), bağlam (neden, hangi koşullarda?), iddia/sonuç (yorumcunun değerlendirmesi).
 "Ekonomi" tek başına hikaye değildir; "Merkez bankasının 23 Mayıs'taki faiz kararı ve piyasa tepkisi" bir hikayedir.
-Her hikaye için transkriptteki ilgili her bilgiyi topla: tüm isimler (tam ad, rol, unvan); tüm sayılar, tarihler, parasal değerler, yüzdeler; tüm doğrudan alıntılar; yorumcunun argümanı (iddia, gerekçe, karşı argüman); benzetmeler ve tarihsel/güncel referanslar; yorumcunun ileri sürdüğü sonuçlar/çıkarımlar. Bu hazırlık düşünme aşamanda kalır, çıktına yazılmaz.
+Her hikaye için metindeki ilgili her bilgiyi topla: tüm isimler (tam ad, rol, unvan); tüm sayılar, tarihler, parasal değerler, yüzdeler; tüm doğrudan alıntılar; yorumcunun argümanı (iddia, gerekçe, karşı argüman); benzetmeler ve tarihsel/güncel referanslar; yorumcunun ileri sürdüğü sonuçlar/çıkarımlar. Bu hazırlık düşünme aşamanda kalır, çıktına yazılmaz.
 
 ### Aşama 2: Hikayeyi anlatıya dönüştür (okunabilir rapor)
 Her hikayeyi şu mantıkla akıcı bir anlatıya çevir:
@@ -69,8 +131,8 @@ Her hikaye için ayrı bir alt başlık. Raporu <rapor> ... </rapor> arasına ya
 
 Kısıtlar:
 - Yorumcunun argümanını çarpıtma, basitleştirme veya yumuşatma.
-- Transkriptte olmayan bağlam, sebep veya referans ekleme. Kendi yorumun yok.
-- Dil: transkriptin dili (Türkçe ise Türkçe).
+- Metinde olmayan bağlam, sebep veya referans ekleme. Kendi yorumun yok.
+- Dil: metnin dili (Türkçe ise Türkçe).
 - Format: akıcı paragraflar. Madde işareti sadece gerçekten liste niteliğindeki bilgi için.
 - Bilgi eksikliği YASAK: Kompaktlık veya akıcılık adına somut bilgi (isim, sayı, tarih, alıntı, gerekçe, argüman, neden, sonuç) ASLA atılmaz. Kısalık daha az kelime demektir, daha az bilgi değil. Şüphedeysen bilgiyi koru.
 - Dil doğrudan: kanal/yorumcu adı raporun üst bilgisinde zaten var. "Yorumcu X diyor / iddia ediyor / konumlandırıyor / atıf yapıyor / savunmaktadır / belirtmektedir" kalıplarını kullanma. İddiayı doğrudan cümleye dök: "Bu indirim, yüksek faiz politikasının dönüm noktası" şeklinde. Konuşan bir başkasıysa (yorumcunun aktardığı bir kişi) o kişiyi öznede tut: "Karahan açıklamasında ... dedi". Pasif aktarım fiilleri ("belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir") hiç kullanma.
@@ -216,10 +278,10 @@ Kısıtlar:
 </görev>"""
 
 
-# Filtre kriterleri: video raporu güncel gündem haberlerine odaklı mı?
+# Filtre kriterleri: içerik raporu güncel gündem haberlerine odaklı mı?
 # Tutucu bias — tereddütteyse TUT, sadece bariz olarak gündem dışı içerik ATILSIN.
 INTERESTS = """
-Filtreleme kriterleri: video raporu güncel gündem haberlerine odaklı mı?
+Filtreleme kriterleri: içerik raporu (video veya köşe yazısı) güncel gündem haberlerine odaklı mı?
 
 Tut (güncel gündem):
 - Belirli, somut güncel siyasi olaylar — yeni kararlar, açıklamalar, atamalar, istifalar
@@ -240,13 +302,14 @@ At (güncel gündem değil):
 - Spor analizleri, eğlence, lifestyle, sağlık tavsiyeleri
 - Reklam, sponsor içeriği, kanal duyuruları
 
+ÖNEMLİ: Bir içerik birden fazla konu işliyorsa ve bunlardan EN AZ BİRİ güncel gündemse, o içeriği TUT.
 Tereddütteysen tut — sadece bariz olarak gündem dışı olanları at.
 """.strip()
 
 
 def ts():
     """Returns current timestamp string for logging."""
-    return datetime.now().strftime("%H:%M:%S")
+    return datetime.now(ISTANBUL_TZ).strftime("%H:%M:%S")
 
 
 def log(msg, indent=0):
@@ -254,6 +317,140 @@ def log(msg, indent=0):
     prefix = "  " * indent
     print(f"[{ts()}] {prefix}{msg}", flush=True)
 
+
+# ---------------------------------------------------------------------------
+# Köşe yazısı çekme
+# ---------------------------------------------------------------------------
+
+def _norm(text):
+    """Türkçe duyarlı normalizasyon: kıvrık kesme işaretini düzleştirir,
+    İ/I harflerini doğru küçültür. Eşleşmeler bunun üzerinden yapılır."""
+    return (text.replace("\u2019", "'").replace("\u2018", "'")
+                .replace("İ", "i").replace("I", "ı")
+                .lower().strip())
+
+
+def _fetch_html(url, timeout=30, retries=3):
+    last = None
+    for attempt in range(1, retries + 1):
+        try:
+            r = requests.get(url, headers=HTTP_HEADERS, timeout=timeout)
+            r.raise_for_status()
+            if not r.encoding:
+                r.encoding = "utf-8"
+            return r.text
+        except Exception as e:
+            last = e
+            if attempt < retries:
+                log(f"🔁 İstek başarısız ({attempt}/{retries}): {str(e)[:120]}", indent=2)
+                time.sleep(5 * attempt)
+    raise last
+
+
+def _extract_article_body(html):
+    """(başlık, gövde) döndürür.
+
+    CSS class adına bağlanmaz — sayfa yapısı değişse de çalışsın diye
+    h1'den sonraki p/h2/h3 akışını sırayla toplar, dur işaretinde keser."""
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "noscript", "iframe", "svg",
+                     "form", "nav", "header", "footer", "aside"]):
+        tag.decompose()
+
+    h1 = soup.find("h1")
+    title = h1.get_text(" ", strip=True) if h1 else None
+
+    started = h1 is None
+    parts = []
+    for el in soup.find_all(["h1", "h2", "h3", "h4", "p"]):
+        text = el.get_text(" ", strip=True)
+        if el.name == "h1":
+            started = True
+            continue
+        if not started or not text:
+            continue
+        low = _norm(text)
+        if any(marker in low for marker in _STOP_MARKERS):
+            break
+        if low in _SKIP_LINES or _DATE_LINE_RE.match(text):
+            continue
+        if el.name in ("h2", "h3", "h4"):
+            if "yazı içeriği" in low:   # sayfa içi içindekiler bloğu
+                continue
+            parts.append(f"\n## {text}\n")
+        else:
+            parts.append(text)
+
+    body = re.sub(r"\n{3,}", "\n\n", "\n\n".join(parts)).strip()
+    return title, body
+
+
+def _discover_article_links(source):
+    """[(url, 'YYYY-AA-GG'), ...] — liste sayfasındaki yazı linkleri."""
+    html = _fetch_html(source["list_url"])
+    found = {}
+    for m in re.finditer(source["link_pattern"], html):
+        url = urljoin(source["list_url"], m.group(1))
+        found.setdefault(url, m.group(2))
+    return sorted(found.items(), key=lambda kv: kv[1], reverse=True)
+
+
+def get_latest_articles(target_date=None):
+    """Belirtilen güne (varsayılan: DÜN, İstanbul takvimi) ait köşe yazılarını
+    video dict'leriyle aynı şemada döndürür. 'transkript' anahtarı dolu gelir,
+    böylece ana döngü ayrıca indirme yapmaz.
+
+    Tarih, yazının URL'sinden okunur (/yazarlar/.../2026-08-04/slug); sitede
+    yayın saati bulunmadığı için seçim gün bazlıdır. Aynı güne birden fazla
+    yazı düşerse hepsi alınır."""
+    if target_date is None:
+        target_date = (datetime.now(ISTANBUL_TZ) - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    log(f"📰 Köşe yazıları taranıyor (hedef gün: {target_date})")
+    found = []
+
+    for source in ARTICLE_SOURCES:
+        try:
+            links = _discover_article_links(source)
+        except Exception as e:
+            log(f"❌ HATA [{source['name']}] liste sayfası: {e}", indent=1)
+            continue
+
+        matching = [url for url, date in links if date == target_date]
+        log(f"🔗 [{source['name']}] {len(links)} link tarandı, "
+            f"{len(matching)} tanesi {target_date} tarihli", indent=1)
+
+        for url in matching:
+            try:
+                html = _fetch_html(url)
+            except Exception as e:
+                log(f"❌ Yazı çekilemedi ({url}): {e}", indent=1)
+                continue
+
+            title, body = _extract_article_body(html)
+            if len(body) < 400:
+                log(f"⚠️ Gövde çıkarılamadı/çok kısa ({len(body)} karakter): {url}", indent=1)
+                continue
+
+            found.append({
+                "name": source["name"],
+                "title": title or url.rsplit("/", 1)[-1].replace("-", " "),
+                "video_id": None,
+                "url": url,
+                "duration": "yazı",
+                "kind": "article",
+                "transkript": body,      # transkript gibi hazır gelir
+            })
+            log(f"✓ {title} — {len(body):,} karakter", indent=1)
+            time.sleep(1)
+
+    log(f"📰 Köşe yazısı taraması tamamlandı, {len(found)} yazı bulundu.")
+    return found
+
+
+# ---------------------------------------------------------------------------
+# YouTube
+# ---------------------------------------------------------------------------
 
 def is_short(video_id):
     res = requests.get(
@@ -294,7 +491,9 @@ def get_latest_video_list():
                             "name": name,
                             "title": item["snippet"]["title"],
                             "video_id": video_id,
-                            "duration": duration
+                            "duration": duration,
+                            "url": f"https://www.youtube.com/watch?v={video_id}",
+                            "kind": "video",
                         })
         except Exception as e:
             log(f"❌ HATA [{name}]: {e}")
@@ -411,11 +610,13 @@ def call_gemini(prompt, label="Gemini", response_schema=None):
 
 
 def analyze_video(video, transkript):
-    prompt = PROMPT_TEMPLATE.format(
-        channel_name=video["name"],
-        video_title=video["title"],
-        transkript=transkript
-    )
+    if video.get("kind") == "article":
+        source_line = (f'{video["name"]} imzasıyla yayımlanan "{video["title"]}" '
+                       f'başlıklı köşe yazısının tam metnidir.')
+    else:
+        source_line = (f'{video["name"]} kanalında yayınlanan "{video["title"]}" '
+                       f'başlıklı videonun transkriptidir.')
+    prompt = PROMPT_TEMPLATE.format(source_line=source_line, transkript=transkript)
     label = f"{video['name'][:20]} özet"
     result = call_gemini(prompt, label=label)
     if result:
@@ -490,12 +691,12 @@ def consolidate_reports(reports_list):
 
 
 def filter_video_reports(items):
-    """Drop video reports that don't match INTERESTS. items: list of {video, report}.
+    """Drop reports that don't match INTERESTS. items: list of {video, report}.
     Returns filtered list. On filter failure, returns the original list (don't lose work)."""
     if not items:
         return items
 
-    payload = "\n\n=== VIDEO AYIRICI ===\n\n".join(
+    payload = "\n\n=== İÇERİK AYIRICI ===\n\n".join(
         f"[{i}] KANAL: {it['video']['name']}\n"
         f"BAŞLIK: {it['video']['title']}\n\n"
         f"RAPOR:\n{it['report']}"
@@ -516,13 +717,13 @@ def filter_video_reports(items):
     prompt = (
         f"{payload}\n\n"
         f"{INTERESTS}\n\n"
-        "Yukarıdaki video raporlarını yukarıdaki kriterlere göre değerlendir. "
-        "AT kategorisine giren videoların indekslerini döndür. "
+        "Yukarıdaki içerik raporlarını yukarıdaki kriterlere göre değerlendir. "
+        "AT kategorisine giren içeriklerin indekslerini döndür. "
         "Tereddütteysen indekse koyma — sadece bariz gündem dışı olanları at."
     )
 
     log(f"")
-    log(f"🔍 İLGİ FİLTRESİ başlatılıyor ({len(items)} video değerlendiriliyor)")
+    log(f"🔍 İLGİ FİLTRESİ başlatılıyor ({len(items)} içerik değerlendiriliyor)")
     try:
         result = call_gemini(prompt, label="FİLTRE", response_schema=schema)
         if not result:
@@ -589,26 +790,6 @@ def send_to_discord(report):
     log(f"✅ Discord gönderimi tamamlandı ({chunks_sent} parça)")
 
 
-def strip_markdown(text):
-    """Convert markdown to decorated plain text: underlined headings, UPPERCASE labels, • bullets."""
-    text = re.sub(r'^\*\s+', '- ', text, flags=re.MULTILINE)
-
-    def heading_repl(m):
-        title = m.group(1).strip()
-        underline = "─" * min(len(title), 60)
-        return f"\n{title}\n{underline}\n"
-
-    text = re.sub(r'^#{1,6}\s+(.+)$', heading_repl, text, flags=re.MULTILINE)
-    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
-    text = re.sub(r'`([^`]+)`', r'\1', text)
-    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
-    text = re.sub(r'^Ortak Bilgiler:', 'ORTAK BİLGİLER:', text, flags=re.MULTILINE)
-    text = re.sub(r'^Kanal Katkıları:', 'KANAL KATKILARI:', text, flags=re.MULTILINE)
-    text = re.sub(r'^- ', '• ', text, flags=re.MULTILINE)
-    text = re.sub(r'^(?!• )(.+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)
-    text = re.sub(r'(^• .+)\n(?=• )', r'\1\n\n', text, flags=re.MULTILINE)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    return text
 
 
 def _safe_filename(name, max_len=100):
@@ -619,73 +800,145 @@ def _safe_filename(name, max_len=100):
     return name[:max_len].rstrip(" .") or "Rapor"
 
 
-def split_report_into_files(report_body, channel_videos=None):
-    """Parse the consolidated report into (filename, text) parts:
-    one file per ORTAK GÜNDEM topic (filename = title + covering channels),
-    then one file per channel from KANALLARA ÖZEL HABERLER, named
-    "<video title(s)> - <channel>" when channel_videos (channel → [titles]) is given.
-    Returns None if the text doesn't follow the expected template (caller falls back)."""
-    if "ORTAK GÜNDEM" not in report_body:
-        return None
+# DejaVu tüm Türkçe karakterleri içerir; emoji içermez. Emoji ve benzeri
+# desteklenmeyen karakterler fontun kendi glif tablosuna bakılarak atılır,
+# aksi halde PDF'te siyah kutu olarak basılır.
+_FONT_CANDIDATES = [
+    ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+    ("/usr/share/fonts/dejavu/DejaVuSans.ttf",
+     "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"),
+    ("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+     "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"),
+]
 
-    ozel_match = re.search(r"^.*KANALLARA ÖZEL HABERLER.*$", report_body, re.MULTILINE)
-    if ozel_match:
-        ortak_part = report_body[:ozel_match.start()]
-        ozel_part = report_body[ozel_match.end():]
-    else:
-        ortak_part = report_body
-        ozel_part = ""
+_PDF_FONT = None          # (regular_name, bold_name)
+_SUPPORTED_CHARS = None   # fontun desteklediği kod noktaları
 
-    def clean_block(text):
-        # drop trailing --- separators left over from the template
-        return re.sub(r"(?m)^\s*-{3,}\s*$", "", text).strip()
 
-    files = []
-    used_names = set()
+def _register_pdf_fonts():
+    global _PDF_FONT, _SUPPORTED_CHARS
+    if _PDF_FONT:
+        return _PDF_FONT
+    for regular, bold in _FONT_CANDIDATES:
+        if os.path.exists(regular) and os.path.exists(bold):
+            pdfmetrics.registerFont(RLTTFont("ReportFont", regular))
+            pdfmetrics.registerFont(RLTTFont("ReportFont-Bold", bold))
+            pdfmetrics.registerFontFamily("ReportFont", normal="ReportFont",
+                                          bold="ReportFont-Bold",
+                                          italic="ReportFont",
+                                          boldItalic="ReportFont-Bold")
+            face = pdfmetrics.getFont("ReportFont").face
+            _SUPPORTED_CHARS = set(getattr(face, "charToGlyph", {}) or {})
+            _PDF_FONT = ("ReportFont", "ReportFont-Bold")
+            return _PDF_FONT
+    raise RuntimeError(
+        "PDF için Unicode font bulunamadı. Ubuntu'da: "
+        "sudo apt-get install -y fonts-dejavu-core")
 
-    def add_file(base_name, text):
-        fname = _safe_filename(base_name)
-        n = 2
-        while fname.lower() in used_names:
-            fname = _safe_filename(base_name, max_len=95) + f" ({n})"
-            n += 1
-        used_names.add(fname.lower())
-        files.append((fname + ".md", text))
 
-    for block in re.split(r"^###\s+", ortak_part, flags=re.MULTILINE)[1:]:
-        lines = block.splitlines()
-        title = lines[0].strip().strip("*").strip()
-        body = clean_block("\n".join(lines[1:]))
-        if not title or not body:
+# Görünmez karakterler: fontta glif olarak BULUNURLAR, dolayısıyla glif
+# filtresine takılmazlar; ayrıca strip() de silmez. Emoji'nin varyasyon
+# seçicisi (FE0F) geride kalıp satır başı eşleşmelerini bozar → ayrıca sil.
+_ZERO_WIDTH = dict.fromkeys(
+    map(ord, "\ufe0f\ufe0e\u200b\u200c\u200d\u2060\ufeff\u00ad"), None)
+
+
+def _sanitize(text):
+    """Emoji ve fontta karşılığı olmayan karakterleri at, görünmezleri temizle."""
+    text = text.translate(_ZERO_WIDTH)
+    if not _SUPPORTED_CHARS:
+        return text
+    return "".join(ch for ch in text
+                   if ch in ("\n", "\t") or ord(ch) in _SUPPORTED_CHARS)
+
+
+def _inline_md(text):
+    """Markdown satır içi biçimlendirmeyi ReportLab etiketlerine çevirir.
+    XML kaçışı ÖNCE yapılır, yoksa metindeki < & işaretleri PDF'i bozar."""
+    text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", text)
+    return text
+
+
+_BANNER_RE = re.compile(r"^[A-ZÇĞİÖŞÜ0-9\s\-–—:()]{6,}$")
+
+
+def build_pdf_report(report_text, doc_title="Gündem Raporu"):
+    """Konsolide raporu tek bir PDF'e basar, bytes döndürür."""
+    regular, bold = _register_pdf_fonts()
+
+    base = getSampleStyleSheet()
+    body = ParagraphStyle("Body", parent=base["Normal"], fontName=regular,
+                          fontSize=9.5, leading=14, alignment=TA_JUSTIFY,
+                          spaceAfter=6)
+    bullet = ParagraphStyle("Bullet", parent=body, leftIndent=12,
+                            bulletIndent=2, spaceAfter=4,
+                            bulletFontName=regular, bulletFontSize=9.5)
+    h1 = ParagraphStyle("H1", parent=base["Heading1"], fontName=bold,
+                        fontSize=15, leading=19, spaceBefore=14, spaceAfter=8,
+                        textColor=colors.HexColor("#1a1a1a"))
+    h2 = ParagraphStyle("H2", parent=base["Heading2"], fontName=bold,
+                        fontSize=12, leading=16, spaceBefore=12, spaceAfter=6,
+                        textColor=colors.HexColor("#222222"))
+    h3 = ParagraphStyle("H3", parent=base["Heading3"], fontName=bold,
+                        fontSize=10.5, leading=14, spaceBefore=9, spaceAfter=4)
+    banner = ParagraphStyle("Banner", parent=h1, fontSize=13, leading=17,
+                            spaceBefore=18, spaceAfter=4,
+                            textColor=colors.HexColor("#0b5394"))
+    title_style = ParagraphStyle("DocTitle", parent=h1, fontSize=18, leading=22,
+                                 spaceBefore=0, spaceAfter=2)
+
+    story = [Paragraph(_inline_md(_sanitize(doc_title)), title_style),
+             HRFlowable(width="100%", thickness=1,
+                        color=colors.HexColor("#999999"), spaceAfter=10)]
+
+    for raw in report_text.split("\n"):
+        line = _sanitize(raw).strip()
+        if not line:
+            story.append(Spacer(1, 4))
             continue
-        # channel names come from the "Kanal Katkıları" bullets: - **Kanal / Yorumcu:** ...
-        channels = []
-        for line in lines[1:]:
-            cm = re.match(r"\s*-\s*\*\*(.+?):?\*\*", line)
-            if cm:
-                ch = cm.group(1).split("/")[0].strip().strip(":")
-                if ch and ch not in channels:
-                    channels.append(ch)
-        base = f"{title} - {', '.join(channels)}" if channels else title
-        add_file(base, f"### {title}\n\n{body}")
-
-    for block in re.split(r"^###\s+", ozel_part, flags=re.MULTILINE)[1:]:
-        lines = block.splitlines()
-        channel = lines[0].strip().strip("*").strip()
-        body = clean_block("\n".join(lines[1:]))
-        if not channel or not body:
+        if re.fullmatch(r"-{3,}", line):
+            story.append(HRFlowable(width="100%", thickness=0.6,
+                                    color=colors.HexColor("#cccccc"),
+                                    spaceBefore=8, spaceAfter=8))
             continue
-        # Filename: "<video title(s)> - <channel>". The LLM may append "/ Yorumcu"
-        # to the heading, so match on the part before the slash.
-        base = channel
-        if channel_videos:
-            ch_key = channel.split("/")[0].strip()
-            titles = channel_videos.get(ch_key)
-            if titles:
-                base = f"{', '.join(titles)} - {ch_key}"
-        add_file(base, f"### {channel}\n\n{body}")
+        m = re.match(r"^(#{1,6})\s+(.+)$", line)
+        if m:
+            style = {1: h1, 2: h2}.get(len(m.group(1)), h3)
+            story.append(Paragraph(_inline_md(m.group(2)), style))
+            continue
+        m = re.match(r"^[-*•]\s+(.+)$", line)
+        if m:
+            story.append(Paragraph(_inline_md(m.group(1)), bullet, bulletText="•"))
+            continue
+        plain = re.sub(r"[*`]", "", line)
+        if _BANNER_RE.fullmatch(plain) and len(plain) >= 6:
+            story.append(Paragraph(_inline_md(plain.strip()), banner))
+            story.append(HRFlowable(width="100%", thickness=0.8,
+                                    color=colors.HexColor("#0b5394"),
+                                    spaceAfter=6))
+            continue
+        story.append(Paragraph(_inline_md(line), body))
 
-    return files or None
+    def _footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont(regular, 8)
+        canvas.setFillColor(colors.HexColor("#888888"))
+        canvas.drawRightString(A4[0] - 18 * mm, 12 * mm, str(canvas.getPageNumber()))
+        canvas.restoreState()
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4,
+                            leftMargin=18 * mm, rightMargin=18 * mm,
+                            topMargin=16 * mm, bottomMargin=18 * mm,
+                            title=doc_title, author="Gündem Botu")
+    doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
+    return buf.getvalue()
+
+
 
 
 def upload_report_files_to_discord(parts, message):
@@ -702,8 +955,10 @@ def upload_report_files_to_discord(parts, message):
 def _upload_file_batch(batch, message):
     payload = {"content": message}
     files = {"payload_json": (None, json.dumps(payload), "application/json")}
-    for i, (fname, text) in enumerate(batch):
-        files[f"files[{i}]"] = (fname, text.encode("utf-8"), "text/markdown")
+    for i, (fname, content) in enumerate(batch):
+        data = content if isinstance(content, (bytes, bytearray)) else content.encode("utf-8")
+        mime = "application/pdf" if fname.lower().endswith(".pdf") else "text/markdown"
+        files[f"files[{i}]"] = (fname, data, mime)
     for attempt in range(1, 4):
         try:
             r = requests.post(DISCORD_URL, files=files, timeout=60)
@@ -730,11 +985,12 @@ if __name__ == "__main__":
     log(f"🚀 BAŞLATILIYOR")
 
     videos = get_latest_video_list()
+    videos += get_latest_articles()
 
     if not videos:
-        log("Son 24 saatte yeni video bulunamadı.")
+        log("Son 24 saatte yeni video/yazı bulunamadı.")
     else:
-        log(f"📋 Bulunan videolar ({len(videos)} adet):")
+        log(f"📋 Bulunan içerikler ({len(videos)} adet):")
         for v in videos:
             log(f"  - [{v['name']}] {v['title']} ({v['duration']})")
 
@@ -747,9 +1003,10 @@ if __name__ == "__main__":
             log(f"[{i+1}/{len(videos)}] İşleniyor: [{video['name']}] {video['title']}")
             log(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
-            transkript = transkript_cek(video["video_id"])
+            # Köşe yazılarında metin zaten hazır; sadece videolar için indir.
+            transkript = video.get("transkript") or transkript_cek(video["video_id"])
             if not transkript:
-                log(f"⚠️ Transkript alınamadı, video atlanıyor", indent=1)
+                log(f"⚠️ Transkript alınamadı, içerik atlanıyor", indent=1)
                 continue
 
             log(f"📝 İlk 300 karakter: {transkript[:300]}...", indent=1)
@@ -757,15 +1014,15 @@ if __name__ == "__main__":
             video["transkript"] = transkript
             analyzed.append({"video": video, "report": report})
             video_elapsed = time.time() - video_start
-            log(f"✅ Video tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
+            log(f"✅ İçerik tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
             time.sleep(2)
 
         if not analyzed:
-            log("❌ Hiçbir video işlenemedi.")
+            log("❌ Hiçbir içerik işlenemedi.")
         else:
             analyzed = filter_video_reports(analyzed)
             if not analyzed:
-                log("❌ İlgi filtresi tüm videoları eledi, rapor üretilmiyor.")
+                log("❌ İlgi filtresi tüm içerikleri eledi, rapor üretilmiyor.")
 
         if analyzed:
             all_reports = [
@@ -774,7 +1031,7 @@ if __name__ == "__main__":
             ]
             processed_videos = [it["video"] for it in analyzed]
 
-            current_date = datetime.now().strftime("%d.%m.%Y")
+            current_date = datetime.now(ISTANBUL_TZ).strftime("%d.%m.%Y")
 
             final_report_body = consolidate_reports(all_reports)
 
@@ -784,7 +1041,7 @@ if __name__ == "__main__":
             )
             full_report = (
                 f"📅 **{current_date}**\n\n"
-                f"📺 **İncelenen Videolar ({len(processed_videos)} adet):**\n"
+                f"📺 **İncelenen İçerikler ({len(processed_videos)} adet):**\n"
                 f"{videos_list}\n\n"
                 f"---\n\n"
                 f"{final_report_body}"
@@ -792,30 +1049,26 @@ if __name__ == "__main__":
 
             send_to_discord(full_report)
 
-            header_msg = f"**Youtube {datetime.now().strftime('%d %m %Y')}**"
-            channel_videos = {}
-            for v in processed_videos:
-                channel_videos.setdefault(v["name"], []).append(v["title"])
-            report_files = split_report_into_files(final_report_body, channel_videos)
-            if report_files:
-                parts = [(fname, strip_markdown(text)) for fname, text in report_files]
-                upload_report_files_to_discord(parts, header_msg)
-            else:
-                log("⚠️ Rapor şablona ayrıştırılamadı, tek dosya olarak yükleniyor")
-                upload_report_files_to_discord(
-                    [("Rapor.md", strip_markdown(full_report))], header_msg
-                )
+            header_msg = f"**Youtube {datetime.now(ISTANBUL_TZ).strftime('%d %m %Y')}**"
+            pdf_name = _safe_filename(f"Gundem Raporu {current_date}") + ".pdf"
+            try:
+                pdf_bytes = build_pdf_report(full_report, f"Gündem Raporu — {current_date}")
+                log(f"📄 PDF oluşturuldu: {pdf_name} ({len(pdf_bytes):,} bayt)")
+                upload_report_files_to_discord([(pdf_name, pdf_bytes)], header_msg)
+            except Exception as e:
+                log(f"⚠️ PDF oluşturulamadı ({e}); rapor .md olarak yükleniyor")
+                upload_report_files_to_discord([("Rapor.md", full_report)], header_msg)
 
             total_elapsed = time.time() - run_start
             mins = int(total_elapsed // 60)
             secs = int(total_elapsed % 60)
             log(f"")
             log(f"🏁 İŞLEM TAMAMLANDI")
-            log(f"   • {len(all_reports)} video işlendi")
+            log(f"   • {len(all_reports)} içerik işlendi")
             log(f"   • Toplam süre: {mins} dk {secs} sn")
-            log(f"   • Konsolide rapor Discord'a gönderildi")
+            log(f"   • Konsolide rapor Discord'a gönderildi (tek PDF)")
 
-            transcript_filename = f"transkriptler_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+            transcript_filename = f"transkriptler_{datetime.now(ISTANBUL_TZ).strftime('%Y%m%d_%H%M%S')}.txt"
             total_chars = 0
             with open(transcript_filename, "w", encoding="utf-8") as f:
                 for i, v in enumerate(processed_videos, 1):
@@ -823,8 +1076,9 @@ if __name__ == "__main__":
                     total_chars += len(text)
                     f.write("=" * 70 + "\n")
                     f.write(f"[{i}/{len(processed_videos)}] {v['name']} — {v['title']} ({v['duration']})\n")
-                    f.write(f"https://www.youtube.com/watch?v={v['video_id']}\n")
-                    f.write("=" * 70 + "\n\n")
+                    f.write(f"{v.get('url', '')}\n")
+                    f.write("=" * 70 + "\n")
+                    f.write("\n")
                     f.write(text)
                     f.write("\n\n")
             log(f"📝 Transkriptler dosyaya yazıldı: {transcript_filename} ({total_chars:,} karakter)")

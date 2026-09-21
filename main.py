@@ -31,7 +31,7 @@ except ImportError:
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DISCORD_URL = os.getenv("DISCORD_WEBHOOK_URL")
 APIFY_API_KEY = os.getenv("APIFY_API_KEY")
-GEMINI_API_KEYS = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(1, 5)) if k]
+GEMINI_API_KEYS = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(1, 4)) if k]
 if not GEMINI_API_KEYS:
     _fallback = os.getenv("GEMINI_API_KEY")
     if _fallback:

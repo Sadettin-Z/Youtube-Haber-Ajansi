@@ -37,6 +37,17 @@ if not GEMINI_API_KEYS:
     if _fallback:
         GEMINI_API_KEYS = [_fallback]
 
+# Models are tried in this order. Every call starts on the first model, rotating through the
+# keys; when EVERY key's free-tier daily quota on that model is spent, the run moves to the next
+# model. Google counts the daily quota per model, so the same keys get a fresh allowance there.
+# Override with GEMINI_MODELS="modelA,modelB,..." when Google ships a newer Flash.
+MODEL_CHAIN = [m.strip() for m in os.getenv(
+    "GEMINI_MODELS", "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash").split(",") if m.strip()]
+# key_idx -> reason: key unusable on every model this run (403 API_KEY_SERVICE_BLOCKED, invalid key).
+_dead_keys = {}
+# (model, key_idx): that key's free-tier DAILY quota on that model is spent.
+_quota_dead = set()
+
 
 CHANNELS = {
     "Serdar Akinan": "@serdarakinan",
@@ -537,9 +548,48 @@ def transkript_cek(video_id):
     return None
 
 
+def _gemini_error_kind(e):
+    """Classify a generate_content exception.
+    'dead'      key blocked/invalid (403, bad key)        -> retire key on every model
+    'daily'     free-tier daily quota spent (429 PerDay)  -> retire key on this model only
+    'rate'      per-minute rate limit (429 PerMinute)     -> next key, retry later
+    'transient' 5xx / overload / network                   -> next key
+    'fatal'     anything else"""
+    code = getattr(e, "code", None)
+    status = str(getattr(e, "status", "") or "").upper()
+    details = getattr(e, "details", None)
+    blob = f"{status} {getattr(e, 'message', '')} {json.dumps(details, default=str) if details is not None else ''} {e}".lower()
+    if code == 403 or "permission_denied" in blob:
+        return "dead"
+    if code == 400 and "api key" in blob:
+        return "dead"
+    if code == 429 or "resource_exhausted" in blob or "quota" in blob or "rate limit" in blob:
+        if "perminute" in blob or "per minute" in blob:
+            return "rate"
+        return "daily"
+    if (code is not None and 500 <= int(code) < 600) or any(s in blob for s in (
+        "503", "502", "504", "unavailable", "overloaded", "high demand",
+        "deadline", "timeout", "timed out", "cancelled", "canceled",
+        "server disconnected", "remoteprotocolerror", "connection reset",
+        "connection aborted", "connection closed", "broken pipe",
+        "incomplete read", "empty response",
+    )):
+        return "transient"
+    return "fatal"
+
+
+def _live_keys(model):
+    return [(i, k) for i, k in enumerate(GEMINI_API_KEYS, start=1)
+            if i not in _dead_keys and (model, i) not in _quota_dead]
+
+
 def call_gemini(prompt, label="Gemini", response_schema=None):
-    """Shared helper: tries each API key in order, returns text or None.
-    If response_schema is provided, the model is forced to return JSON matching the schema."""
+    """Shared helper: returns text or None.
+
+    Runs on MODEL_CHAIN[0], trying each key in order. A key whose daily quota on that model is
+    spent is retired for that model; once every key is spent on a model, the call moves to the
+    next model in MODEL_CHAIN (same keys, fresh per-model quota). A 403/invalid key is retired
+    on every model. If response_schema is provided, the model is forced to return JSON."""
     prompt_chars = len(prompt)
     log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter)", indent=1)
 
@@ -552,59 +602,71 @@ def call_gemini(prompt, label="Gemini", response_schema=None):
         config_kwargs["response_mime_type"] = "application/json"
         config_kwargs["response_schema"] = response_schema
 
-    for key_idx, key in enumerate(GEMINI_API_KEYS, start=1):
-        log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
-        client = genai.Client(api_key=key)
-        for attempt in range(3):
-            t0 = time.time()
-            try:
-                log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
-                response = client.models.generate_content(
-                    model='gemini-3.6-flash',
-                    contents=prompt,
-                    config=types.GenerateContentConfig(**config_kwargs)
-                )
-                elapsed = time.time() - t0
-                if response.text:
-                    out_chars = len(response.text)
-                    usage_info = ""
-                    try:
-                        if hasattr(response, "usage_metadata") and response.usage_metadata:
-                            u = response.usage_metadata
-                            in_tok = getattr(u, "prompt_token_count", "?")
-                            out_tok = getattr(u, "candidates_token_count", "?")
-                            think_tok = getattr(u, "thoughts_token_count", "?")
-                            usage_info = f", tokens: in={in_tok} out={out_tok} think={think_tok}"
-                    except Exception:
-                        pass
-                    log(f"✅ [{label}] Yanıt alındı ({elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
-                    return response.text.strip()
-                else:
-                    log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
-            except Exception as e:
-                elapsed = time.time() - t0
-                err_str = str(e)
-                err_lower = err_str.lower()
-                quota_hit = "RESOURCE_EXHAUSTED" in err_str or any(
-                    s in err_lower for s in ("429", "quota", "rate limit", "rate_limit", "exhausted")
-                )
-                transient = any(s in err_lower for s in (
-                    "503", "502", "504", "unavailable", "overloaded", "high demand",
-                    "deadline", "timeout", "timed out", "cancelled", "canceled",
-                    "server disconnected", "remoteprotocolerror", "connection reset",
-                    "connection aborted", "connection closed", "broken pipe",
-                    "incomplete read", "empty response",
-                ))
-                if quota_hit:
-                    log(f"⛔ Key #{key_idx} kotası dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
-                    break
-                if transient:
-                    log(f"🔁 Key #{key_idx} geçici hata ({elapsed:.1f}s): {err_str[:200]} — sıradaki key'e geçiliyor", indent=2)
-                    break
-                wait = (attempt + 1) * 30
-                log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
-                log(f"⏳ {wait} saniye bekleniyor...", indent=2)
-                time.sleep(wait)
+    for m_pos, model in enumerate(MODEL_CHAIN):
+        keys = _live_keys(model)
+        if not keys:
+            if m_pos + 1 < len(MODEL_CHAIN):
+                continue  # already spent — go straight to the next model
+            break
+        log(f"🧠 Model: {model} ({len(keys)} kullanılabilir key)", indent=2)
+
+        for key_idx, key in keys:
+            log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
+            client = genai.Client(api_key=key)
+            for attempt in range(3):
+                t0 = time.time()
+                try:
+                    log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
+                    response = client.models.generate_content(
+                        model=model,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(**config_kwargs)
+                    )
+                    elapsed = time.time() - t0
+                    if response.text:
+                        out_chars = len(response.text)
+                        usage_info = ""
+                        try:
+                            if hasattr(response, "usage_metadata") and response.usage_metadata:
+                                u = response.usage_metadata
+                                in_tok = getattr(u, "prompt_token_count", "?")
+                                out_tok = getattr(u, "candidates_token_count", "?")
+                                think_tok = getattr(u, "thoughts_token_count", "?")
+                                usage_info = f", tokens: in={in_tok} out={out_tok} think={think_tok}"
+                        except Exception:
+                            pass
+                        log(f"✅ [{label}] Yanıt alındı ({model}, {elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
+                        return response.text.strip()
+                    else:
+                        log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
+                except Exception as e:
+                    elapsed = time.time() - t0
+                    err_str = str(e)
+                    kind = _gemini_error_kind(e)
+                    if kind == "dead":
+                        _dead_keys[key_idx] = err_str[:120]
+                        log(f"⛔ Key #{key_idx} kullanılamıyor (403/geçersiz), bu çalıştırmada bir daha denenmeyecek: {err_str[:160]}", indent=2)
+                        break
+                    if kind == "daily":
+                        _quota_dead.add((model, key_idx))
+                        log(f"⛔ Key #{key_idx} günlük kotası '{model}' için dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
+                        break
+                    if kind == "rate":
+                        log(f"🐢 Key #{key_idx} dakikalık limit ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
+                        break
+                    if kind == "transient":
+                        log(f"🔁 Key #{key_idx} geçici hata ({elapsed:.1f}s): {err_str[:200]} — sıradaki key'e geçiliyor", indent=2)
+                        break
+                    wait = (attempt + 1) * 30
+                    log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
+                    log(f"⏳ {wait} saniye bekleniyor...", indent=2)
+                    time.sleep(wait)
+
+        if not _live_keys(model) and m_pos + 1 < len(MODEL_CHAIN):
+            log(f"➡️ '{model}' kotası tüm key'lerde doldu, '{MODEL_CHAIN[m_pos + 1]}' modeline geçiliyor", indent=1)
+            continue
+        break  # keys remain on this model but all failed for other reasons — same outcome as before
+
     log(f"❌ [{label}] Tüm key'ler ve denemeler tükendi", indent=1)
     return None
 

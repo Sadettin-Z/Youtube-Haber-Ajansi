@@ -1112,9 +1112,9 @@ if __name__ == "__main__":
             send_to_discord(full_report)
 
             header_msg = f"**Youtube {datetime.now(ISTANBUL_TZ).strftime('%d %m %Y')}**"
-            pdf_name = _safe_filename(f"Gundem Raporu {current_date}") + ".pdf"
+            pdf_name = _safe_filename(f"Youtube Gündem Raporu {current_date}") + ".pdf"
             try:
-                pdf_bytes = build_pdf_report(full_report, f"Gündem Raporu — {current_date}")
+                pdf_bytes = build_pdf_report(full_report, f"Youtube Gündem Raporu — {current_date}")
                 log(f"📄 PDF oluşturuldu: {pdf_name} ({len(pdf_bytes):,} bayt)")
                 upload_report_files_to_discord([(pdf_name, pdf_bytes)], header_msg)
             except Exception as e:

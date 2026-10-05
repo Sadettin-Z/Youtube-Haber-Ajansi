@@ -1042,15 +1042,47 @@ def _upload_file_batch(batch, message):
             return
 
 
+# PIPELINE_MODE=scrape: videoları/yazıları bul, transkriptleri indir, Gemini'ye ve Discord'a
+# hiç dokunmadan hepsini CONTENT_FILE'a yaz ve çık. Rapor dışarıda üretilecekse kullanılır.
+PIPELINE_MODE = (os.getenv("PIPELINE_MODE") or "full").strip().lower()
+CONTENT_FILE = os.getenv("CONTENT_FILE", "manual/icerikler.json")
+
+
+def scrape_only(videos):
+    """Transkriptleri indir ve Gemini'siz olarak dosyaya yaz."""
+    out = []
+    for i, video in enumerate(videos, 1):
+        log(f"[{i}/{len(videos)}] Transkript: [{video['name']}] {video['title']}")
+        transkript = video.get("transkript") or transkript_cek(video["video_id"])
+        if not transkript:
+            log(f"⚠️ Transkript alınamadı, içerik atlanıyor", indent=1)
+            continue
+        out.append({
+            "name": video["name"], "title": video["title"], "duration": video.get("duration", ""),
+            "url": video.get("url", ""), "kind": video.get("kind", "video"),
+            "video_id": video.get("video_id", ""), "transkript": transkript,
+        })
+    os.makedirs(os.path.dirname(CONTENT_FILE) or ".", exist_ok=True)
+    with open(CONTENT_FILE, "w", encoding="utf-8") as f:
+        json.dump({"date": datetime.now(ISTANBUL_TZ).strftime("%d.%m.%Y"), "items": out},
+                  f, ensure_ascii=False, indent=1)
+    log(f"📝 {len(out)}/{len(videos)} içerik {CONTENT_FILE} dosyasına yazıldı "
+        f"({sum(len(x['transkript']) for x in out):,} karakter)")
+
+
 if __name__ == "__main__":
     run_start = time.time()
-    log(f"🚀 BAŞLATILIYOR")
+    log(f"🚀 BAŞLATILIYOR" + (f" (mod: {PIPELINE_MODE})" if PIPELINE_MODE != "full" else ""))
 
     videos = get_latest_video_list()
     videos += get_latest_articles()
 
     if not videos:
         log("Son 24 saatte yeni video/yazı bulunamadı.")
+    elif PIPELINE_MODE == "scrape":
+        scrape_only(videos)
+    elif PIPELINE_MODE != "full":
+        raise SystemExit(f"Bilinmeyen PIPELINE_MODE '{PIPELINE_MODE}' (full veya scrape)")
     else:
         log(f"📋 Bulunan içerikler ({len(videos)} adet):")
         for v in videos:

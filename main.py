@@ -135,7 +135,7 @@ Her hikayeyi kısa, akıcı bir paragrafa çevir:
 1. Açılış — olayı 1 cümlede tanımla; okuyucu kim/ne/ne zaman'ı hemen anlasın.
 2. Ana iddia — yorumcunun bu konudaki temel görüşü ve ana gerekçesi; tek bir neden-sonuç zinciri yeterli.
 3. En önemli detay(lar) — seçtiğin bir-iki sayı/isim/alıntı anlatıya yedirilmiş şekilde.
-Her hikaye tek paragraf, genellikle 3-5 cümle, yaklaşık 50-100 kelime. Bir hikaye asla 150 kelimeyi geçmez.
+Her hikaye tek paragraf.
 Her hikaye için ayrı bir alt başlık. Raporu <rapor> ... </rapor> arasına yaz.
 
 Kısıtlar:
@@ -197,9 +197,9 @@ Aşağıdaki şablonu birebir kullan:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Ortak Bilgiler:** Olayın özü ve birden fazla kanalın ortaklaştığı en önemli bilgiler BİR KEZ burada yazılır. Kısa tek bir paragraf, genellikle 2-4 cümle, en fazla 100 kelime. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
+**Ortak Bilgiler:** Olayın özü ve birden fazla kanalın ortaklaştığı en önemli bilgiler BİR KEZ burada yazılır. Kısa tek bir paragraf. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Doyurucu olsun diye dış bilgi getirme — sadece girdilerde geçenler.
 **Kanal Katkıları:**
-- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan en önemli kısım — özgün ana argümanı veya başka kanalda geçmeyen asıl iddiası. 1-2 cümle yeterli. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı] / [Yorumcu]:** SADECE bu kanala özgü olan en önemli kısım — özgün ana argümanı veya başka kanalda geçmeyen asıl iddiası. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 - **[Diğer Kanal Adı]:** ...
 
 ---
@@ -209,7 +209,7 @@ Aşağıdaki şablonu birebir kullan:
 ### [Kanal Adı]
 
 **[Konu 1 Başlığı]**
-Konunun özü ve en önemli bir-iki detay, kısa tek bir paragraf (2-4 cümle, en fazla 80 kelime). Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
+Konunun özü ve en önemli bir-iki detay, kısa tek bir paragraf. Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
 
 **[Konu 2 Başlığı]**
 Aynı şekilde.
@@ -259,9 +259,9 @@ Adımlar ve kurallar:
 📌 ORTAK GÜNDEM
 
 ### [Spesifik Konu Başlığı]
-**Ortak Bilgiler:** Olayın özü ve birden fazla kanalın ortaklaştığı en önemli bilgiler BİR KEZ burada yazılır. Kısa tek bir paragraf, genellikle 2-4 cümle, en fazla 100 kelime. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Sadece girdilerde geçenler — dış bilgi getirme.
+**Ortak Bilgiler:** Olayın özü ve birden fazla kanalın ortaklaştığı en önemli bilgiler BİR KEZ burada yazılır. Kısa tek bir paragraf. Aynı durumu farklı kelimelerle iki kez tarif etme. Dil 3. şahıs aktarım: bilginin sahibi olan kanal/yorumcu cümlede geçer ("Akinan ve Altaylı X dedi", "Kulat ve Özdil Y iddia ediyor"). Hangi bilginin hangi kanallardan geldiği anlatıdan anlaşılsın; her cümleye ayrı kaynak listesi sıkıştırma. Sadece girdilerde geçenler — dış bilgi getirme.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** SADECE bu kanala özgü olan en önemli kısım — özgün ana argümanı veya başka kanalda geçmeyen asıl iddiası. 1-2 cümle yeterli. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
+- **[Kanal Adı]:** SADECE bu kanala özgü olan en önemli kısım — özgün ana argümanı veya başka kanalda geçmeyen asıl iddiası. Ortak Bilgiler'de zaten yazılmış kısımları burada tekrar yazma. Dil doğrudan: kanal adı zaten başlıkta yazıyor, "X iddia ediyor / belirtiyor / diyor" kalıbı kullanma. "Özgür Özel miting yapacak", "İstiklal Partisi kurulacak" gibi düz cümle. Aynı iddiayı iki kez yazma; iddialar arasındaki neden-sonuç ilişkisini koru. Eğer bu kanalın söyledikleri büyük ölçüde diğerleriyle aynıysa "aynı çizgide" tarzı tek satır yeterli.
 
 ---
 
@@ -270,7 +270,7 @@ Adımlar ve kurallar:
 ### [Kanal Adı]
 
 **[Konu 1 Başlığı]**
-Konunun özü ve en önemli bir-iki detay, kısa tek bir paragraf (2-4 cümle, en fazla 80 kelime). Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
+Konunun özü ve en önemli bir-iki detay, kısa tek bir paragraf. Dil doğrudan: kanal adı zaten başlıkta, "yorumcu iddia ediyor / belirtiyor" kalıbı kullanma. Düz cümleyle yaz.
 
 **[Konu 2 Başlığı]**
 Aynı şekilde.

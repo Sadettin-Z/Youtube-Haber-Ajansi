@@ -14,16 +14,19 @@ Akış:
 
 Ortam değişkenleri (GitHub Secrets / Variables):
   APIFY_API_KEY, GEMINI_API_KEY_1..3, DISCORD_WEBHOOK_URL       (zorunlu)
-  X_HANDLE                takip listesi çekilecek hesap, ör. "sadettinzafer"
+  X_HANDLE                takip listesi çekilecek hesap, ör. "SadettinZ_"
   WINDOW_HOURS            kaç saat geriye bakılacak (varsayılan 24; haftalık için 168)
-  MAX_TWEETS_PER_ACCOUNT  hesap başına en fazla paylaşım (varsayılan 40)
+  MAX_TWEETS_PER_ACCOUNT  hesap başına en fazla paylaşım (varsayılan 15)
+  MAX_TWEETS_TOTAL        koşu başına toplam paylaşım tavanı (varsayılan 400)
+  MONTHLY_PAID_ITEMS_BUDGET aylık ücretli kayıt bütçesi (varsayılan 6000 ≈ 1-1,5 $); dolunca ücretli aktörler atlanır
+  FREE_RUNS_PER_MONTH     ücretsiz aktörlerin aylık koşu hakkı (varsayılan 5); 0 = ücretsizi hiç deneme
   INCLUDE_REPLIES         "1" ise yanıtlar da alınır (varsayılan 0)
-  FOLLOWINGS_REFRESH_DAYS takip listesi kaç günde bir yenilenir (varsayılan 7)
+  FOLLOWINGS_REFRESH_DAYS takip listesi kaç günde bir yenilenir (varsayılan 30)
   REFRESH_FOLLOWINGS      "1" ise önbelleğe bakmadan takip listesini yeniden çek
-  APIFY_TWEET_ACTOR       varsayılan apidojo~tweet-scraper
-  APIFY_FOLLOWING_ACTOR   varsayılan apidojo~twitter-user-scraper
   DISCORD_MENTION_USER_ID raporun başında etiketlenecek Discord kullanıcı id'si (isteğe bağlı)
-  PIPELINE_MODE           full (varsayılan) | scrape (sadece tweetleri indir, Gemini yok)
+  PIPELINE_MODE           full (varsayılan) | scrape (sadece tweetleri indir) | probe (aktörleri sına)
+
+Aktör zinciri: DEFAULT_ACTORS (aşağıda) veya twitter/actors.json. Aylık sayaçlar: twitter/state.json.
 """
 
 import json
@@ -62,12 +65,17 @@ _quota_dead = set()
 
 X_HANDLE = (os.getenv("X_HANDLE") or "").strip().lstrip("@")
 WINDOW_HOURS = int(os.getenv("WINDOW_HOURS") or 24)
-MAX_TWEETS_PER_ACCOUNT = int(os.getenv("MAX_TWEETS_PER_ACCOUNT") or 40)
+MAX_TWEETS_PER_ACCOUNT = int(os.getenv("MAX_TWEETS_PER_ACCOUNT") or 15)
+# Bir koşuda ücretli aktörden istenecek toplam paylaşım üst sınırı (maliyet freni).
+MAX_TWEETS_TOTAL = int(os.getenv("MAX_TWEETS_TOTAL") or 400)
+# Aylık ücretli kayıt bütçesi. Apify kredisi başka aktörlerle paylaşıldığı için düşük tutulur.
+# 6000 kayıt ≈ 1-1,5 $ (aktöre göre 0,15-0,25 $/1000). Dolunca ücretli aktörler ay sonuna kadar atlanır.
+MONTHLY_PAID_ITEMS_BUDGET = int(os.getenv("MONTHLY_PAID_ITEMS_BUDGET") or 6000)
+# Ücretsiz (free:true) aktörlerin aylık koşu hakkı. apidojo aktörleri: ayda 5 koşu, koşu başına 10 kayıt.
+FREE_RUNS_PER_MONTH = int(os.getenv("FREE_RUNS_PER_MONTH") or 5)
 INCLUDE_REPLIES = (os.getenv("INCLUDE_REPLIES") or "0").strip() in ("1", "true", "yes")
-FOLLOWINGS_REFRESH_DAYS = int(os.getenv("FOLLOWINGS_REFRESH_DAYS") or 7)
+FOLLOWINGS_REFRESH_DAYS = int(os.getenv("FOLLOWINGS_REFRESH_DAYS") or 30)
 REFRESH_FOLLOWINGS = (os.getenv("REFRESH_FOLLOWINGS") or "0").strip() in ("1", "true", "yes")
-APIFY_TWEET_ACTOR = os.getenv("APIFY_TWEET_ACTOR") or "apidojo~tweet-scraper"
-APIFY_FOLLOWING_ACTOR = os.getenv("APIFY_FOLLOWING_ACTOR") or "apidojo~twitter-user-scraper"
 # Tek Apify koşusuna verilecek hesap sayısı. Küçük tutmak koşuları kısa ve hatayı yerel tutar.
 HANDLES_PER_RUN = int(os.getenv("HANDLES_PER_RUN") or 25)
 PIPELINE_MODE = (os.getenv("PIPELINE_MODE") or "full").strip().lower()
@@ -77,7 +85,89 @@ DATA_DIR = os.path.join(BASE_DIR, "twitter")
 ACCOUNTS_FILE = os.path.join(DATA_DIR, "accounts.txt")
 FOLLOWINGS_FILE = os.path.join(DATA_DIR, "followings.json")
 TWEETS_FILE = os.path.join(DATA_DIR, "tweets.json")
+STATE_FILE = os.path.join(DATA_DIR, "state.json")
+ACTORS_FILE = os.path.join(DATA_DIR, "actors.json")
+PROBE_DIR = os.path.join(DATA_DIR, "probe")
 REPORTS_DIR = os.path.join(DATA_DIR, "reports")
+
+# ---------------------------------------------------------------------------
+# Apify aktör zincirleri. Sırayla denenir; ücretsiz aktörün aylık hakkı bitince, koşu hata verince
+# veya sonuç "cap" sayısına takılınca (eksik sonuç) sıradaki aktöre geçilir.
+# twitter/actors.json varsa bu varsayılanların yerine geçer (aynı yapı: {"tweets": [...], "followings": [...]}).
+#   kind=handles : apidojo tarzı {"twitterHandles": [...], "maxItems", "sort", "start", "end"}
+#   kind=search  : {"searchTerms": ["from:h since:... -filter:replies", ...], "maxItems", ...}
+#   kind=user_scraper : apidojo twitter-user-scraper {"twitterHandles": [h], "getFollowing": true}
+#   kind=userId  : {"userId": "h"}
+#   kind=urls    : {"urls": ["https://x.com/h/following"], "maxResults"}
+#   "input": aktöre aynen eklenecek ek alanlar.  "free": ücretsiz koşu hakkına tabi.  "cap": koşu başına tavan.
+# ---------------------------------------------------------------------------
+DEFAULT_ACTORS = {
+    "tweets": [
+        {"actor": "apidojo~tweet-scraper", "kind": "handles", "free": True, "cap": 10,
+         "input": {"sort": "Latest", "includeSearchTerms": False}},
+        {"actor": "kaitoeasyapi~twitter-x-data-tweet-scraper-pay-per-result-cheapest", "kind": "search",
+         "input": {"queryType": "Latest"}},
+        {"actor": "xquik~x-tweet-scraper", "kind": "search", "input": {}},
+    ],
+    "followings": [
+        {"actor": "apidojo~twitter-user-scraper", "kind": "user_scraper", "free": True, "cap": 10, "input": {}},
+        {"actor": "data-slayer~twitter-followings", "kind": "userId", "input": {}},
+        {"actor": "api-ninja~x-twitter-followers-scraper", "kind": "urls", "input": {"scrapeAllResults": False}},
+    ],
+}
+
+
+def load_actors():
+    if os.path.exists(ACTORS_FILE):
+        try:
+            with open(ACTORS_FILE, encoding="utf-8") as f:
+                data = json.load(f)
+            if data.get("tweets") or data.get("followings"):
+                return {"tweets": data.get("tweets") or DEFAULT_ACTORS["tweets"],
+                        "followings": data.get("followings") or DEFAULT_ACTORS["followings"]}
+        except Exception as e:
+            log(f"⚠️ actors.json okunamadı, varsayılanlar kullanılıyor: {e}")
+    return DEFAULT_ACTORS
+
+
+# ---------------------------------------------------------------------------
+# Aylık durum: ücretsiz koşu sayacı ve ücretli kayıt sayacı (twitter/state.json, repoya commit edilir).
+# ---------------------------------------------------------------------------
+
+def _month_key():
+    return datetime.now(timezone.utc).strftime("%Y-%m")
+
+
+def load_state():
+    st = {}
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, encoding="utf-8") as f:
+                st = json.load(f)
+        except Exception as e:
+            log(f"⚠️ state.json okunamadı: {e}")
+            st = {}
+    if st.get("month") != _month_key():
+        st = {"month": _month_key(), "free_runs": {}, "paid_items": 0, "paid_runs": 0, "notes": []}
+    st.setdefault("free_runs", {}); st.setdefault("paid_items", 0); st.setdefault("paid_runs", 0); st.setdefault("notes", [])
+    return st
+
+
+def save_state(st):
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(st, f, ensure_ascii=False, indent=1)
+
+
+STATE = None  # main() içinde yüklenir
+
+
+def _free_runs_left(spec):
+    return FREE_RUNS_PER_MONTH - STATE["free_runs"].get(spec["actor"], 0)
+
+
+def _paid_budget_left():
+    return MONTHLY_PAID_ITEMS_BUDGET - STATE["paid_items"]
 
 # Türkiye kalıcı olarak UTC+3.
 ISTANBUL_TZ = timezone(timedelta(hours=3))
@@ -412,19 +502,81 @@ def _load_followings_cache():
         return None
 
 
+def build_following_input(spec, handle, max_items):
+    kind = spec.get("kind")
+    if kind == "user_scraper":
+        inp = {"twitterHandles": [handle], "getFollowing": True, "getFollowers": False, "maxItems": max_items}
+    elif kind == "userId":
+        inp = {"userId": handle}
+    elif kind == "urls":
+        inp = {"urls": [f"https://x.com/{handle}/following"], "maxResults": max_items}
+    elif kind == "handles":
+        inp = {"twitterHandles": [handle], "maxItems": max_items}
+    else:
+        raise ValueError(f"bilinmeyen following kind: {kind}")
+    inp.update(spec.get("input") or {})
+    return inp
+
+
+def run_chain(chain, build_input, label, expected, timeout_s=900):
+    """Zinciri sırayla dener. Returns (items, actor_id or None, notes).
+    Ücretsiz aktör: aylık hakkı kalmadıysa atlanır; sonuç cap'e takıldıysa eksik sayılır ve
+    sıradakine geçilir (eksik sonuç yine de yedek olarak saklanır). Ücretli aktör: aylık kayıt
+    bütçesi bittiyse atlanır; başarılı olunca kayıt sayısı bütçeden düşülür."""
+    notes, fallback = [], None
+    for spec in chain:
+        actor = spec["actor"]
+        is_free = bool(spec.get("free"))
+        if is_free and _free_runs_left(spec) <= 0:
+            notes.append(f"{actor}: ücretsiz aylık koşu hakkı bitti")
+            continue
+        if not is_free and _paid_budget_left() <= 0:
+            notes.append(f"{actor}: aylık ücretli bütçe dolu ({STATE['paid_items']}/{MONTHLY_PAID_ITEMS_BUDGET})")
+            continue
+        max_items = expected if is_free else max(1, min(expected, _paid_budget_left()))
+        try:
+            run_input = build_input(spec, max_items)
+            items = apify_run(actor, run_input, f"{label} · {actor}", timeout_s=timeout_s)
+        except Exception as e:
+            notes.append(f"{actor}: hata: {str(e)[:160]}")
+            log(f"❌ {actor} başarısız: {str(e)[:200]}", indent=1)
+            if is_free:
+                STATE["free_runs"][actor] = STATE["free_runs"].get(actor, 0) + 1
+            continue
+        if is_free:
+            STATE["free_runs"][actor] = STATE["free_runs"].get(actor, 0) + 1
+            cap = spec.get("cap")
+            if cap and len(items) >= cap and expected > cap:
+                notes.append(f"{actor}: ücretsiz sonuç {cap} kayıtta kesildi, ücretli aktöre geçiliyor")
+                log(f"⚠️ {actor}: {len(items)} kayıt = ücretsiz tavan, eksik sayılıyor", indent=1)
+                fallback = (items, actor)
+                continue
+        else:
+            STATE["paid_items"] += len(items)
+            STATE["paid_runs"] += 1
+        return items, actor, notes
+    if fallback:
+        notes.append(f"ücretli aktör çalışmadı, {fallback[1]} eksik sonucu kullanılıyor")
+        return fallback[0], fallback[1], notes
+    return [], None, notes
+
+
 def fetch_followings(handle):
-    """Fetch the public following list of `handle` via Apify. Returns [{handle, name}]."""
-    run_input = {"twitterHandles": [handle], "getFollowing": True, "getFollowers": False,
-                 "maxItems": 5000, "includeUnavailableUsers": False}
-    items = apify_run(APIFY_FOLLOWING_ACTOR, run_input, f"takip listesi @{handle}", timeout_s=900)
+    """Fetch the public following list of `handle`. Returns ([{handle, name}], actor, notes)."""
+    chain = load_actors()["followings"]
+    items, actor, notes = run_chain(
+        chain, lambda spec, n: build_following_input(spec, handle, n),
+        f"takip listesi @{handle}", expected=2000)
     out, seen = [], set()
     for it in items:
+        if not isinstance(it, dict):
+            continue
         h = _handle_of(it)
         if not h or h.lower() == handle.lower() or h.lower() in seen:
             continue
         seen.add(h.lower())
         out.append({"handle": h, "name": _first(it, "name", "author.name", "user.name", "legacy.name", default=h)})
-    return out
+    return out, actor, notes
 
 
 def get_accounts():
@@ -451,14 +603,21 @@ def get_accounts():
     if not X_HANDLE:
         raise SystemExit("X_HANDLE tanımlı değil ve twitter/accounts.txt boş: takip edilecek hesap yok.")
     try:
-        accounts = fetch_followings(X_HANDLE)
+        accounts, actor, notes = fetch_followings(X_HANDLE)
+        for n in notes:
+            log(f"ℹ️ {n}", indent=1)
         if not accounts:
             raise RuntimeError("takip listesi boş döndü")
+        # Ücretsiz aktörün 10'luk tavanına takılmış eksik liste, daha uzun bir önbellekten daha iyi değil:
+        # elimizde daha büyük bir eski liste varsa onu koru.
+        if cache and cache.get("accounts") and len(cache["accounts"]) > len(accounts) and any("kesildi" in n for n in notes):
+            log(f"↩️ Yeni liste ({len(accounts)}) eski önbellekten ({len(cache['accounts'])}) küçük ve kesik; eski liste korunuyor")
+            return cache["accounts"], f"@{X_HANDLE} takip listesi (önbellek)"
         os.makedirs(DATA_DIR, exist_ok=True)
         with open(FOLLOWINGS_FILE, "w", encoding="utf-8") as f:
             json.dump({"handle": X_HANDLE, "fetched_at": datetime.now(timezone.utc).isoformat(),
-                       "accounts": accounts}, f, ensure_ascii=False, indent=1)
-        log(f"📋 Takip listesi Apify'dan alındı ve önbelleğe yazıldı ({len(accounts)} hesap)")
+                       "actor": actor, "accounts": accounts}, f, ensure_ascii=False, indent=1)
+        log(f"📋 Takip listesi alındı ve önbelleğe yazıldı ({len(accounts)} hesap, {actor})")
         return accounts, f"@{X_HANDLE} takip listesi"
     except Exception as e:
         log(f"❌ Takip listesi çekilemedi: {e}")
@@ -531,29 +690,103 @@ def normalize_tweet(item):
     }
 
 
-def fetch_tweets(accounts, since, until):
-    """Apify tweet scraper ile hesapların pencere içindeki paylaşımlarını çeker."""
-    handles = [a["handle"] for a in accounts]
-    all_items = []
-    chunks = [handles[i:i + HANDLES_PER_RUN] for i in range(0, len(handles), HANDLES_PER_RUN)]
-    log(f"🐦 {len(handles)} hesap, {len(chunks)} Apify koşusu ({HANDLES_PER_RUN} hesap/koşu)")
-    for n, chunk in enumerate(chunks, 1):
-        run_input = {
-            "twitterHandles": chunk,
-            "maxItems": MAX_TWEETS_PER_ACCOUNT * len(chunk),
-            "sort": "Latest",
-            # Tarih filtresi gün hassasiyetinde; kesin pencere aşağıda uygulanır.
+def _x_ts(dt):
+    """X arama operatörü zaman biçimi: since:2026-10-11_12:00:00_UTC"""
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%d_%H:%M:%S_UTC")
+
+
+def build_tweet_input(spec, handles, since, until, max_items):
+    kind = spec.get("kind")
+    if kind == "handles":
+        inp = {
+            "twitterHandles": handles, "maxItems": max_items, "sort": "Latest",
+            # Tarih filtresi gün hassasiyetinde; kesin pencere select_tweets'te uygulanır.
             "start": (since - timedelta(days=1)).strftime("%Y-%m-%d"),
             "end": (until + timedelta(days=1)).strftime("%Y-%m-%d"),
-            "includeSearchTerms": False,
-            "onlyVerifiedUsers": False, "onlyImage": False, "onlyVideo": False, "onlyQuote": False,
         }
+    elif kind == "search":
+        replies = "" if INCLUDE_REPLIES else " -filter:replies"
+        terms = [f"from:{h} since:{_x_ts(since)} until:{_x_ts(until)}{replies}" for h in handles]
+        inp = {"searchTerms": terms, "maxItems": max_items, "sort": "Latest"}
+    else:
+        raise ValueError(f"bilinmeyen tweet kind: {kind}")
+    inp.update(spec.get("input") or {})
+    return inp
+
+
+def fetch_tweets(accounts, since, until):
+    """Aktör zinciriyle hesapların pencere içindeki paylaşımlarını çeker. Returns (items, notes)."""
+    handles = [a["handle"] for a in accounts]
+    chain = load_actors()["tweets"]
+    all_items, all_notes, used = [], [], set()
+    chunks = [handles[i:i + HANDLES_PER_RUN] for i in range(0, len(handles), HANDLES_PER_RUN)]
+    log(f"🐦 {len(handles)} hesap, {len(chunks)} koşu ({HANDLES_PER_RUN} hesap/koşu)")
+    for n, chunk in enumerate(chunks, 1):
+        expected = min(MAX_TWEETS_PER_ACCOUNT * len(chunk), MAX_TWEETS_TOTAL)
+        items, actor, notes = run_chain(
+            chain, lambda spec, m: build_tweet_input(spec, chunk, since, until, m),
+            f"tweet {n}/{len(chunks)}", expected=expected, timeout_s=1500)
+        for note in notes:
+            log(f"ℹ️ {note}", indent=1)
+        all_notes.extend(notes)
+        if actor:
+            used.add(actor)
+        all_items.extend(items)
+    if used:
+        all_notes.append("kullanılan aktör: " + ", ".join(sorted(used)))
+    return all_items, all_notes
+
+
+# ---------------------------------------------------------------------------
+# PROBE modu: her aday aktörü küçük bir girdiyle çalıştırır, ham çıktı örneklerini twitter/probe/ altına
+# yazar. Aktörlerin gerçek girdi/çıktı şemasını görmek için; Gemini ve Discord kullanılmaz.
+# ---------------------------------------------------------------------------
+
+def probe():
+    actors = load_actors()
+    os.makedirs(PROBE_DIR, exist_ok=True)
+    since, until = window_bounds()
+    sample_handle = (_read_accounts_file() or ["GazeteOksijen"])[0]
+    cache = _load_followings_cache()
+    if cache and cache.get("accounts"):
+        sample_handle = cache["accounts"][0]["handle"]
+    jobs = []
+    for spec in actors["followings"]:
+        if not X_HANDLE:
+            continue
+        jobs.append(("followings", spec, lambda s=spec: build_following_input(s, X_HANDLE, 100)))
+    for spec in actors["tweets"]:
+        jobs.append(("tweets", spec, lambda s=spec: build_tweet_input(s, [sample_handle], since - timedelta(days=6), until, 5)))
+    summary = []
+    for group, spec, builder in jobs:
+        actor = spec["actor"]
+        safe = re.sub(r"[^A-Za-z0-9_.-]", "_", actor)
+        rec = {"group": group, "actor": actor, "kind": spec.get("kind"), "free": bool(spec.get("free")),
+               "probed_at": datetime.now(timezone.utc).isoformat()}
         try:
-            items = apify_run(APIFY_TWEET_ACTOR, run_input, f"tweet {n}/{len(chunks)}")
-            all_items.extend(items)
+            rec["input"] = builder()
+            items = apify_run(actor, rec["input"], f"PROBE {group}", timeout_s=600)
+            rec["count"] = len(items)
+            rec["sample"] = items[:3]
+            rec["handles_seen"] = sorted({_handle_of(i) for i in items if isinstance(i, dict)})[:20]
+            if group == "tweets":
+                norm = [normalize_tweet(i) for i in items if isinstance(i, dict)]
+                rec["normalized_ok"] = sum(1 for t in norm if t)
+                rec["normalized_sample"] = [t for t in norm if t][:2]
+            if spec.get("free"):
+                STATE["free_runs"][actor] = STATE["free_runs"].get(actor, 0) + 1
+            else:
+                STATE["paid_items"] += len(items); STATE["paid_runs"] += 1
+            summary.append(f"✅ {group} {actor}: {len(items)} kayıt")
         except Exception as e:
-            log(f"❌ Koşu {n}/{len(chunks)} başarısız: {e}", indent=1)
-    return all_items
+            rec["error"] = str(e)[:1000]
+            summary.append(f"❌ {group} {actor}: {str(e)[:120]}")
+        with open(os.path.join(PROBE_DIR, f"{group}-{safe}.json"), "w", encoding="utf-8") as f:
+            json.dump(rec, f, ensure_ascii=False, indent=1, default=str)
+    with open(os.path.join(PROBE_DIR, "summary.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(summary) + "\n")
+    for s in summary:
+        log(s)
 
 
 def select_tweets(raw_items, since, until, allowed_handles=None):
@@ -759,10 +992,11 @@ def window_label(since, until):
 
 
 def main():
+    global STATE
     t_start = time.time()
     log(f"🚀 TWITTER HABER AJANSI başlıyor" + (f" (mod: {PIPELINE_MODE})" if PIPELINE_MODE != "full" else ""))
-    if PIPELINE_MODE not in ("full", "scrape"):
-        raise SystemExit(f"Bilinmeyen PIPELINE_MODE '{PIPELINE_MODE}' (full veya scrape)")
+    if PIPELINE_MODE not in ("full", "scrape", "probe"):
+        raise SystemExit(f"Bilinmeyen PIPELINE_MODE '{PIPELINE_MODE}' (full, scrape veya probe)")
     if not APIFY_API_KEY:
         raise SystemExit("APIFY_API_KEY tanımlı değil")
     if PIPELINE_MODE == "full" and not GEMINI_API_KEYS:
@@ -770,22 +1004,39 @@ def main():
     if PIPELINE_MODE == "full" and not DISCORD_URL:
         raise SystemExit("DISCORD_WEBHOOK_URL tanımlı değil")
 
+    STATE = load_state()
+    log(f"📊 Ay {STATE['month']}: ücretsiz koşular {STATE['free_runs'] or '{}'}, "
+        f"ücretli kayıt {STATE['paid_items']}/{MONTHLY_PAID_ITEMS_BUDGET}")
+    try:
+        _main_body(t_start)
+    finally:
+        save_state(STATE)
+
+
+def _main_body(t_start):
+    if PIPELINE_MODE == "probe":
+        probe()
+        log(f"🏁 Probe tamamlandı ({time.time() - t_start:.0f}s)")
+        return
+
     since, until = window_bounds()
     label = window_label(since, until)
     log(f"🗓️ Pencere: {label}")
 
     accounts, source_desc = get_accounts()
-    raw = fetch_tweets(accounts, since, until)
+    raw, fetch_notes = fetch_tweets(accounts, since, until)
     tweets = select_tweets(raw, since, until, allowed_handles=[a["handle"] for a in accounts])
     day = until.astimezone(ISTANBUL_TZ).strftime("%Y-%m-%d")
     save_json(TWEETS_FILE, {"window": {"since": since.isoformat(), "until": until.isoformat(), "hours": WINDOW_HOURS},
-                            "source": source_desc, "accounts": len(accounts), "tweets": tweets})
+                            "source": source_desc, "accounts": len(accounts), "notes": fetch_notes, "tweets": tweets})
     if PIPELINE_MODE == "scrape":
         log(f"🏁 Scrape tamamlandı ({len(tweets)} paylaşım, {time.time() - t_start:.0f}s)")
         return
 
+    warn = [n for n in fetch_notes if "bütçe" in n or "hata" in n or "eksik" in n]
+    warn_line = f"⚠️ {' · '.join(warn)}\n" if warn else ""
     if not tweets:
-        msg = f"📅 **{day}** · Twitter Gündem\nPencere: {label}\n{len(accounts)} hesap tarandı, paylaşım bulunamadı."
+        msg = f"📅 **{day}** · Twitter Gündem\nPencere: {label}\n{len(accounts)} hesap tarandı, paylaşım bulunamadı.\n{warn_line}"
         send_to_discord(msg)
         return
 
@@ -793,7 +1044,7 @@ def main():
     log(f"🔍 ELEME sonucu: {len(news)}/{len(tweets)} haber değeri taşıyor")
     if not news:
         msg = (f"📅 **{day}** · Twitter Gündem\nPencere: {label}\n"
-               f"{len(accounts)} hesap, {len(tweets)} paylaşım tarandı; haber değeri taşıyan paylaşım bulunamadı.")
+               f"{len(accounts)} hesap, {len(tweets)} paylaşım tarandı; haber değeri taşıyan paylaşım bulunamadı.\n{warn_line}")
         send_to_discord(msg)
         return
 
@@ -806,7 +1057,8 @@ def main():
     header = (f"📅 **{day}** · 🐦 **Twitter Gündem Raporu**\n"
               f"Pencere: {label}\n"
               f"Kaynak: {source_desc} · {len(accounts)} hesap · {len(tweets)} paylaşım tarandı · "
-              f"{len(news)} haber ({active} hesaptan) raporlandı, {len(tweets) - len(news)} gürültü elendi\n\n---\n\n")
+              f"{len(news)} haber ({active} hesaptan) raporlandı, {len(tweets) - len(news)} gürültü elendi\n"
+              f"{warn_line}\n---\n\n")
     full = header + report
 
     os.makedirs(REPORTS_DIR, exist_ok=True)

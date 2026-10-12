@@ -53,7 +53,7 @@ jobs:
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
           DISCORD_WEBHOOK_URL: ${{ secrets.TWITTER_DISCORD_WEBHOOK_URL || secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_MENTION_USER_ID: ${{ vars.DISCORD_MENTION_USER_ID }}
-          X_HANDLE: ${{ vars.X_HANDLE }}
+          X_HANDLE: ${{ vars.X_HANDLE || 'SadettinZ_' }}
           WINDOW_HOURS: ${{ steps.win.outputs.hours }}
           REFRESH_FOLLOWINGS: ${{ inputs.refresh_followings == true && '1' || '0' }}
           PIPELINE_MODE: ${{ inputs.mode || 'full' }}

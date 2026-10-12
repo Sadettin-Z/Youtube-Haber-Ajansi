@@ -42,7 +42,7 @@ Secrets (shared with the YouTube pipeline): `APIFY_API_KEY`, `GEMINI_API_KEY_1..
 Optional secret `TWITTER_DISCORD_WEBHOOK_URL` sends Twitter reports to a different Discord channel.
 
 Repository **variables** (Settings → Secrets and variables → Actions → Variables):
-- `X_HANDLE` — your X username without `@`. Required unless `twitter/accounts.txt` is filled.
+- `X_HANDLE` — your X username without `@`. Defaults to `SadettinZ_` in the workflow; set the variable to override.
 - `DISCORD_MENTION_USER_ID` — optional, Discord user id to ping at the top of the report.
 
 Tuning via env in `twitter.yml`: `MAX_TWEETS_PER_ACCOUNT` (40), `INCLUDE_REPLIES` (0), `HANDLES_PER_RUN` (25), `APIFY_TWEET_ACTOR` (`apidojo~tweet-scraper`), `APIFY_FOLLOWING_ACTOR` (`apidojo~twitter-user-scraper`).

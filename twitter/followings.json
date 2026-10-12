@@ -1,6 +1,8 @@
 {
  "handle": "SadettinZ_",
- "fetched_at": "2026-10-12T12:28:08.132365+00:00",
+ "fetched_at": "2026-10-12T13:50:24.976068+00:00",
+ "actor": "data-slayer~twitter-followings",
+ "complete": true,
  "accounts": [
   {
    "handle": "KantanNewsX",
@@ -37,6 +39,110 @@
   {
    "handle": "nihadagenc",
    "name": "Nihat Genç"
+  },
+  {
+   "handle": "karargahabertr",
+   "name": "Karargâh"
+  },
+  {
+   "handle": "veryansintvcom",
+   "name": "Veryansıntv.com"
+  },
+  {
+   "handle": "TamgaTurk",
+   "name": "TamgaTürk"
+  },
+  {
+   "handle": "GurkanEngin_",
+   "name": "Gürkan Engin"
+  },
+  {
+   "handle": "DrElectrick",
+   "name": "Dr Tr ⚡️"
+  },
+  {
+   "handle": "muratagirel",
+   "name": "Murat AĞIREL"
+  },
+  {
+   "handle": "DAcemogluMIT",
+   "name": "Daron Acemoglu"
+  },
+  {
+   "handle": "daronacemogIu",
+   "name": "Daron Acemoglu"
+  },
+  {
+   "handle": "ali_hakan_kara",
+   "name": "Hakan Kara"
+  },
+  {
+   "handle": "yungdadas",
+   "name": "Bahadır Erzurûmî"
+  },
+  {
+   "handle": "AlperCaglar",
+   "name": "Alper Caglar"
+  },
+  {
+   "handle": "SufyHaber",
+   "name": "Sufy"
+  },
+  {
+   "handle": "TaKendisiyimBen",
+   "name": "Foşix Erlik"
+  },
+  {
+   "handle": "kocuniversity",
+   "name": "Koç Üniversitesi"
+  },
+  {
+   "handle": "uhcensored",
+   "name": "uhc"
+  },
+  {
+   "handle": "msikkofield",
+   "name": "Cemre Demirel"
+  },
+  {
+   "handle": "medreyata",
+   "name": "Erdem Atay"
+  },
+  {
+   "handle": "iyf3466",
+   "name": "İstanbul Yozgatlılar Federasyonu"
+  },
+  {
+   "handle": "AdaletBakani61",
+   "name": "ERLIK"
+  },
+  {
+   "handle": "OdeonHareketi",
+   "name": "Koç Üniversitesi Odeon Hareketi"
+  },
+  {
+   "handle": "mahfiegilmez",
+   "name": "Mahfi Eğilmez"
+  },
+  {
+   "handle": "SelvaDemiralp",
+   "name": "Selva Demiralp"
+  },
+  {
+   "handle": "jahreindota",
+   "name": "Jahrein"
+  },
+  {
+   "handle": "sedat_peker",
+   "name": "Sedat Peker"
+  },
+  {
+   "handle": "purplebixi",
+   "name": "Bahadır Telci"
+  },
+  {
+   "handle": "haskologlu",
+   "name": "ibrahim Haskoloğlu"
   }
  ]
 }

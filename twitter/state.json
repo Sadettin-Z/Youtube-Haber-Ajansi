@@ -1,10 +1,10 @@
 {
  "month": "2026-10",
  "free_runs": {
-  "apidojo~twitter-user-scraper": 1,
-  "apidojo~tweet-scraper": 1
+  "apidojo~twitter-user-scraper": 2,
+  "apidojo~tweet-scraper": 3
  },
- "paid_items": 115,
- "paid_runs": 4,
+ "paid_items": 272,
+ "paid_runs": 7,
  "notes": []
 }

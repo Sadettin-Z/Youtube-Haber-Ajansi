@@ -1,10 +1,12 @@
 name: Twitter Haber Ajansı
 on:
-  schedule:
-    # Her gün 08:30 İstanbul (05:30 UTC): son 24 saat
-    - cron: '30 5 * * *'
-    # Pazartesi 09:30 İstanbul (06:30 UTC): haftalık özet (son 7 gün)
-    - cron: '30 6 * * 1'
+  # Zamanlanmış çalışma geçici olarak kapalı: rapor aşaması mevcut Gemini anahtarlarını kullanmayacak,
+  # yeni model/anahtar belirlenince aşağıdaki satırlar geri açılacak.
+  # schedule:
+  #   # Her gün 08:30 İstanbul (05:30 UTC): son 24 saat
+  #   - cron: '30 5 * * *'
+  #   # Pazartesi 09:30 İstanbul (06:30 UTC): haftalık özet (son 7 gün)
+  #   - cron: '30 6 * * 1'
   workflow_dispatch:
     inputs:
       mode:

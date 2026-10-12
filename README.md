@@ -35,7 +35,13 @@ Second pipeline in this repo (`twitter_main.py`, workflow `twitter.yml`). It sca
 
 ## How it gets the accounts
 1. `twitter/accounts.txt` — if it lists at least one handle, only those are scanned.
-2. Otherwise the following list of the `X_HANDLE` account is fetched through Apify and cached in `twitter/followings.json` for 7 days.
+2. Otherwise the following list of the `X_HANDLE` account is fetched through Apify and cached in `twitter/followings.json` for 30 days.
+
+## Apify actors and cost control
+Actors are tried in a chain (`DEFAULT_ACTORS` in `twitter_main.py`, overridable with `twitter/actors.json`). The free apidojo actors go first; they allow 5 runs a month and return at most 10 items per run, so a capped result is treated as incomplete and the next, pay-per-result actor is used. Monthly counters live in `twitter/state.json`:
+- `FREE_RUNS_PER_MONTH` (5): free-actor runs per month before they are skipped. Set to 0 to go straight to paid actors.
+- `MONTHLY_PAID_ITEMS_BUDGET` (6000): paid records per month. When reached, paid actors are skipped until next month and the report header shows a warning. The Apify credit is shared with other actors, so keep this low.
+- `MAX_TWEETS_PER_ACCOUNT` (15) and `MAX_TWEETS_TOTAL` (400) cap what one run asks for.
 
 ## Setup
 Secrets (shared with the YouTube pipeline): `APIFY_API_KEY`, `GEMINI_API_KEY_1..3`, `DISCORD_WEBHOOK_URL`.
@@ -45,10 +51,10 @@ Repository **variables** (Settings → Secrets and variables → Actions → Var
 - `X_HANDLE` — your X username without `@`. Defaults to `SadettinZ_` in the workflow; set the variable to override.
 - `DISCORD_MENTION_USER_ID` — optional, Discord user id to ping at the top of the report.
 
-Tuning via env in `twitter.yml`: `MAX_TWEETS_PER_ACCOUNT` (40), `INCLUDE_REPLIES` (0), `HANDLES_PER_RUN` (25), `APIFY_TWEET_ACTOR` (`apidojo~tweet-scraper`), `APIFY_FOLLOWING_ACTOR` (`apidojo~twitter-user-scraper`).
+Tuning via env in `twitter.yml`: `INCLUDE_REPLIES` (0), `HANDLES_PER_RUN` (25), `FOLLOWINGS_REFRESH_DAYS` (30).
 
 ## Manual run
-Actions → "Twitter Haber Ajansı" → Run workflow. `mode=scrape` only downloads the posts to `twitter/tweets.json` (no Gemini, no Discord). `hours` sets the window. `refresh_followings` re-fetches the following list.
+Actions → "Twitter Haber Ajansı" → Run workflow. `mode=scrape` only downloads the posts to `twitter/tweets.json` (no Gemini, no Discord). `mode=probe` runs every candidate actor with a tiny input and saves raw samples under `twitter/probe/` to check their schemas. `hours` sets the window. `refresh_followings` re-fetches the following list.
 
 ## Output
 - Discord message (chunked), with source links per topic.

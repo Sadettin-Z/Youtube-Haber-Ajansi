@@ -1,0 +1,7 @@
+# Elle hesap listesi (isteğe bağlı).
+# Bu dosyada en az bir hesap varsa takip listesi (X_HANDLE) HİÇ çekilmez, sadece buradakiler taranır.
+# Boş bırakılırsa X_HANDLE hesabının takip ettikleri Apify ile çekilir ve twitter/followings.json'a önbelleklenir.
+# Satır başına bir hesap, @ ile veya @'sız. "#" sonrası yorumdur.
+#
+# serdarakinan
+# fatihaltayli

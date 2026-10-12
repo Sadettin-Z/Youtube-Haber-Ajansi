@@ -178,8 +178,9 @@ def _paid_budget_left():
 # Türkiye kalıcı olarak UTC+3.
 ISTANBUL_TZ = timezone(timedelta(hours=3))
 
-# ELEME aşamasında bir Gemini çağrısına verilecek paylaşım sayısı.
-TRIAGE_BATCH = 120
+# ELEME aşamasında bir Gemini çağrısına verilecek paylaşım sayısı. 120'lik batch 35k karakter prompt ve
+# 4-5 dakikalık yanıt üretti (bağlantı kopması riski); 60 ile çağrılar kısa kalır.
+TRIAGE_BATCH = 60
 # RAPOR aşamasında tek çağrıya sığacak haber sayısı; üstü batch'lenir.
 REPORT_BATCH = 80
 
@@ -395,17 +396,21 @@ def call_gemini(prompt, label="Gemini", response_schema=None):
                         _quota_dead.add((model, key_idx))
                         log(f"⛔ Key #{key_idx} günlük kotası '{model}' için dolu", indent=2)
                         break
-                    if kind in ("rate", "transient"):
-                        log(f"🔁 Key #{key_idx} {kind} ({elapsed:.1f}s): {err[:160]} — sıradaki key", indent=2)
-                        break
-                    wait = (attempt + 1) * 30
-                    log(f"❌ API hatası (deneme {attempt+1}/3): {err[:200]} — {wait}s bekleniyor", indent=2)
-                    time.sleep(wait)
-        if not _live_keys(model) and m_pos + 1 < len(MODEL_CHAIN):
-            log(f"➡️ '{model}' kotası doldu, '{MODEL_CHAIN[m_pos + 1]}' modeline geçiliyor", indent=1)
+                    # rate/transient (503 yoğunluk, bağlantı kopması) ve diğer hatalar: aynı key'de kısa
+                    # beklemeyle yeniden dene; 3 deneme sonunda sıradaki key'e geç.
+                    wait = (attempt + 1) * 15
+                    log(f"🔁 Key #{key_idx} {kind} ({elapsed:.1f}s, deneme {attempt+1}/3): {err[:160]}"
+                        + (f" — {wait}s bekleniyor" if attempt < 2 else " — sıradaki key"), indent=2)
+                    if attempt < 2:
+                        time.sleep(wait)
+        # Bu modelde her key tükendi (kota, geçersiz veya tekrarlayan 503). 503 "high demand" modele
+        # özgü olduğundan sıradaki modele geçmek genellikle çözer.
+        if m_pos + 1 < len(MODEL_CHAIN):
+            reason = "kotası doldu" if not _live_keys(model) else "tüm key'lerde başarısız"
+            log(f"➡️ '{model}' {reason}, '{MODEL_CHAIN[m_pos + 1]}' modeline geçiliyor", indent=1)
             continue
         break
-    log(f"❌ [{label}] Tüm key'ler ve denemeler tükendi", indent=1)
+    log(f"❌ [{label}] Tüm modeller, key'ler ve denemeler tükendi", indent=1)
     return None
 
 

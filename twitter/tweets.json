@@ -1,0 +1,39 @@
+{
+ "window": {
+  "since": "2026-10-11T12:27:52.554893+00:00",
+  "until": "2026-10-12T12:27:52.554893+00:00",
+  "hours": 24
+ },
+ "source": "@SadettinZ_ takip listesi",
+ "accounts": 9,
+ "tweets": [
+  {
+   "id": "2109579966291558622",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor. Haberin detayı: https://t.co/DLfC6yHWgC",
+   "url": "https://x.com/KantanNewsX/status/2109579966291558622",
+   "created_at": "2026-10-12T09:40:32+00:00",
+   "likes": 0,
+   "retweets": 0,
+   "replies": 0,
+   "views": 172,
+   "is_reply": false,
+   "is_retweet": false
+  },
+  {
+   "id": "2109567405500305604",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Lancet Komisyonu'nun Berlin'deki zirvede açıkladığı rapora göre, kötü niyetli yapay zeka ve nükleer çatışma 2100'e kadar insanlığı yok olma riskiyle karşı karşıya bırakabilir. 17 tehdidin önlenmesi için erken politika müdahaleleri kritik önem taşıyor. https://t.co/cWMgv1Jh4g",
+   "url": "https://x.com/KantanNewsX/status/2109567405500305604",
+   "created_at": "2026-10-12T08:50:37+00:00",
+   "likes": 0,
+   "retweets": 0,
+   "replies": 1,
+   "views": 171,
+   "is_reply": false,
+   "is_retweet": false
+  }
+ ]
+}

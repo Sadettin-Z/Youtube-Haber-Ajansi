@@ -16,9 +16,9 @@ Ortam değişkenleri (GitHub Secrets / Variables):
   APIFY_API_KEY, GEMINI_API_KEY_1..3, DISCORD_WEBHOOK_URL       (zorunlu)
   X_HANDLE                takip listesi çekilecek hesap, ör. "SadettinZ_"
   WINDOW_HOURS            kaç saat geriye bakılacak (varsayılan 24; haftalık için 168)
-  MAX_TWEETS_PER_ACCOUNT  hesap başına en fazla paylaşım (varsayılan 15)
-  MAX_TWEETS_TOTAL        koşu başına toplam paylaşım tavanı (varsayılan 400)
-  MONTHLY_PAID_ITEMS_BUDGET aylık ücretli kayıt bütçesi (varsayılan 6000 ≈ 1-1,5 $); dolunca ücretli aktörler atlanır
+  MAX_TWEETS_PER_ACCOUNT  hesap başına en fazla paylaşım (varsayılan 10)
+  MAX_TWEETS_TOTAL        koşu başına toplam paylaşım tavanı (varsayılan 300)
+  MONTHLY_PAID_ITEMS_BUDGET aylık ücretli kayıt bütçesi (varsayılan 9000 ≈ 1,35 $); dolunca ücretli aktörler atlanır
   FREE_RUNS_PER_MONTH     ücretsiz aktörlerin aylık koşu hakkı (varsayılan 5); 0 = ücretsizi hiç deneme
   INCLUDE_REPLIES         "1" ise yanıtlar da alınır (varsayılan 0)
   FOLLOWINGS_REFRESH_DAYS takip listesi kaç günde bir yenilenir (varsayılan 30)
@@ -65,12 +65,12 @@ _quota_dead = set()
 
 X_HANDLE = (os.getenv("X_HANDLE") or "").strip().lstrip("@")
 WINDOW_HOURS = int(os.getenv("WINDOW_HOURS") or 24)
-MAX_TWEETS_PER_ACCOUNT = int(os.getenv("MAX_TWEETS_PER_ACCOUNT") or 15)
+MAX_TWEETS_PER_ACCOUNT = int(os.getenv("MAX_TWEETS_PER_ACCOUNT") or 10)
 # Bir koşuda ücretli aktörden istenecek toplam paylaşım üst sınırı (maliyet freni).
-MAX_TWEETS_TOTAL = int(os.getenv("MAX_TWEETS_TOTAL") or 400)
+MAX_TWEETS_TOTAL = int(os.getenv("MAX_TWEETS_TOTAL") or 300)
 # Aylık ücretli kayıt bütçesi. Apify kredisi başka aktörlerle paylaşıldığı için düşük tutulur.
-# 6000 kayıt ≈ 1-1,5 $ (aktöre göre 0,15-0,25 $/1000). Dolunca ücretli aktörler ay sonuna kadar atlanır.
-MONTHLY_PAID_ITEMS_BUDGET = int(os.getenv("MONTHLY_PAID_ITEMS_BUDGET") or 6000)
+# 9000 kayıt ≈ 1,35 $ (xquik 0,15 $/1000). Dolunca ücretli aktörler ay sonuna kadar atlanır.
+MONTHLY_PAID_ITEMS_BUDGET = int(os.getenv("MONTHLY_PAID_ITEMS_BUDGET") or 9000)
 # Ücretsiz (free:true) aktörlerin aylık koşu hakkı. apidojo aktörleri: ayda 5 koşu, koşu başına 10 kayıt.
 FREE_RUNS_PER_MONTH = int(os.getenv("FREE_RUNS_PER_MONTH") or 5)
 INCLUDE_REPLIES = (os.getenv("INCLUDE_REPLIES") or "0").strip() in ("1", "true", "yes")
@@ -105,13 +105,17 @@ DEFAULT_ACTORS = {
     "tweets": [
         {"actor": "apidojo~tweet-scraper", "kind": "handles", "free": True, "cap": 10,
          "input": {"sort": "Latest", "includeSearchTerms": False}},
+        # xquik: maxItems'a uyuyor, 0,15 $/1000, her planda tam sonuç (probe: 5 istendi 5 geldi).
+        {"actor": "xquik~x-tweet-scraper", "kind": "search", "input": {}},
+        # kaitoeasyapi: maxItems'ı yok sayıyor (probe: 5 istendi 40 geldi) → maliyeti öngörülemez, son çare.
         {"actor": "kaitoeasyapi~twitter-x-data-tweet-scraper-pay-per-result-cheapest", "kind": "search",
          "input": {"queryType": "Latest"}},
-        {"actor": "xquik~x-tweet-scraper", "kind": "search", "input": {}},
     ],
     "followings": [
         {"actor": "apidojo~twitter-user-scraper", "kind": "user_scraper", "free": True, "cap": 10, "input": {}},
+        # data-slayer: 1,5 $/1000 → 35 hesap ≈ 0,05 $ (probe: 35 kayıt, tam liste).
         {"actor": "data-slayer~twitter-followings", "kind": "userId", "input": {}},
+        # api-ninja: koşu başına asgari ücret var; yedek (probe: 35 kayıt, tam liste).
         {"actor": "api-ninja~x-twitter-followers-scraper", "kind": "urls", "input": {"scrapeAllResults": False}},
     ],
 }
@@ -160,6 +164,8 @@ def save_state(st):
 
 
 STATE = None  # main() içinde yüklenir
+# run_chain, ücretli aktörler çalışmayıp ücretsiz aktörün kesik sonucu kullanıldığında bu notu ekler.
+FALLBACK_NOTE = "ücretli aktör çalışmadı, kesik ücretsiz sonuç kullanılıyor"
 
 
 def _free_runs_left(spec):
@@ -556,7 +562,7 @@ def run_chain(chain, build_input, label, expected, timeout_s=900):
             STATE["paid_runs"] += 1
         return items, actor, notes
     if fallback:
-        notes.append(f"ücretli aktör çalışmadı, {fallback[1]} eksik sonucu kullanılıyor")
+        notes.append(f"{FALLBACK_NOTE} ({fallback[1]})")
         return fallback[0], fallback[1], notes
     return [], None, notes
 
@@ -596,6 +602,8 @@ def get_accounts():
             fresh = False
         if cache.get("handle", "").lower() != X_HANDLE.lower():
             fresh = False
+    if cache and not cache.get("complete"):
+        fresh = False  # ücretsiz aktörün 10'luk tavanına takılmış veya eski biçimli liste: yenile
     if cache and fresh and cache.get("accounts"):
         log(f"📋 Takip listesi önbellekten alındı ({len(cache['accounts'])} hesap, {cache['fetched_at'][:10]})")
         return cache["accounts"], f"@{X_HANDLE} takip listesi (önbellek)"
@@ -610,13 +618,15 @@ def get_accounts():
             raise RuntimeError("takip listesi boş döndü")
         # Ücretsiz aktörün 10'luk tavanına takılmış eksik liste, daha uzun bir önbellekten daha iyi değil:
         # elimizde daha büyük bir eski liste varsa onu koru.
-        if cache and cache.get("accounts") and len(cache["accounts"]) > len(accounts) and any("kesildi" in n for n in notes):
+        incomplete = any(n.startswith(FALLBACK_NOTE) for n in notes)
+        if cache and cache.get("accounts") and len(cache["accounts"]) > len(accounts) and incomplete:
             log(f"↩️ Yeni liste ({len(accounts)}) eski önbellekten ({len(cache['accounts'])}) küçük ve kesik; eski liste korunuyor")
             return cache["accounts"], f"@{X_HANDLE} takip listesi (önbellek)"
+        complete = not incomplete
         os.makedirs(DATA_DIR, exist_ok=True)
         with open(FOLLOWINGS_FILE, "w", encoding="utf-8") as f:
             json.dump({"handle": X_HANDLE, "fetched_at": datetime.now(timezone.utc).isoformat(),
-                       "actor": actor, "accounts": accounts}, f, ensure_ascii=False, indent=1)
+                       "actor": actor, "complete": complete, "accounts": accounts}, f, ensure_ascii=False, indent=1)
         log(f"📋 Takip listesi alındı ve önbelleğe yazıldı ({len(accounts)} hesap, {actor})")
         return accounts, f"@{X_HANDLE} takip listesi"
     except Exception as e:
@@ -1033,7 +1043,7 @@ def _main_body(t_start):
         log(f"🏁 Scrape tamamlandı ({len(tweets)} paylaşım, {time.time() - t_start:.0f}s)")
         return
 
-    warn = [n for n in fetch_notes if "bütçe" in n or "hata" in n or "eksik" in n]
+    warn = [n for n in fetch_notes if "bütçe" in n or "hata" in n or n.startswith(FALLBACK_NOTE)]
     warn_line = f"⚠️ {' · '.join(warn)}\n" if warn else ""
     if not tweets:
         msg = f"📅 **{day}** · Twitter Gündem\nPencere: {label}\n{len(accounts)} hesap tarandı, paylaşım bulunamadı.\n{warn_line}"

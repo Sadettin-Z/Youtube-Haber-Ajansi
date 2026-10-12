@@ -40,8 +40,10 @@ Second pipeline in this repo (`twitter_main.py`, workflow `twitter.yml`). It sca
 ## Apify actors and cost control
 Actors are tried in a chain (`DEFAULT_ACTORS` in `twitter_main.py`, overridable with `twitter/actors.json`). The free apidojo actors go first; they allow 5 runs a month and return at most 10 items per run, so a capped result is treated as incomplete and the next, pay-per-result actor is used. Monthly counters live in `twitter/state.json`:
 - `FREE_RUNS_PER_MONTH` (5): free-actor runs per month before they are skipped. Set to 0 to go straight to paid actors.
-- `MONTHLY_PAID_ITEMS_BUDGET` (6000): paid records per month. When reached, paid actors are skipped until next month and the report header shows a warning. The Apify credit is shared with other actors, so keep this low.
-- `MAX_TWEETS_PER_ACCOUNT` (15) and `MAX_TWEETS_TOTAL` (400) cap what one run asks for.
+- `MONTHLY_PAID_ITEMS_BUDGET` (9000): paid records per month, about $1.35 at xquik's rate. When reached, paid actors are skipped until next month and the report header shows a warning. The Apify credit is shared with other actors, so keep this low.
+- `MAX_TWEETS_PER_ACCOUNT` (10) and `MAX_TWEETS_TOTAL` (300) cap what one run asks for.
+
+Verified by probe (Oct 2026): following list via `data-slayer~twitter-followings` (full list), tweets via `xquik~x-tweet-scraper` (respects `maxItems`, $0.15/1000). `kaitoeasyapi` ignores `maxItems` and is kept only as a last fallback.
 
 ## Setup
 Secrets (shared with the YouTube pipeline): `APIFY_API_KEY`, `GEMINI_API_KEY_1..3`, `DISCORD_WEBHOOK_URL`.

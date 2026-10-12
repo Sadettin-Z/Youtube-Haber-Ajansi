@@ -1,0 +1,2019 @@
+{
+ "group": "tweets",
+ "actor": "apidojo~tweet-scraper",
+ "kind": "handles",
+ "free": true,
+ "probed_at": "2026-10-12T13:41:29.943260+00:00",
+ "input": {
+  "twitterHandles": [
+   "KantanNewsX"
+  ],
+  "maxItems": 5,
+  "sort": "Latest",
+  "start": "2026-10-04",
+  "end": "2026-10-13",
+  "includeSearchTerms": false
+ },
+ "count": 5,
+ "sample": [
+  {
+   "type": "tweet",
+   "id": "2109579966291558622",
+   "url": "https://x.com/KantanNewsX/status/2109579966291558622",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2109579966291558622",
+   "text": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor.\n\nHaberin detayı: https://t.co/DLfC6yHWgC",
+   "fullText": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor.\n\nHaberin detayı: https://t.co/DLfC6yHWgC",
+   "source": "",
+   "retweetCount": 0,
+   "replyCount": 0,
+   "likeCount": 0,
+   "quoteCount": 0,
+   "viewCount": 187,
+   "createdAt": "Mon Oct 12 09:40:32 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 0,
+   "isReply": false,
+   "conversationId": "2109579966291558622",
+   "possiblySensitive": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {},
+     "url": {
+      "urls": [
+       {
+        "display_url": "kantan.news",
+        "expanded_url": "https://kantan.news",
+        "indices": [
+         0,
+         23
+        ],
+        "url": "https://t.co/KbR5sWUHjd"
+       }
+      ]
+     }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false
+   },
+   "extendedEntities": {},
+   "card": {
+    "legacy": {
+     "binding_values": [
+      {
+       "key": "photo_image_full_size_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 147,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=280x150",
+         "width": 280
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "description",
+       "value": {
+        "string_value": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümün",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "domain",
+       "value": {
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 315,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x600",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_small",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_original",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "site",
+       "value": {
+        "scribe_key": "publisher_id",
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "photo_image_full_size_small",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_small",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 76,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=144x144",
+         "width": 144
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "creator",
+       "value": {
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "thumbnail_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_original",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_alt_text",
+       "value": {
+        "string_value": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "vanity_url",
+       "value": {
+        "scribe_key": "vanity_url",
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "photo_image_full_size",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_alt_text",
+       "value": {
+        "string_value": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 62.78,
+           "rgb": {
+            "blue": 41,
+            "green": 22,
+            "red": 11
+           }
+          },
+          {
+           "percentage": 23.17,
+           "rgb": {
+            "blue": 91,
+            "green": 48,
+            "red": 10
+           }
+          },
+          {
+           "percentage": 5.63,
+           "rgb": {
+            "blue": 166,
+            "green": 153,
+            "red": 131
+           }
+          },
+          {
+           "percentage": 3.87,
+           "rgb": {
+            "blue": 188,
+            "green": 126,
+            "red": 40
+           }
+          },
+          {
+           "percentage": 0.92,
+           "rgb": {
+            "blue": 221,
+            "green": 199,
+            "red": 101
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "title",
+       "value": {
+        "string_value": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi | Kantan.News",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 62.78,
+           "rgb": {
+            "blue": 41,
+            "green": 22,
+            "red": 11
+           }
+          },
+          {
+           "percentage": 23.17,
+           "rgb": {
+            "blue": 91,
+            "green": 48,
+            "red": 10
+           }
+          },
+          {
+           "percentage": 5.63,
+           "rgb": {
+            "blue": 166,
+            "green": 153,
+            "red": 131
+           }
+          },
+          {
+           "percentage": 3.87,
+           "rgb": {
+            "blue": 188,
+            "green": 126,
+            "red": 40
+           }
+          },
+          {
+           "percentage": 0.92,
+           "rgb": {
+            "blue": 221,
+            "green": 199,
+            "red": 101
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "summary_photo_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 62.78,
+           "rgb": {
+            "blue": 41,
+            "green": 22,
+            "red": 11
+           }
+          },
+          {
+           "percentage": 23.17,
+           "rgb": {
+            "blue": 91,
+            "green": 48,
+            "red": 10
+           }
+          },
+          {
+           "percentage": 5.63,
+           "rgb": {
+            "blue": 166,
+            "green": 153,
+            "red": 131
+           }
+          },
+          {
+           "percentage": 3.87,
+           "rgb": {
+            "blue": 188,
+            "green": 126,
+            "red": 40
+           }
+          },
+          {
+           "percentage": 0.92,
+           "rgb": {
+            "blue": 221,
+            "green": 199,
+            "red": 101
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "photo_image_full_size_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "card_url",
+       "value": {
+        "scribe_key": "card_url",
+        "string_value": "https://t.co/DLfC6yHWgC",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_original",
+       "value": {
+        "image_value": {
+         "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      }
+     ],
+     "card_platform": {
+      "platform": {
+       "audience": {
+        "name": "production"
+       },
+       "device": {
+        "name": "Swift",
+        "version": "12"
+       }
+      }
+     },
+     "name": "summary_large_image",
+     "url": "https://t.co/DLfC6yHWgC",
+     "user_refs_results": [
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      },
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      }
+     ]
+    },
+    "rest_id": "https://t.co/DLfC6yHWgC"
+   },
+   "place": {},
+   "entities": {
+    "urls": [
+     {
+      "display_url": "kantan.news/haber/toryum-c…",
+      "expanded_url": "https://kantan.news/haber/toryum-cekirdegiyle-calisan-ilk-kendi-kendini-dengeleyen-nukleer-saat-gelistirildi",
+      "indices": [
+       234,
+       257
+      ],
+      "url": "https://t.co/DLfC6yHWgC"
+     }
+    ]
+   },
+   "isRetweet": false,
+   "isQuote": false,
+   "media": [],
+   "videos": [],
+   "isConversationControlled": false
+  },
+  {
+   "type": "tweet",
+   "id": "2108998670657970275",
+   "url": "https://x.com/KantanNewsX/status/2108998670657970275",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2108998670657970275",
+   "text": "OpenAI, Rusya ve İran bağlantılı paravan dezenformasyon operasyonlarını engelledi. Sahte gazeteci profilleri ve kurgusal düşünce kuruluşları üzerinden uluslararası medyaya sızmaya çalışan ağların hesapları kapatıldı.\n\nHaberin detayı: https://t.co/2FVItEM0xQ",
+   "fullText": "OpenAI, Rusya ve İran bağlantılı paravan dezenformasyon operasyonlarını engelledi. Sahte gazeteci profilleri ve kurgusal düşünce kuruluşları üzerinden uluslararası medyaya sızmaya çalışan ağların hesapları kapatıldı.\n\nHaberin detayı: https://t.co/2FVItEM0xQ",
+   "source": "",
+   "retweetCount": 1,
+   "replyCount": 0,
+   "likeCount": 3,
+   "quoteCount": 0,
+   "viewCount": 309,
+   "createdAt": "Sat Oct 10 19:10:41 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 0,
+   "isReply": false,
+   "conversationId": "2108998670657970275",
+   "possiblySensitive": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {},
+     "url": {
+      "urls": [
+       {
+        "display_url": "kantan.news",
+        "expanded_url": "https://kantan.news",
+        "indices": [
+         0,
+         23
+        ],
+        "url": "https://t.co/KbR5sWUHjd"
+       }
+      ]
+     }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false
+   },
+   "extendedEntities": {},
+   "card": {
+    "legacy": {
+     "binding_values": [
+      {
+       "key": "photo_image_full_size_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 147,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=280x150",
+         "width": 280
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "description",
+       "value": {
+        "string_value": "OpenAI, Rusya ve İran bağlantılı paravan dezenformasyon operasyonlarını engelledi. Sahte gazeteci profilleri ve kurgusal düşünce kuruluşları üzerinden uluslararası medyaya sızmaya çalışan ağların hesa",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "domain",
+       "value": {
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 315,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=600x600",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_small",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_original",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "site",
+       "value": {
+        "scribe_key": "publisher_id",
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "photo_image_full_size_small",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_small",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 76,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=144x144",
+         "width": 144
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "creator",
+       "value": {
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "thumbnail_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_original",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_alt_text",
+       "value": {
+        "string_value": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "vanity_url",
+       "value": {
+        "scribe_key": "vanity_url",
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "photo_image_full_size",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_alt_text",
+       "value": {
+        "string_value": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 55.06,
+           "rgb": {
+            "blue": 32,
+            "green": 22,
+            "red": 17
+           }
+          },
+          {
+           "percentage": 7.65,
+           "rgb": {
+            "blue": 16,
+            "green": 38,
+            "red": 5
+           }
+          },
+          {
+           "percentage": 7.32,
+           "rgb": {
+            "blue": 26,
+            "green": 26,
+            "red": 70
+           }
+          },
+          {
+           "percentage": 6.28,
+           "rgb": {
+            "blue": 16,
+            "green": 124,
+            "red": 2
+           }
+          },
+          {
+           "percentage": 5.84,
+           "rgb": {
+            "blue": 39,
+            "green": 45,
+            "red": 232
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "title",
+       "value": {
+        "string_value": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi | Kantan.News",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 55.06,
+           "rgb": {
+            "blue": 32,
+            "green": 22,
+            "red": 17
+           }
+          },
+          {
+           "percentage": 7.65,
+           "rgb": {
+            "blue": 16,
+            "green": 38,
+            "red": 5
+           }
+          },
+          {
+           "percentage": 7.32,
+           "rgb": {
+            "blue": 26,
+            "green": 26,
+            "red": 70
+           }
+          },
+          {
+           "percentage": 6.28,
+           "rgb": {
+            "blue": 16,
+            "green": 124,
+            "red": 2
+           }
+          },
+          {
+           "percentage": 5.84,
+           "rgb": {
+            "blue": 39,
+            "green": 45,
+            "red": 232
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "summary_photo_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 55.06,
+           "rgb": {
+            "blue": 32,
+            "green": 22,
+            "red": 17
+           }
+          },
+          {
+           "percentage": 7.65,
+           "rgb": {
+            "blue": 16,
+            "green": 38,
+            "red": 5
+           }
+          },
+          {
+           "percentage": 7.32,
+           "rgb": {
+            "blue": 26,
+            "green": 26,
+            "red": 70
+           }
+          },
+          {
+           "percentage": 6.28,
+           "rgb": {
+            "blue": 16,
+            "green": 124,
+            "red": 2
+           }
+          },
+          {
+           "percentage": 5.84,
+           "rgb": {
+            "blue": 39,
+            "green": 45,
+            "red": 232
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "photo_image_full_size_x_large",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "card_url",
+       "value": {
+        "scribe_key": "card_url",
+        "string_value": "https://t.co/2FVItEM0xQ",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_original",
+       "value": {
+        "image_value": {
+         "alt": "OpenAI Rusya ve İran Kaynaklı Paravan Dezenformasyon Ağlarını Engelledi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108998676324433920/td8mxRLS?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      }
+     ],
+     "card_platform": {
+      "platform": {
+       "audience": {
+        "name": "production"
+       },
+       "device": {
+        "name": "Swift",
+        "version": "12"
+       }
+      }
+     },
+     "name": "summary_large_image",
+     "url": "https://t.co/2FVItEM0xQ",
+     "user_refs_results": [
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      },
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      }
+     ]
+    },
+    "rest_id": "https://t.co/2FVItEM0xQ"
+   },
+   "place": {},
+   "entities": {
+    "urls": [
+     {
+      "display_url": "kantan.news/haber/openai-r…",
+      "expanded_url": "https://kantan.news/haber/openai-rusya-ve-iran-kaynakli-paravan-dezenformasyon-aglarini-engelledi",
+      "indices": [
+       234,
+       257
+      ],
+      "url": "https://t.co/2FVItEM0xQ"
+     }
+    ]
+   },
+   "isRetweet": false,
+   "isQuote": false,
+   "media": [],
+   "videos": [],
+   "isConversationControlled": false
+  },
+  {
+   "type": "tweet",
+   "id": "2108877916750668014",
+   "url": "https://x.com/KantanNewsX/status/2108877916750668014",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2108877916750668014",
+   "text": "Google, AI Pro ve Ultra aboneliklerine Colab desteği ekledi. Aboneler 80 GB VRAM'e sahip A100 ve H100 grafik işlemcilerine erişerek Gemma 4 modellerini tarayıcı üzerinden çalıştırıp eğitebilecek.\n\nHaberin detayı: https://t.co/WhaJYebOBj",
+   "fullText": "Google, AI Pro ve Ultra aboneliklerine Colab desteği ekledi. Aboneler 80 GB VRAM'e sahip A100 ve H100 grafik işlemcilerine erişerek Gemma 4 modellerini tarayıcı üzerinden çalıştırıp eğitebilecek.\n\nHaberin detayı: https://t.co/WhaJYebOBj",
+   "source": "",
+   "retweetCount": 0,
+   "replyCount": 0,
+   "likeCount": 4,
+   "quoteCount": 0,
+   "viewCount": 1075,
+   "createdAt": "Sat Oct 10 11:10:51 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 3,
+   "isReply": false,
+   "conversationId": "2108877916750668014",
+   "possiblySensitive": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {},
+     "url": {
+      "urls": [
+       {
+        "display_url": "kantan.news",
+        "expanded_url": "https://kantan.news",
+        "indices": [
+         0,
+         23
+        ],
+        "url": "https://t.co/KbR5sWUHjd"
+       }
+      ]
+     }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false
+   },
+   "extendedEntities": {},
+   "card": {
+    "legacy": {
+     "binding_values": [
+      {
+       "key": "photo_image_full_size_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 147,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=280x150",
+         "width": 280
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "description",
+       "value": {
+        "string_value": "Google, AI Pro ve Ultra aboneliklerine Colab desteği ekledi. Aboneler 80 GB VRAM'e sahip A100 ve H100 grafik işlemcilerine erişerek Gemma 4 modellerini tarayıcı üzerinden çalıştırıp eğitebilecek.",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "domain",
+       "value": {
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 315,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=600x600",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_small",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_original",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "site",
+       "value": {
+        "scribe_key": "publisher_id",
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "photo_image_full_size_small",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 202,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=386x202",
+         "width": 386
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 419,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=800x419",
+         "width": 800
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "thumbnail_image_small",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 76,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=144x144",
+         "width": 144
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "creator",
+       "value": {
+        "type": "USER",
+        "user_value": {
+         "id_str": "2022593315556986881",
+         "path": []
+        }
+       }
+      },
+      {
+       "key": "thumbnail_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_original",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_alt_text",
+       "value": {
+        "string_value": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "vanity_url",
+       "value": {
+        "scribe_key": "vanity_url",
+        "string_value": "kantan.news",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "photo_image_full_size",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image_alt_text",
+       "value": {
+        "string_value": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "thumbnail_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 74.69,
+           "rgb": {
+            "blue": 33,
+            "green": 19,
+            "red": 14
+           }
+          },
+          {
+           "percentage": 11.18,
+           "rgb": {
+            "blue": 171,
+            "green": 168,
+            "red": 164
+           }
+          },
+          {
+           "percentage": 3.29,
+           "rgb": {
+            "blue": 4,
+            "green": 184,
+            "red": 117
+           }
+          },
+          {
+           "percentage": 2.99,
+           "rgb": {
+            "blue": 22,
+            "green": 104,
+            "red": 65
+           }
+          },
+          {
+           "percentage": 2.58,
+           "rgb": {
+            "blue": 42,
+            "green": 65,
+            "red": 71
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "title",
+       "value": {
+        "string_value": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi | Kantan.News",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 74.69,
+           "rgb": {
+            "blue": 33,
+            "green": 19,
+            "red": 14
+           }
+          },
+          {
+           "percentage": 11.18,
+           "rgb": {
+            "blue": 171,
+            "green": 168,
+            "red": 164
+           }
+          },
+          {
+           "percentage": 3.29,
+           "rgb": {
+            "blue": 4,
+            "green": 184,
+            "red": 117
+           }
+          },
+          {
+           "percentage": 2.99,
+           "rgb": {
+            "blue": 22,
+            "green": 104,
+            "red": 65
+           }
+          },
+          {
+           "percentage": 2.58,
+           "rgb": {
+            "blue": 42,
+            "green": 65,
+            "red": 71
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "summary_photo_image_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "summary_photo_image",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 314,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=600x314",
+         "width": 600
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "photo_image_full_size_color",
+       "value": {
+        "image_color_value": {
+         "palette": [
+          {
+           "percentage": 74.69,
+           "rgb": {
+            "blue": 33,
+            "green": 19,
+            "red": 14
+           }
+          },
+          {
+           "percentage": 11.18,
+           "rgb": {
+            "blue": 171,
+            "green": 168,
+            "red": 164
+           }
+          },
+          {
+           "percentage": 3.29,
+           "rgb": {
+            "blue": 4,
+            "green": 184,
+            "red": 117
+           }
+          },
+          {
+           "percentage": 2.99,
+           "rgb": {
+            "blue": 22,
+            "green": 104,
+            "red": 65
+           }
+          },
+          {
+           "percentage": 2.58,
+           "rgb": {
+            "blue": 42,
+            "green": 65,
+            "red": 71
+           }
+          }
+         ]
+        },
+        "type": "IMAGE_COLOR"
+       }
+      },
+      {
+       "key": "photo_image_full_size_x_large",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=png&name=2048x2048_2_exp",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      },
+      {
+       "key": "card_url",
+       "value": {
+        "scribe_key": "card_url",
+        "string_value": "https://t.co/WhaJYebOBj",
+        "type": "STRING"
+       }
+      },
+      {
+       "key": "summary_photo_image_original",
+       "value": {
+        "image_value": {
+         "alt": "Google AI Aboneliklerine Colab Avantajları Eklendi: A100 ve H100 Desteği Geldi",
+         "height": 630,
+         "url": "https://pbs.twimg.com/card_img/2108877920370380800/YCkbelXk?format=jpg&name=orig",
+         "width": 1200
+        },
+        "type": "IMAGE"
+       }
+      }
+     ],
+     "card_platform": {
+      "platform": {
+       "audience": {
+        "name": "production"
+       },
+       "device": {
+        "name": "Swift",
+        "version": "12"
+       }
+      }
+     },
+     "name": "summary_large_image",
+     "url": "https://t.co/WhaJYebOBj",
+     "user_refs_results": [
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      },
+      {
+       "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "has_graduated_access": true,
+        "id": "VXNlcjoyMDIyNTkzMzE1NTU2OTg2ODgx",
+        "is_blue_verified": true,
+        "legacy": {
+         "blocked_by": false,
+         "blocking": false,
+         "can_dm": false,
+         "can_media_tag": true,
+         "created_at": "Sat Feb 14 08:46:46 +0000 2026",
+         "default_profile": true,
+         "default_profile_image": false,
+         "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+         "entities": {
+          "description": {},
+          "url": {
+           "urls": [
+            {
+             "display_url": "kantan.news",
+             "expanded_url": "https://kantan.news",
+             "indices": [
+              0,
+              23
+             ],
+             "url": "https://t.co/KbR5sWUHjd"
+            }
+           ]
+          }
+         },
+         "fast_followers_count": 0,
+         "favourites_count": 30,
+         "follow_request_sent": false,
+         "followed_by": false,
+         "followers_count": 1836,
+         "following": false,
+         "friends_count": 1,
+         "has_custom_timelines": false,
+         "is_translator": false,
+         "listed_count": 12,
+         "location": "Türkiye",
+         "media_count": 128,
+         "muting": false,
+         "name": "kantan.news",
+         "needs_phone_verification": false,
+         "normal_followers_count": 1836,
+         "notifications": false,
+         "possibly_sensitive": false,
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+         "profile_interstitial_type": "",
+         "protected": false,
+         "screen_name": "KantanNewsX",
+         "statuses_count": 3791,
+         "time_zone": "",
+         "translator_type": "none",
+         "url": "https://t.co/KbR5sWUHjd",
+         "utc_offset": 0,
+         "verified": false,
+         "want_retweets": false,
+         "withheld_description": "",
+         "withheld_scope": ""
+        },
+        "profile_image_shape": "Circle",
+        "rest_id": "2022593315556986881",
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "tipjar_settings": {}
+       }
+      }
+     ]
+    },
+    "rest_id": "https://t.co/WhaJYebOBj"
+   },
+   "place": {},
+   "entities": {
+    "urls": [
+     {
+      "display_url": "kantan.news/haber/google-a…",
+      "expanded_url": "https://kantan.news/haber/google-ai-aboneliklerine-colab-avantajlari-eklendi-a100-ve-h100-destegi-geldi",
+      "indices": [
+       213,
+       236
+      ],
+      "url": "https://t.co/WhaJYebOBj"
+     }
+    ]
+   },
+   "isRetweet": false,
+   "isQuote": false,
+   "media": [],
+   "videos": [],
+   "isConversationControlled": false
+  }
+ ],
+ "handles_seen": [
+  "KantanNewsX"
+ ],
+ "normalized_ok": 5,
+ "normalized_sample": [
+  {
+   "id": "2109579966291558622",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor. Haberin detayı: https://t.co/DLfC6yHWgC",
+   "url": "https://x.com/KantanNewsX/status/2109579966291558622",
+   "created_at": "2026-10-12T09:40:32+00:00",
+   "likes": 0,
+   "retweets": 0,
+   "replies": 0,
+   "views": 187,
+   "is_reply": false,
+   "is_retweet": false
+  },
+  {
+   "id": "2108998670657970275",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "OpenAI, Rusya ve İran bağlantılı paravan dezenformasyon operasyonlarını engelledi. Sahte gazeteci profilleri ve kurgusal düşünce kuruluşları üzerinden uluslararası medyaya sızmaya çalışan ağların hesapları kapatıldı. Haberin detayı: https://t.co/2FVItEM0xQ",
+   "url": "https://x.com/KantanNewsX/status/2108998670657970275",
+   "created_at": "2026-10-10T19:10:41+00:00",
+   "likes": 3,
+   "retweets": 1,
+   "replies": 0,
+   "views": 309,
+   "is_reply": false,
+   "is_retweet": false
+  }
+ ]
+}

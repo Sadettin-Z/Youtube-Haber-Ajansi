@@ -1,0 +1,1240 @@
+{
+ "group": "tweets",
+ "actor": "kaitoeasyapi~twitter-x-data-tweet-scraper-pay-per-result-cheapest",
+ "kind": "search",
+ "free": false,
+ "probed_at": "2026-10-12T13:41:45.753693+00:00",
+ "input": {
+  "searchTerms": [
+   "from:KantanNewsX since:2026-10-05_13:40:43_UTC until:2026-10-12_13:40:43_UTC -filter:replies"
+  ],
+  "maxItems": 5,
+  "sort": "Latest",
+  "queryType": "Latest"
+ },
+ "count": 40,
+ "sample": [
+  {
+   "type": "tweet",
+   "id": "2109311016379064583",
+   "url": "https://x.com/KantanNewsX/status/2109311016379064583",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2109311016379064583",
+   "text": "ABD Başkanı Donald Trump, Rusya ve Ukrayna'nın enerji tesislerine yönelik saldırıları durdurma konusunda anlaştığını duyurdu. Zelenski anlaşmaya hazır olduklarını belirtirken garanti istedi. https://t.co/XjABFbQZex",
+   "source": "",
+   "retweetCount": 0,
+   "replyCount": 1,
+   "likeCount": 1,
+   "quoteCount": 0,
+   "viewCount": 304,
+   "createdAt": "Sun Oct 11 15:51:50 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 0,
+   "isReply": false,
+   "inReplyToId": null,
+   "conversationId": "2109311016379064583",
+   "inReplyToUserId": null,
+   "inReplyToUsername": null,
+   "isPinned": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {
+      "urls": []
+     },
+     "url": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "withheldInCountries": [],
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [],
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "isAutomated": false,
+    "automatedBy": null
+   },
+   "extendedEntities": {
+    "media": [
+     {
+      "display_url": "pic.x.com/XjABFbQZex",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109311003120836608",
+      "indices": [
+       191,
+       214
+      ],
+      "media_key": "3_2109311003120836608",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1Fxy6F1yAACgACHUXHMZwXoQcAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUXHLoXXIAAKAAIdRccxnBehBwAA",
+        "media_key": "3_2109311003120836608"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUXHLoXXIAAJDrG.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 541
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 270
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 119
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/XjABFbQZex"
+     },
+     {
+      "display_url": "pic.x.com/XjABFbQZex",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109311006723780608",
+      "indices": [
+       191,
+       214
+      ],
+      "media_key": "3_2109311006723780608",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1Fxy9cl7AACgACHUXHMZwXoQcAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUXHL1yXsAAKAAIdRccxnBehBwAA",
+        "media_key": "3_2109311006723780608"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUXHL1yXsAA-m1e.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 136
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/XjABFbQZex"
+     },
+     {
+      "display_url": "pic.x.com/XjABFbQZex",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109311010838339584",
+      "indices": [
+       191,
+       214
+      ],
+      "media_key": "3_2109311010838339584",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FxzBR1uAACgACHUXHMZwXoQcAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUXHMFHW4AAKAAIdRccxnBehBwAA",
+        "media_key": "3_2109311010838339584"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUXHMFHW4AA-6zB.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 474
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 236
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 119
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/XjABFbQZex"
+     },
+     {
+      "display_url": "pic.x.com/XjABFbQZex",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109311013258416128",
+      "indices": [
+       191,
+       214
+      ],
+      "media_key": "3_2109311013258416128",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FxzDiFlAACgACHUXHMZwXoQcAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUXHMOIWUAAKAAIdRccxnBehBwAA",
+        "media_key": "3_2109311013258416128"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUXHMOIWUAAN4qV.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 69
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 101,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/XjABFbQZex"
+     }
+    ]
+   },
+   "card": null,
+   "place": {},
+   "entities": {},
+   "reply_to_user_results": null,
+   "quoted_tweet_results": null,
+   "quoted_tweet": null,
+   "retweeted_tweet": null,
+   "isConversationControlled": false,
+   "searchTermIndex": 0
+  },
+  {
+   "type": "tweet",
+   "id": "2109278034117153037",
+   "url": "https://x.com/KantanNewsX/status/2109278034117153037",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2109278034117153037",
+   "text": "Yapay zekanın matematik kabiliyetlerindeki artış blokzincir güvenliğini gündeme taşıdı. Kriptografi uzmanları, eliptik eğri şifrelemelerine yönelik riskleri değerlendirirken cüzdan güvenliğinde temkinli olunması çağrısında bulunuyor. https://t.co/LLgloto5pT",
+   "source": "",
+   "retweetCount": 0,
+   "replyCount": 1,
+   "likeCount": 3,
+   "quoteCount": 0,
+   "viewCount": 253,
+   "createdAt": "Sun Oct 11 13:40:46 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 0,
+   "isReply": false,
+   "inReplyToId": null,
+   "conversationId": "2109278034117153037",
+   "inReplyToUserId": null,
+   "inReplyToUsername": null,
+   "isPinned": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {
+      "urls": []
+     },
+     "url": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "withheldInCountries": [],
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [],
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "isAutomated": false,
+    "automatedBy": null
+   },
+   "extendedEntities": {
+    "media": [
+     {
+      "display_url": "pic.x.com/LLgloto5pT",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109278034117153037/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109278024533164032",
+      "indices": [
+       234,
+       257
+      ],
+      "media_key": "3_2109278024533164032",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FqTAY1kAACgACHUWpMlQWUQ0AAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUWpMBjWQAAKAAIdRakyVBZRDQAA",
+        "media_key": "3_2109278024533164032"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUWpMBjWQAAoowU.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 541
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 270
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 119
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/LLgloto5pT"
+     },
+     {
+      "display_url": "pic.x.com/LLgloto5pT",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109278034117153037/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109278026718384128",
+      "indices": [
+       234,
+       257
+      ],
+      "media_key": "3_2109278026718384128",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FqTCbFhAACgACHUWpMlQWUQ0AAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUWpMJsWEAAKAAIdRakyVBZRDQAA",
+        "media_key": "3_2109278026718384128"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUWpMJsWEAAV72_.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 136
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/LLgloto5pT"
+     },
+     {
+      "display_url": "pic.x.com/LLgloto5pT",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109278034117153037/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109278029276966913",
+      "indices": [
+       234,
+       257
+      ],
+      "media_key": "3_2109278029276966913",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FqTEzlvABCgACHUWpMlQWUQ0AAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUWpMTOW8AEKAAIdRakyVBZRDQAA",
+        "media_key": "3_2109278029276966913"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUWpMTOW8AE1dly.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 1
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/LLgloto5pT"
+     },
+     {
+      "display_url": "pic.x.com/LLgloto5pT",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109278034117153037/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109278031671971840",
+      "indices": [
+       234,
+       257
+      ],
+      "media_key": "3_2109278031671971840",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FqTHCV9AACgACHUWpMlQWUQ0AAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUWpMcJX0AAKAAIdRakyVBZRDQAA",
+        "media_key": "3_2109278031671971840"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUWpMcJX0AAnhxY.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 69
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/LLgloto5pT"
+     }
+    ]
+   },
+   "card": null,
+   "place": {},
+   "entities": {},
+   "reply_to_user_results": null,
+   "quoted_tweet_results": null,
+   "quoted_tweet": null,
+   "retweeted_tweet": null,
+   "isConversationControlled": false,
+   "searchTermIndex": 0
+  },
+  {
+   "type": "tweet",
+   "id": "2109186117375275030",
+   "url": "https://x.com/KantanNewsX/status/2109186117375275030",
+   "twitterUrl": "https://twitter.com/KantanNewsX/status/2109186117375275030",
+   "text": "macOS için geliştirilen açık kaynaklı MC Download Manager yayınlandı. 16 paralel bağlantı desteği, Safari ve Chrome entegrasyonu, Türkçe dil seçeneği ile gömülü yt-dlp ve ffmpeg araçları tek pakette sunuluyor. https://t.co/UN6yTvg82o",
+   "source": "",
+   "retweetCount": 0,
+   "replyCount": 1,
+   "likeCount": 2,
+   "quoteCount": 0,
+   "viewCount": 325,
+   "createdAt": "Sun Oct 11 07:35:31 +0000 2026",
+   "lang": "tr",
+   "bookmarkCount": 0,
+   "isReply": false,
+   "inReplyToId": null,
+   "conversationId": "2109186117375275030",
+   "inReplyToUserId": null,
+   "inReplyToUsername": null,
+   "isPinned": false,
+   "author": {
+    "type": "user",
+    "userName": "KantanNewsX",
+    "url": "https://x.com/KantanNewsX",
+    "twitterUrl": "https://twitter.com/KantanNewsX",
+    "id": "2022593315556986881",
+    "name": "kantan.news",
+    "isVerified": false,
+    "isBlueVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "",
+    "location": "Türkiye",
+    "followers": 1836,
+    "following": 1,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "entities": {
+     "description": {
+      "urls": []
+     },
+     "url": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 30,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 128,
+    "statusesCount": 3791,
+    "withheldInCountries": [],
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [],
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "isAutomated": false,
+    "automatedBy": null
+   },
+   "extendedEntities": {
+    "media": [
+     {
+      "display_url": "pic.x.com/UN6yTvg82o",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109186117375275030/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109186107510231040",
+      "indices": [
+       210,
+       233
+      ],
+      "media_key": "3_2109186107510231040",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FVZb/VhAACgACHUVVmUtWsBYAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUVVlv9WEAAKAAIdRVWZS1awFgAA",
+        "media_key": "3_2109186107510231040"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUVVlv9WEAAYNpn.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 541
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 270
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 119
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/UN6yTvg82o"
+     },
+     {
+      "display_url": "pic.x.com/UN6yTvg82o",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109186117375275030/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109186109934604289",
+      "indices": [
+       210,
+       233
+      ],
+      "media_key": "3_2109186109934604289",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FVZeP1xABCgACHUVVmUtWsBYAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUVVl4/XEAEKAAIdRVWZS1awFgAA",
+        "media_key": "3_2109186109934604289"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUVVl4_XEAEG-sX.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 136
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 169,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/UN6yTvg82o"
+     },
+     {
+      "display_url": "pic.x.com/UN6yTvg82o",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109186117375275030/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109186112665124864",
+      "indices": [
+       210,
+       233
+      ],
+      "media_key": "3_2109186112665124864",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FVZgyl4AACgACHUVVmUtWsBYAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUVVmDKXgAAKAAIdRVWZS1awFgAA",
+        "media_key": "3_2109186112665124864"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUVVmDKXgAAsP43.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 69
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/UN6yTvg82o"
+     },
+     {
+      "display_url": "pic.x.com/UN6yTvg82o",
+      "expanded_url": "https://x.com/KantanNewsX/status/2109186117375275030/photo/1",
+      "ext_master_playlist_only": [],
+      "ext_media_availability": {
+       "status": "Available"
+      },
+      "ext_playlists": [],
+      "features": {
+       "large": {
+        "faces": []
+       },
+       "orig": {
+        "faces": []
+       }
+      },
+      "id_str": "2109186114921590784",
+      "indices": [
+       210,
+       233
+      ],
+      "media_key": "3_2109186114921590784",
+      "media_results": {
+       "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAAR1FVZi5FnAACgACHUVVmUtWsBYAAA==",
+       "result": {
+        "__typename": "ApiMedia",
+        "id": "QXBpTWVkaWE6DAABCgABHUVVmLkWcAAKAAIdRVWZS1awFgAA",
+        "media_key": "3_2109186114921590784"
+       }
+      },
+      "media_url_https": "https://pbs.twimg.com/media/HUVVmLkWcAAgSd_.jpg",
+      "original_info": {
+       "focus_rects": [
+        {
+         "h": 605,
+         "w": 1080,
+         "x": 0,
+         "y": 69
+        },
+        {
+         "h": 1080,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1231,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 675,
+         "x": 0,
+         "y": 0
+        },
+        {
+         "h": 1350,
+         "w": 1080,
+         "x": 0,
+         "y": 0
+        }
+       ],
+       "height": 1350,
+       "width": 1080
+      },
+      "sizes": {
+       "large": {
+        "h": 1350,
+        "w": 1080
+       }
+      },
+      "type": "photo",
+      "url": "https://t.co/UN6yTvg82o"
+     }
+    ]
+   },
+   "card": null,
+   "place": {},
+   "entities": {},
+   "reply_to_user_results": null,
+   "quoted_tweet_results": null,
+   "quoted_tweet": null,
+   "retweeted_tweet": null,
+   "isConversationControlled": false,
+   "searchTermIndex": 0
+  }
+ ],
+ "handles_seen": [
+  "KantanNewsX"
+ ],
+ "normalized_ok": 40,
+ "normalized_sample": [
+  {
+   "id": "2109311016379064583",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "ABD Başkanı Donald Trump, Rusya ve Ukrayna'nın enerji tesislerine yönelik saldırıları durdurma konusunda anlaştığını duyurdu. Zelenski anlaşmaya hazır olduklarını belirtirken garanti istedi. https://t.co/XjABFbQZex",
+   "url": "https://x.com/KantanNewsX/status/2109311016379064583",
+   "created_at": "2026-10-11T15:51:50+00:00",
+   "likes": 1,
+   "retweets": 0,
+   "replies": 1,
+   "views": 304,
+   "is_reply": false,
+   "is_retweet": false
+  },
+  {
+   "id": "2109278034117153037",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Yapay zekanın matematik kabiliyetlerindeki artış blokzincir güvenliğini gündeme taşıdı. Kriptografi uzmanları, eliptik eğri şifrelemelerine yönelik riskleri değerlendirirken cüzdan güvenliğinde temkinli olunması çağrısında bulunuyor. https://t.co/LLgloto5pT",
+   "url": "https://x.com/KantanNewsX/status/2109278034117153037",
+   "created_at": "2026-10-11T13:40:46+00:00",
+   "likes": 3,
+   "retweets": 0,
+   "replies": 1,
+   "views": 253,
+   "is_reply": false,
+   "is_retweet": false
+  }
+ ]
+}

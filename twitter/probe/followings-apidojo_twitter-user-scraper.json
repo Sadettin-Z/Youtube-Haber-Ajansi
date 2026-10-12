@@ -1,0 +1,172 @@
+{
+ "group": "followings",
+ "actor": "apidojo~twitter-user-scraper",
+ "kind": "user_scraper",
+ "free": true,
+ "probed_at": "2026-10-12T13:40:43.143137+00:00",
+ "input": {
+  "twitterHandles": [
+   "SadettinZ_"
+  ],
+  "getFollowing": true,
+  "getFollowers": false,
+  "maxItems": 100
+ },
+ "count": 10,
+ "sample": [
+  {
+   "inputSource": "SadettinZ_",
+   "type": "user",
+   "userName": "SadettinZ_",
+   "url": "https://x.com/SadettinZ_",
+   "twitterUrl": "https://twitter.com/SadettinZ_",
+   "id": "1175882134277505024",
+   "name": "Sadettin",
+   "isVerified": false,
+   "hasNftAvatar": false,
+   "profilePicture": "https://pbs.twimg.com/profile_images/1499884298522042375/934Pi7Bl_normal.jpg",
+   "coverPicture": "https://pbs.twimg.com/profile_banners/1175882134277505024/1765361409",
+   "description": "This is the funniest shit I have ever heard",
+   "location": "",
+   "followers": 11,
+   "following": 35,
+   "protected": false,
+   "status": "",
+   "canDm": true,
+   "canMediaTag": true,
+   "createdAt": "Sun Sep 22 21:18:50 +0000 2019",
+   "entities": {
+    "description": {}
+   },
+   "fastFollowersCount": 0,
+   "favouritesCount": 39803,
+   "listedCount": 0,
+   "hasCustomTimelines": false,
+   "isTranslator": false,
+   "mediaCount": 8,
+   "statusesCount": 301,
+   "affiliatesHighlightedLabel": {},
+   "possiblySensitive": false,
+   "pinnedTweetIds": [
+    "1264209601089744896"
+   ],
+   "profileInterstitialType": "",
+   "hasGraduatedAccess": true
+  },
+  {
+   "inputSource": "SadettinZ_",
+   "followedBy": "SadettinZ_",
+   "type": "user",
+   "userName": "KantanNewsX",
+   "url": "https://x.com/KantanNewsX",
+   "twitterUrl": "https://twitter.com/KantanNewsX",
+   "id": "2022593315556986881",
+   "name": "kantan.news",
+   "isVerified": true,
+   "hasNftAvatar": false,
+   "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+   "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+   "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+   "location": "Türkiye",
+   "followers": 1836,
+   "following": 1,
+   "protected": false,
+   "status": "",
+   "canDm": false,
+   "canMediaTag": true,
+   "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+   "entities": {
+    "description": {},
+    "url": {
+     "urls": [
+      {
+       "display_url": "kantan.news",
+       "expanded_url": "https://kantan.news",
+       "indices": [
+        0,
+        23
+       ],
+       "url": "https://t.co/KbR5sWUHjd"
+      }
+     ]
+    }
+   },
+   "fastFollowersCount": 0,
+   "favouritesCount": 30,
+   "listedCount": 12,
+   "hasCustomTimelines": false,
+   "isTranslator": false,
+   "mediaCount": 127,
+   "statusesCount": 3789,
+   "affiliatesHighlightedLabel": {},
+   "possiblySensitive": false,
+   "profileInterstitialType": "",
+   "hasGraduatedAccess": true
+  },
+  {
+   "inputSource": "SadettinZ_",
+   "followedBy": "SadettinZ_",
+   "type": "user",
+   "userName": "jeandpardaillan",
+   "url": "https://x.com/jeandpardaillan",
+   "twitterUrl": "https://twitter.com/jeandpardaillan",
+   "id": "14457172",
+   "name": "Emrah Safa Gürkan",
+   "isVerified": true,
+   "hasNftAvatar": false,
+   "profilePicture": "https://pbs.twimg.com/profile_images/1481706621424345093/69ECdQA5_normal.jpg",
+   "coverPicture": "https://pbs.twimg.com/profile_banners/14457172/1715599772",
+   "description": "Prof.Dr./Georgetown'12-Bilkent'03&06 TUBA Young Scientist Award/14th Kadir Has Promising Scientist Aw./TUBA Monograph Aw. - İletişim:content@omnibuslive.com",
+   "location": "İstanbul",
+   "followers": 491714,
+   "following": 1795,
+   "protected": false,
+   "status": "",
+   "canDm": false,
+   "canMediaTag": true,
+   "createdAt": "Mon Apr 21 01:51:54 +0000 2008",
+   "entities": {
+    "description": {},
+    "url": {
+     "urls": [
+      {
+       "display_url": "youtube.com/channel/UCmZUV…",
+       "expanded_url": "https://www.youtube.com/channel/UCmZUVTP8dtWqmsVhqt7tPEQ",
+       "indices": [
+        0,
+        23
+       ],
+       "url": "https://t.co/dAjRQeyvIs"
+      }
+     ]
+    }
+   },
+   "fastFollowersCount": 0,
+   "favouritesCount": 32698,
+   "listedCount": 727,
+   "hasCustomTimelines": true,
+   "isTranslator": false,
+   "mediaCount": 5235,
+   "statusesCount": 54968,
+   "affiliatesHighlightedLabel": {},
+   "possiblySensitive": false,
+   "pinnedTweetIds": [
+    "1975572500525224034"
+   ],
+   "profileInterstitialType": "",
+   "hasGraduatedAccess": true
+  }
+ ],
+ "handles_seen": [
+  "GazeteOksijen",
+  "KantanNewsX",
+  "OguzhanUgur",
+  "SadettinZ_",
+  "andmcetin",
+  "jeandpardaillan",
+  "mesutcevik",
+  "nihadagenc",
+  "timursoykan",
+  "yunuspaksoy"
+ ]
+}

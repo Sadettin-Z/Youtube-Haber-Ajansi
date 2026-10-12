@@ -1,0 +1,1282 @@
+{
+ "group": "tweets",
+ "actor": "xquik~x-tweet-scraper",
+ "kind": "search",
+ "free": false,
+ "probed_at": "2026-10-12T13:42:16.464127+00:00",
+ "input": {
+  "searchTerms": [
+   "from:KantanNewsX since:2026-10-05_13:40:43_UTC until:2026-10-12_13:40:43_UTC -filter:replies"
+  ],
+  "maxItems": 5,
+  "sort": "Latest"
+ },
+ "count": 5,
+ "sample": [
+  {
+   "id": "2109579966291558622",
+   "text": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor.\n\nHaberin detayı: https://t.co/DLfC6yHWgC",
+   "retweetCount": 0,
+   "replyCount": 0,
+   "likeCount": 0,
+   "quoteCount": 0,
+   "viewCount": 188,
+   "bookmarkCount": 0,
+   "card": {
+    "bindingValues": {
+     "photo_image_full_size_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 419,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=800x419",
+      "width": 800
+     },
+     "thumbnail_image": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 147,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=280x150",
+      "width": 280
+     },
+     "description": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümün",
+     "domain": "kantan.news",
+     "thumbnail_image_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 315,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x600",
+      "width": 600
+     },
+     "summary_photo_image_small": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 202,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=386x202",
+      "width": 386
+     },
+     "thumbnail_image_original": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+      "width": 1200
+     },
+     "site": {
+      "id": "2022593315556986881"
+     },
+     "photo_image_full_size_small": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 202,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=386x202",
+      "width": 386
+     },
+     "summary_photo_image_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 419,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=800x419",
+      "width": 800
+     },
+     "thumbnail_image_small": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 76,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=144x144",
+      "width": 144
+     },
+     "creator": {
+      "id": "2022593315556986881"
+     },
+     "thumbnail_image_x_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+      "width": 1200
+     },
+     "photo_image_full_size_original": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+      "width": 1200
+     },
+     "photo_image_full_size_alt_text": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+     "vanity_url": "kantan.news",
+     "photo_image_full_size": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 314,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x314",
+      "width": 600
+     },
+     "summary_photo_image_alt_text": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+     "thumbnail_image_color": {
+      "palette": [
+       {
+        "percentage": 62.78,
+        "rgb": {
+         "blue": 41,
+         "green": 22,
+         "red": 11
+        }
+       },
+       {
+        "percentage": 23.17,
+        "rgb": {
+         "blue": 91,
+         "green": 48,
+         "red": 10
+        }
+       },
+       {
+        "percentage": 5.63,
+        "rgb": {
+         "blue": 166,
+         "green": 153,
+         "red": 131
+        }
+       },
+       {
+        "percentage": 3.87,
+        "rgb": {
+         "blue": 188,
+         "green": 126,
+         "red": 40
+        }
+       },
+       {
+        "percentage": 0.92,
+        "rgb": {
+         "blue": 221,
+         "green": 199,
+         "red": 101
+        }
+       }
+      ]
+     },
+     "title": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi | Kantan.News",
+     "summary_photo_image_color": {
+      "palette": [
+       {
+        "percentage": 62.78,
+        "rgb": {
+         "blue": 41,
+         "green": 22,
+         "red": 11
+        }
+       },
+       {
+        "percentage": 23.17,
+        "rgb": {
+         "blue": 91,
+         "green": 48,
+         "red": 10
+        }
+       },
+       {
+        "percentage": 5.63,
+        "rgb": {
+         "blue": 166,
+         "green": 153,
+         "red": 131
+        }
+       },
+       {
+        "percentage": 3.87,
+        "rgb": {
+         "blue": 188,
+         "green": 126,
+         "red": 40
+        }
+       },
+       {
+        "percentage": 0.92,
+        "rgb": {
+         "blue": 221,
+         "green": 199,
+         "red": 101
+        }
+       }
+      ]
+     },
+     "summary_photo_image_x_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+      "width": 1200
+     },
+     "summary_photo_image": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 314,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=600x314",
+      "width": 600
+     },
+     "photo_image_full_size_color": {
+      "palette": [
+       {
+        "percentage": 62.78,
+        "rgb": {
+         "blue": 41,
+         "green": 22,
+         "red": 11
+        }
+       },
+       {
+        "percentage": 23.17,
+        "rgb": {
+         "blue": 91,
+         "green": 48,
+         "red": 10
+        }
+       },
+       {
+        "percentage": 5.63,
+        "rgb": {
+         "blue": 166,
+         "green": 153,
+         "red": 131
+        }
+       },
+       {
+        "percentage": 3.87,
+        "rgb": {
+         "blue": 188,
+         "green": 126,
+         "red": 40
+        }
+       },
+       {
+        "percentage": 0.92,
+        "rgb": {
+         "blue": 221,
+         "green": 199,
+         "red": 101
+        }
+       }
+      ]
+     },
+     "photo_image_full_size_x_large": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=png&name=2048x2048_2_exp",
+      "width": 1200
+     },
+     "card_url": "https://t.co/DLfC6yHWgC",
+     "summary_photo_image_original": {
+      "alt": "Toryum Çekirdeğiyle Çalışan İlk Kendi Kendini Dengeleyen Nükleer Saat Geliştirildi",
+      "height": 630,
+      "url": "https://pbs.twimg.com/card_img/2109579973333864448/kbP8kRIb?format=jpg&name=orig",
+      "width": 1200
+     }
+    },
+    "id": "https://t.co/DLfC6yHWgC",
+    "name": "summary_large_image",
+    "platform": {
+     "platform": {
+      "audience": {
+       "name": "production"
+      },
+      "device": {
+       "name": "Swift",
+       "version": "12"
+      }
+     }
+    },
+    "url": "https://t.co/DLfC6yHWgC",
+    "userReferences": [
+     {
+      "id": "2022593315556986881",
+      "username": "KantanNewsX",
+      "name": "kantan.news",
+      "followers": 1836,
+      "contactInfo": {
+       "links": [
+        {
+         "network": "website",
+         "source": "url",
+         "url": "https://kantan.news"
+        }
+       ]
+      },
+      "following": 1,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+      "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+      "location": "Türkiye",
+      "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+      "statusesCount": 3791,
+      "mediaCount": 128,
+      "protected": false,
+      "url": "https://kantan.news",
+      "favouritesCount": 30,
+      "possiblySensitive": false,
+      "verifiedType": "Blue",
+      "profile_bio": {
+       "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+       "entities": {
+        "description": {},
+        "url": {
+         "urls": [
+          {
+           "display_url": "kantan.news",
+           "expanded_url": "https://kantan.news",
+           "indices": [
+            0,
+            23
+           ],
+           "url": "https://t.co/KbR5sWUHjd"
+          }
+         ]
+        }
+       }
+      },
+      "hasGraduatedAccess": true,
+      "parodyCommentaryFanLabel": "None",
+      "profileDescriptionLanguage": "tr",
+      "profileImageShape": "Circle",
+      "profileTranslatorType": "none",
+      "superFollowEligible": false
+     },
+     {
+      "id": "2022593315556986881",
+      "username": "KantanNewsX",
+      "name": "kantan.news",
+      "followers": 1836,
+      "contactInfo": {
+       "links": [
+        {
+         "network": "website",
+         "source": "url",
+         "url": "https://kantan.news"
+        }
+       ]
+      },
+      "following": 1,
+      "verified": true,
+      "isBlueVerified": true,
+      "isVerified": true,
+      "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+      "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+      "profileBannerUrl": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+      "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+      "location": "Türkiye",
+      "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+      "statusesCount": 3791,
+      "mediaCount": 128,
+      "protected": false,
+      "url": "https://kantan.news",
+      "favouritesCount": 30,
+      "possiblySensitive": false,
+      "verifiedType": "Blue",
+      "profile_bio": {
+       "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+       "entities": {
+        "description": {},
+        "url": {
+         "urls": [
+          {
+           "display_url": "kantan.news",
+           "expanded_url": "https://kantan.news",
+           "indices": [
+            0,
+            23
+           ],
+           "url": "https://t.co/KbR5sWUHjd"
+          }
+         ]
+        }
+       }
+      },
+      "hasGraduatedAccess": true,
+      "parodyCommentaryFanLabel": "None",
+      "profileDescriptionLanguage": "tr",
+      "profileImageShape": "Circle",
+      "profileTranslatorType": "none",
+      "superFollowEligible": false
+     }
+    ]
+   },
+   "conversationId": "2109579966291558622",
+   "displayTextRange": [
+    0,
+    257
+   ],
+   "edit": {
+    "editableUntilMsecs": "1791801632000",
+    "editTweetIds": [
+     "2109579966291558622"
+    ]
+   },
+   "entities": {
+    "hashtags": [],
+    "urls": [
+     {
+      "display_url": "kantan.news/haber/toryum-c…",
+      "expanded_url": "https://kantan.news/haber/toryum-cekirdegiyle-calisan-ilk-kendi-kendini-dengeleyen-nukleer-saat-gelistirildi",
+      "indices": [
+       234,
+       257
+      ],
+      "url": "https://t.co/DLfC6yHWgC"
+     }
+    ],
+    "user_mentions": []
+   },
+   "isNoteTweet": false,
+   "isPinned": false,
+   "isQuoteStatus": false,
+   "isReply": false,
+   "isRetweet": false,
+   "isTranslatable": true,
+   "lang": "tr",
+   "possiblySensitive": false,
+   "type": "tweet",
+   "url": "https://x.com/KantanNewsX/status/2109579966291558622",
+   "viewState": "EnabledWithCount",
+   "createdAt": "Mon Oct 12 09:40:32 +0000 2026",
+   "author": {
+    "id": "2022593315556986881",
+    "username": "KantanNewsX",
+    "name": "kantan.news",
+    "followers": 1836,
+    "contactInfo": {
+     "links": [
+      {
+       "network": "website",
+       "source": "url",
+       "url": "https://kantan.news"
+      }
+     ]
+    },
+    "following": 1,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "statusesCount": 3791,
+    "mediaCount": 128,
+    "protected": false,
+    "url": "https://kantan.news",
+    "favouritesCount": 30,
+    "isTranslator": false,
+    "possiblySensitive": false,
+    "verifiedType": "Blue",
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "hasGraduatedAccess": true,
+    "parodyCommentaryFanLabel": "None",
+    "profileDescriptionLanguage": "tr",
+    "profileImageShape": "Circle",
+    "profileTranslatorType": "none",
+    "superFollowEligible": false
+   }
+  },
+  {
+   "id": "2109567405500305604",
+   "text": "Lancet Komisyonu'nun Berlin'deki zirvede açıkladığı rapora göre, kötü niyetli yapay zeka ve nükleer çatışma 2100'e kadar insanlığı yok olma riskiyle karşı karşıya bırakabilir. 17 tehdidin önlenmesi için erken politika müdahaleleri kritik önem taşıyor. https://t.co/cWMgv1Jh4g",
+   "retweetCount": 0,
+   "replyCount": 1,
+   "likeCount": 0,
+   "quoteCount": 0,
+   "viewCount": 181,
+   "bookmarkCount": 0,
+   "conversationId": "2109567405500305604",
+   "displayTextRange": [
+    0,
+    251
+   ],
+   "edit": {
+    "editableUntilMsecs": "1791798637000",
+    "editTweetIds": [
+     "2109567405500305604"
+    ]
+   },
+   "entities": {
+    "hashtags": [],
+    "urls": [],
+    "user_mentions": []
+   },
+   "isNoteTweet": false,
+   "isPinned": false,
+   "isQuoteStatus": false,
+   "isReply": false,
+   "isRetweet": false,
+   "isTranslatable": true,
+   "lang": "tr",
+   "possiblySensitive": false,
+   "type": "tweet",
+   "url": "https://x.com/KantanNewsX/status/2109567405500305604",
+   "viewState": "EnabledWithCount",
+   "createdAt": "Mon Oct 12 08:50:37 +0000 2026",
+   "media": [
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/cWMgv1Jh4g",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109567405500305604/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 541
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 270
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 119
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109567395413061632",
+     "indices": [
+      252,
+      275
+     ],
+     "mediaKey": "3_2109567395413061632",
+     "mediaUrl": "https://pbs.twimg.com/media/HUawXoFXcAAGc0v.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/cWMgv1Jh4g",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/cWMgv1Jh4g",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109567405500305604/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 204
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109567397749194752",
+     "indices": [
+      252,
+      275
+     ],
+     "mediaKey": "3_2109567397749194752",
+     "mediaUrl": "https://pbs.twimg.com/media/HUawXwyWAAAqLLx.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/cWMgv1Jh4g",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/cWMgv1Jh4g",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109567405500305604/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 1
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109567399997341696",
+     "indices": [
+      252,
+      275
+     ],
+     "mediaKey": "3_2109567399997341696",
+     "mediaUrl": "https://pbs.twimg.com/media/HUawX5KWAAAwkQ6.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/cWMgv1Jh4g",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/cWMgv1Jh4g",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109567405500305604/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 136
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 236,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109567402908266496",
+     "indices": [
+      252,
+      275
+     ],
+     "mediaKey": "3_2109567402908266496",
+     "mediaUrl": "https://pbs.twimg.com/media/HUawYEAXMAARou-.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/cWMgv1Jh4g",
+     "width": 1080
+    }
+   ],
+   "author": {
+    "id": "2022593315556986881",
+    "username": "KantanNewsX",
+    "name": "kantan.news",
+    "followers": 1836,
+    "contactInfo": {
+     "links": [
+      {
+       "network": "website",
+       "source": "url",
+       "url": "https://kantan.news"
+      }
+     ]
+    },
+    "following": 1,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "statusesCount": 3791,
+    "mediaCount": 128,
+    "protected": false,
+    "url": "https://kantan.news",
+    "favouritesCount": 30,
+    "isTranslator": false,
+    "possiblySensitive": false,
+    "verifiedType": "Blue",
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "hasGraduatedAccess": true,
+    "parodyCommentaryFanLabel": "None",
+    "profileDescriptionLanguage": "tr",
+    "profileImageShape": "Circle",
+    "profileTranslatorType": "none",
+    "superFollowEligible": false
+   }
+  },
+  {
+   "id": "2109311016379064583",
+   "text": "ABD Başkanı Donald Trump, Rusya ve Ukrayna'nın enerji tesislerine yönelik saldırıları durdurma konusunda anlaştığını duyurdu. Zelenski anlaşmaya hazır olduklarını belirtirken garanti istedi. https://t.co/XjABFbQZex",
+   "retweetCount": 0,
+   "replyCount": 1,
+   "likeCount": 1,
+   "quoteCount": 0,
+   "viewCount": 304,
+   "bookmarkCount": 0,
+   "conversationId": "2109311016379064583",
+   "displayTextRange": [
+    0,
+    190
+   ],
+   "edit": {
+    "editableUntilMsecs": "1791737510000",
+    "editTweetIds": [
+     "2109311016379064583"
+    ]
+   },
+   "entities": {
+    "hashtags": [],
+    "urls": [],
+    "user_mentions": []
+   },
+   "isNoteTweet": false,
+   "isPinned": false,
+   "isQuoteStatus": false,
+   "isReply": false,
+   "isRetweet": false,
+   "isTranslatable": true,
+   "lang": "tr",
+   "possiblySensitive": false,
+   "type": "tweet",
+   "url": "https://x.com/KantanNewsX/status/2109311016379064583",
+   "viewState": "EnabledWithCount",
+   "createdAt": "Sun Oct 11 15:51:50 +0000 2026",
+   "media": [
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/XjABFbQZex",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 541
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 270
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 119
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109311003120836608",
+     "indices": [
+      191,
+      214
+     ],
+     "mediaKey": "3_2109311003120836608",
+     "mediaUrl": "https://pbs.twimg.com/media/HUXHLoXXIAAJDrG.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/XjABFbQZex",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/XjABFbQZex",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 136
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109311006723780608",
+     "indices": [
+      191,
+      214
+     ],
+     "mediaKey": "3_2109311006723780608",
+     "mediaUrl": "https://pbs.twimg.com/media/HUXHL1yXsAA-m1e.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/XjABFbQZex",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/XjABFbQZex",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 474
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 236
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 119
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109311010838339584",
+     "indices": [
+      191,
+      214
+     ],
+     "mediaKey": "3_2109311010838339584",
+     "mediaUrl": "https://pbs.twimg.com/media/HUXHMFHW4AA-6zB.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/XjABFbQZex",
+     "width": 1080
+    },
+    {
+     "availabilityStatus": "Available",
+     "displayUrl": "pic.x.com/XjABFbQZex",
+     "expandedUrl": "https://x.com/KantanNewsX/status/2109311016379064583/photo/1",
+     "focusRects": [
+      {
+       "h": 605,
+       "w": 1080,
+       "x": 0,
+       "y": 69
+      },
+      {
+       "h": 1080,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1231,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 675,
+       "x": 101,
+       "y": 0
+      },
+      {
+       "h": 1350,
+       "w": 1080,
+       "x": 0,
+       "y": 0
+      }
+     ],
+     "height": 1350,
+     "id": "2109311013258416128",
+     "indices": [
+      191,
+      214
+     ],
+     "mediaKey": "3_2109311013258416128",
+     "mediaUrl": "https://pbs.twimg.com/media/HUXHMOIWUAAN4qV.jpg",
+     "sizes": {
+      "large": {
+       "h": 1350,
+       "resize": "fit",
+       "w": 1080
+      },
+      "medium": {
+       "h": 1200,
+       "resize": "fit",
+       "w": 960
+      },
+      "small": {
+       "h": 680,
+       "resize": "fit",
+       "w": 544
+      },
+      "thumb": {
+       "h": 150,
+       "resize": "crop",
+       "w": 150
+      }
+     },
+     "type": "photo",
+     "url": "https://t.co/XjABFbQZex",
+     "width": 1080
+    }
+   ],
+   "author": {
+    "id": "2022593315556986881",
+    "username": "KantanNewsX",
+    "name": "kantan.news",
+    "followers": 1836,
+    "contactInfo": {
+     "links": [
+      {
+       "network": "website",
+       "source": "url",
+       "url": "https://kantan.news"
+      }
+     ]
+    },
+    "following": 1,
+    "verified": true,
+    "isBlueVerified": true,
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "profileBannerUrl": "https://pbs.twimg.com/profile_banners/2022593315556986881/1771241370",
+    "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+    "location": "Türkiye",
+    "createdAt": "Sat Feb 14 08:46:46 +0000 2026",
+    "statusesCount": 3791,
+    "mediaCount": 128,
+    "protected": false,
+    "url": "https://kantan.news",
+    "favouritesCount": 30,
+    "isTranslator": false,
+    "possiblySensitive": false,
+    "verifiedType": "Blue",
+    "profile_bio": {
+     "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+     "entities": {
+      "description": {},
+      "url": {
+       "urls": [
+        {
+         "display_url": "kantan.news",
+         "expanded_url": "https://kantan.news",
+         "indices": [
+          0,
+          23
+         ],
+         "url": "https://t.co/KbR5sWUHjd"
+        }
+       ]
+      }
+     }
+    },
+    "hasGraduatedAccess": true,
+    "parodyCommentaryFanLabel": "None",
+    "profileDescriptionLanguage": "tr",
+    "profileImageShape": "Circle",
+    "profileTranslatorType": "none",
+    "superFollowEligible": false
+   }
+  }
+ ],
+ "handles_seen": [
+  "KantanNewsX"
+ ],
+ "normalized_ok": 5,
+ "normalized_sample": [
+  {
+   "id": "2109579966291558622",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Fizikçiler, toryum-229 izotopunu kullanarak 30 milyon yılda sadece 1 saniye sapan ilk kendi kendini dengeleyen nükleer saati geliştirdi. Dış etkilere kapalı çekirdek yapısı, ultra hassas zaman ölçümünün önünü açıyor. Haberin detayı: https://t.co/DLfC6yHWgC",
+   "url": "https://x.com/KantanNewsX/status/2109579966291558622",
+   "created_at": "2026-10-12T09:40:32+00:00",
+   "likes": 0,
+   "retweets": 0,
+   "replies": 0,
+   "views": 188,
+   "is_reply": false,
+   "is_retweet": false
+  },
+  {
+   "id": "2109567405500305604",
+   "handle": "KantanNewsX",
+   "name": "kantan.news",
+   "text": "Lancet Komisyonu'nun Berlin'deki zirvede açıkladığı rapora göre, kötü niyetli yapay zeka ve nükleer çatışma 2100'e kadar insanlığı yok olma riskiyle karşı karşıya bırakabilir. 17 tehdidin önlenmesi için erken politika müdahaleleri kritik önem taşıyor. https://t.co/cWMgv1Jh4g",
+   "url": "https://x.com/KantanNewsX/status/2109567405500305604",
+   "created_at": "2026-10-12T08:50:37+00:00",
+   "likes": 0,
+   "retweets": 0,
+   "replies": 1,
+   "views": 181,
+   "is_reply": false,
+   "is_retweet": false
+  }
+ ]
+}

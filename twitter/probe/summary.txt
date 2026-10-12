@@ -1,0 +1,6 @@
+✅ followings apidojo~twitter-user-scraper: 10 kayıt
+✅ followings data-slayer~twitter-followings: 35 kayıt
+✅ followings api-ninja~x-twitter-followers-scraper: 35 kayıt
+✅ tweets apidojo~tweet-scraper: 5 kayıt
+✅ tweets kaitoeasyapi~twitter-x-data-tweet-scraper-pay-per-result-cheapest: 40 kayıt
+✅ tweets xquik~x-tweet-scraper: 5 kayıt

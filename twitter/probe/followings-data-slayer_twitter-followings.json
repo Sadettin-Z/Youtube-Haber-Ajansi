@@ -1,0 +1,74 @@
+{
+ "group": "followings",
+ "actor": "data-slayer~twitter-followings",
+ "kind": "userId",
+ "free": false,
+ "probed_at": "2026-10-12T13:40:58.669946+00:00",
+ "input": {
+  "userId": "SadettinZ_"
+ },
+ "count": 35,
+ "sample": [
+  {
+   "user_id": "2022593315556986881",
+   "screen_name": "KantanNewsX",
+   "description": "Dünya her zamankinden daha hızlı ve çok daha gürültülü. Bu karmaşa içinde haber okumayı kolaylaştırmayı amaçlıyoruz.",
+   "profile_image": "https://pbs.twimg.com/profile_images/2022593769783332864/6Su5WpNJ_normal.jpg",
+   "statuses_count": 3789,
+   "followers_count": 1836,
+   "friends_count": 1,
+   "website": "https://kantan.news",
+   "media_count": 127,
+   "name": "kantan.news",
+   "created_at": "Sat Feb 14 08:46:46 +0000 2026"
+  },
+  {
+   "user_id": "14457172",
+   "screen_name": "jeandpardaillan",
+   "description": "Prof.Dr./Georgetown'12-Bilkent'03&06 TUBA Young Scientist Award/14th Kadir Has Promising Scientist Aw./TUBA Monograph Aw. - İletişim:content@omnibuslive.com",
+   "profile_image": "https://pbs.twimg.com/profile_images/1481706621424345093/69ECdQA5_normal.jpg",
+   "statuses_count": 54968,
+   "followers_count": 491714,
+   "friends_count": 1795,
+   "website": "https://www.youtube.com/channel/UCmZUVTP8dtWqmsVhqt7tPEQ",
+   "media_count": 5235,
+   "name": "Emrah Safa Gürkan",
+   "created_at": "Mon Apr 21 01:51:54 +0000 2008"
+  },
+  {
+   "user_id": "1320042555334184963",
+   "screen_name": "GazeteOksijen",
+   "description": "Türkiye’nin tek hafta sonu gazetesi #GazeteOksijen",
+   "profile_image": "https://pbs.twimg.com/profile_images/1655903505717026816/a99HqB69_normal.jpg",
+   "statuses_count": 113130,
+   "followers_count": 113589,
+   "friends_count": 0,
+   "website": "https://gazeteoksijen.com",
+   "media_count": 42061,
+   "name": "Oksijen",
+   "created_at": "Sat Oct 24 16:40:51 +0000 2020"
+  }
+ ],
+ "handles_seen": [
+  "AdaletBakani61",
+  "AlperCaglar",
+  "DAcemogluMIT",
+  "DrElectrick",
+  "GazeteOksijen",
+  "GurkanEngin_",
+  "KantanNewsX",
+  "OdeonHareketi",
+  "OguzhanUgur",
+  "SelvaDemiralp",
+  "SufyHaber",
+  "TaKendisiyimBen",
+  "TamgaTurk",
+  "ali_hakan_kara",
+  "andmcetin",
+  "daronacemogIu",
+  "haskologlu",
+  "iyf3466",
+  "jahreindota",
+  "jeandpardaillan"
+ ]
+}

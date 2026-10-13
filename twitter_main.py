@@ -220,6 +220,8 @@ AT (gürültü):
 - Kişisel sohbet, cevap tartışması, hakaret, slogan, boş motivasyon
 - Sadece bağlantı ve başlıksız/bağlamsız metin; tek kelimelik tepkiler
 - Aynı haberin anlamsız tekrarı (ilk görüleni tut, tekrarları at)
+- Ünlü bir kişinin sağlığı, özel hayatı veya kişisel hikâyesi, siyasi içeriği yoksa
+- Tek bir yerel olay (kaza, bireysel suç, yerel hasar, tek bir gözaltı), ulusal siyasi veya ekonomik boyutu yoksa
 
 ÖNEMLİ: Tereddütteysen TUT. Bir paylaşım hem gürültü hem bilgi içeriyorsa bilgi için TUT.
 Program/yayın duyurusu konuyu açıkça söylüyorsa (ör. "bu akşam X'in fon dosyasını konuşuyoruz") TUT: konu, gündem bilgisidir.

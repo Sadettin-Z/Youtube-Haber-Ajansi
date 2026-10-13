@@ -287,32 +287,37 @@ Kısıtlar:
 </görev>"""
 
 
-# Filtre kriterleri: içerik raporu güncel gündem haberlerine odaklı mı?
-# Tutucu bias — tereddütteyse TUT, sadece bariz olarak gündem dışı içerik ATILSIN.
+# İlgi testi: içerik raporu okuyucuya güncel ve ona ulaşan bir şey söylüyor mu?
+# Tek bir karar sorusu (<karar>), altı ilgi kanalı (<tut>) ve atılacak kategoriler (<at>).
+# Birden fazla konu işleyen içerik, konulardan biri testi geçiyorsa tutulur.
 INTERESTS = """
-Filtreleme kriterleri: içerik raporu (video veya köşe yazısı) güncel gündem haberlerine odaklı mı?
+<okuyucu>
+Okuyucu Türkiye'de yaşıyor ve bu raporları kendisine ulaşabilecek gelişmeleri takip etmek için okuyor: Türkiye'nin siyaseti ve ekonomisi, komşu coğrafya, günün savaşları, kararları dünyaya yayılan büyük güçler ve dünyanın nereye gittiğini gösteren fikir ve toplum kaymaları. Bir içerik yerini yalnızca bu bağlardan biriyle ve güncel bir gelişme üzerinden kazanır. Ünlü bir isim, dramatik bir anlatım veya uzun bir video tek başına yetmez.
+</okuyucu>
 
-Tut (güncel gündem):
-- Belirli, somut güncel siyasi olaylar — yeni kararlar, açıklamalar, atamalar, istifalar
-- Türkiye siyaseti, dış politikası, ekonomisi — son haftalardaki gelişmeler
-- Uluslararası çatışmalar, savaşlar, barış görüşmeleri (güncel)
-- Ekonomik krizler, döviz/faiz hareketleri, makroekonomik gelişmeler
-- Soruşturmalar, davalar, mahkeme kararları (kamu yararı olan)
-- Yolsuzluk, skandallar, ifşalar
-- Önemli sosyal/siyasi hareketler, protestolar
-- Yorumcu/uzmanın belirli bir güncel olaya odaklanan analizleri
+<karar>
+Her içerik raporu için şu soruyu tek cümleyle cevapla: "Bu içerik okuyucuya Türkiye, bir savaş, bir büyük güç veya dünyanın gidişatı hakkında GÜNCEL olarak ne söylüyor?"
+Somut bir cevap verebiliyorsan TUT. Dürüst cevap "güncel bir gelişme yok" veya "olayın kendisinden öte bir şey yok" ise AT.
+Bir içerik birden fazla konu işliyorsa ve bunlardan EN AZ BİRİ bu testi geçiyorsa içeriği TUT.
+</karar>
 
-At (güncel gündem değil):
-- Genel teorik veya tarihsel analizler — "finans kapital nedir", "Osmanlı nasıl çöktü" gibi belirli güncel olaya bağlı olmayan içerikler
-- Felsefi/ideolojik söyleşiler, zamansız tartışmalar
-- Sanatçı, oyuncu, şarkıcı, sporcu söyleşileri, magazin, biyografik içerik
-- Kişisel hikayeler, anılar, hayata bakış, motivasyon sohbetleri
-- Açıklayıcı/eğitim içeriği (güncel olaya bağlı değilse)
-- Spor analizleri, eğlence, lifestyle, sağlık tavsiyeleri
-- Reklam, sponsor içeriği, kanal duyuruları
+<tut>
+1. TÜRKİYE, ulusal düzeyde: hükümet ve muhalefetin adımları, Meclis, ulusal ağırlıkta davalar ve mahkeme kararları, soruşturmalar, yolsuzluk ve ifşalar, ekonomi (faiz, kur, enflasyon, piyasalar, bütçe, büyük sektörler), dış politika, güvenlik, büyük düzenlemeler. Son haftaların gelişmeleri.
+2. SAVAŞ VE ÇATIŞMA, her yerde: cephe, saldırılar, ateşkes, müzakere, savaş hedefleri, yaptırımlar, savaşın yayılma riski ve savaşın gidişatına dair analizler.
+3. BÜYÜK GÜÇLER (ABD, Çin, Rusya, AB ve büyük üyeleri, İngiltere, Hindistan, İsrail, İran, Suudi Arabistan): ülke çapında bir olay veya ulusal düzeyde bir karar. Seçimler ve seçmen havası, liderin tutumu ve gücü kullanma biçimi, hükümete karşı büyük mahkeme kararları, ekonomi, büyük düzenleme, hükümet krizi. Ülkenin yönünü okuyan analizler de buraya girer; tek bir kişinin portresi girmez.
+4. FİKİR VE EMSAL KAYMALARI: neyin meşru ve normal sayıldığını değiştiren olaylar, aktörler küçük olsa bile. Bir devletin başka bir ülkenin meşruiyetini reddetmesi, bir ideolojinin ırkçı ilan edilmesi, haklar, ifade, din veya sınırlar hakkında emsal niteliğinde bir karar, ilk kez çıkan bir yasa.
+5. MODEL TOPLUMLARDA ÇATLAKLAR: gelişmiş ve istikrarlı bir ülkede yapısal bir sorunun ortaya çıkması. Bir kurum veya sektör içinde şiddet ve istismar, refah devletinin bir kesimi yüzüstü bırakması, güvenilen bir sistemin bozuk çıkması.
+6. KÜRESEL EKONOMİ: petrol, altın, dolar, tahvil piyasaları, merkez bankaları, ticaret kuralları, yaptırımlar, IMF ve Dünya Bankası, yapay zekânın istihdama etkisi, iklim eşikleri. Türkiye'de fiyatları veya politikayı etkileyen her şey.
+</tut>
 
-ÖNEMLİ: Bir içerik birden fazla konu işliyorsa ve bunlardan EN AZ BİRİ güncel gündemse, o içeriği TUT.
-Tereddütteysen tut — sadece bariz olarak gündem dışı olanları at.
+<at>
+- GÜNCEL OLMAYAN İÇERİK: genel teorik veya tarihsel anlatım ("finans kapital nedir", "Osmanlı nasıl çöktü"), felsefi ve ideolojik söyleşi, zamansız tartışma, güncel bir olaya bağlanmayan açıklayıcı veya eğitim içeriği. Güncel olay yalnızca giriş bahanesi olarak geçiyorsa içerik yine atılır.
+- KİŞİSEL MESELELER: ünlü bir kişinin sağlığı, özel hayatı veya anıları; sanatçı, oyuncu, şarkıcı, sporcu söyleşileri; biyografik içerik; kişisel hikâye, hayata bakış, motivasyon sohbeti; tek bir kişinin kendi deneyimini anlattığı söyleşi.
+- TEKİL OLAYLAR: tek bir kaza, suç, saldırı, gözaltı veya polis olayı, ulusal siyasete ulaşmıyorsa. Savaş bölgesindeki tekil olay SAVAŞ kapsamında kalır.
+- YEREL VE KÜÇÜK ÖLÇEKLİ MESELELER: yerel bir olay, bir sektörün maliyet şikâyeti, bir partinin iç düzenlemesi, bir ilin sorunu, ulusal siyasi veya ekonomik ağırlığı yoksa.
+- TEK SES: tek bir adayın kampanya mesajı, tek bir uzmanın bir sektör hakkındaki görüşü, güncel bir olaya bağlanmayan kişisel yorum.
+- GÜRÜLTÜ: spor, magazin, eğlence, lifestyle, sağlık tavsiyesi, reklam, sponsor içeriği, kanal duyurusu.
+</at>
 """.strip()
 
 
@@ -775,11 +780,10 @@ def filter_video_reports(items):
     }
 
     prompt = (
-        f"{payload}\n\n"
+        f"<içerikler>\n{payload}\n</içerikler>\n\n"
         f"{INTERESTS}\n\n"
-        "Yukarıdaki içerik raporlarını yukarıdaki kriterlere göre değerlendir. "
-        "AT kategorisine giren içeriklerin indekslerini döndür. "
-        "Tereddütteysen indekse koyma — sadece bariz gündem dışı olanları at."
+        "<karar> testini yukarıdaki her içerik raporuna uygula. "
+        "ATILACAK içeriklerin indekslerini döndür; listelemediğin içerikler tutulur."
     )
 
     log(f"")

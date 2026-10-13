@@ -302,19 +302,20 @@ Bir içerik birden fazla konu işliyorsa ve bunlardan EN AZ BİRİ bu testi geç
 </karar>
 
 <tut>
-1. TÜRKİYE, ulusal düzeyde: hükümet ve muhalefetin adımları, Meclis, ulusal ağırlıkta davalar ve mahkeme kararları, soruşturmalar, yolsuzluk ve ifşalar, ekonomi (faiz, kur, enflasyon, piyasalar, bütçe, büyük sektörler), dış politika, güvenlik, büyük düzenlemeler. Son haftaların gelişmeleri.
+1. TÜRKİYE, ulusal düzeyde: hükümet ve muhalefetin adımları, Meclis, ulusal ağırlıkta davalar ve mahkeme kararları, soruşturmalar, yolsuzluk ve ifşalar, ekonomi (faiz, kur, enflasyon, piyasalar, bütçe, büyük sektörler), dış politika, güvenlik, büyük düzenlemeler. Terör örgütlerine (PKK, DHKP-C, IŞİD ve diğerleri) yönelik güvenlik ve terörle mücadele operasyonları, ölçeği ne olursa olsun. Türkiye içinde binlerce kişiyi aynı anda etkileyen kitlesel olaylar (toplu hastalık, büyük afet). Son haftaların gelişmeleri.
 2. SAVAŞ VE ÇATIŞMA, her yerde: cephe, saldırılar, ateşkes, müzakere, savaş hedefleri, yaptırımlar, savaşın yayılma riski ve savaşın gidişatına dair analizler.
 3. BÜYÜK GÜÇLER (ABD, Çin, Rusya, AB ve büyük üyeleri, İngiltere, Hindistan, İsrail, İran, Suudi Arabistan): ülke çapında bir olay veya ulusal düzeyde bir karar. Seçimler ve seçmen havası, liderin tutumu ve gücü kullanma biçimi, hükümete karşı büyük mahkeme kararları, ekonomi, büyük düzenleme, hükümet krizi. Ülkenin yönünü okuyan analizler de buraya girer; tek bir kişinin portresi girmez.
 4. FİKİR VE EMSAL KAYMALARI: neyin meşru ve normal sayıldığını değiştiren olaylar, aktörler küçük olsa bile. Bir devletin başka bir ülkenin meşruiyetini reddetmesi, bir ideolojinin ırkçı ilan edilmesi, haklar, ifade, din veya sınırlar hakkında emsal niteliğinde bir karar, ilk kez çıkan bir yasa.
 5. MODEL TOPLUMLARDA ÇATLAKLAR: gelişmiş ve istikrarlı bir ülkede yapısal bir sorunun ortaya çıkması. Bir kurum veya sektör içinde şiddet ve istismar, refah devletinin bir kesimi yüzüstü bırakması, güvenilen bir sistemin bozuk çıkması.
 6. KÜRESEL EKONOMİ: petrol, altın, dolar, tahvil piyasaları, merkez bankaları, ticaret kuralları, yaptırımlar, IMF ve Dünya Bankası, yapay zekânın istihdama etkisi, iklim eşikleri. Türkiye'de fiyatları veya politikayı etkileyen her şey.
+7. BÜTÜN DÜNYANIN OLAYLARI: nerede olursa olsun tüm dünyanın aynı anda izlediği az sayıda olay: Nobel ödülleri, BM Güvenlik Konseyi ve Genel Kurul kararları, G7, G20 ve COP zirveleri.
 </tut>
 
 <at>
 - GÜNCEL OLMAYAN İÇERİK: genel teorik veya tarihsel anlatım ("finans kapital nedir", "Osmanlı nasıl çöktü"), felsefi ve ideolojik söyleşi, zamansız tartışma, güncel bir olaya bağlanmayan açıklayıcı veya eğitim içeriği. Güncel olay yalnızca giriş bahanesi olarak geçiyorsa içerik yine atılır.
 - KİŞİSEL MESELELER: ünlü bir kişinin sağlığı, özel hayatı veya anıları; sanatçı, oyuncu, şarkıcı, sporcu söyleşileri; biyografik içerik; kişisel hikâye, hayata bakış, motivasyon sohbeti; tek bir kişinin kendi deneyimini anlattığı söyleşi.
-- TEKİL OLAYLAR: tek bir kaza, suç, saldırı, gözaltı veya polis olayı, ulusal siyasete ulaşmıyorsa. Savaş bölgesindeki tekil olay SAVAŞ kapsamında kalır.
-- YEREL VE KÜÇÜK ÖLÇEKLİ MESELELER: yerel bir olay, bir sektörün maliyet şikâyeti, bir partinin iç düzenlemesi, bir ilin sorunu, ulusal siyasi veya ekonomik ağırlığı yoksa.
+- TEKİL OLAYLAR: tek bir kaza, suç, saldırı, gözaltı veya polis olayı, ulusal siyasete ulaşmıyorsa. Savaş bölgesindeki tekil olay SAVAŞ kapsamında kalır. Türkiye'de terörle mücadele operasyonu tekil olay sayılmaz; sıradan suç operasyonu (tefecilik, uyuşturucu, fuhuş) sayılır.
+- YEREL VE KÜÇÜK ÖLÇEKLİ MESELELER: yerel bir olay, bir sektörün maliyet şikâyeti, bir partinin iç düzenlemesi, bir ilin sorunu, ulusal siyasi veya ekonomik ağırlığı yoksa. Binlerce kişiyi etkileyen olay ulusaldır ve tutulur.
 - TEK SES: tek bir adayın kampanya mesajı, tek bir uzmanın bir sektör hakkındaki görüşü, güncel bir olaya bağlanmayan kişisel yorum.
 - GÜRÜLTÜ: spor, magazin, eğlence, lifestyle, sağlık tavsiyesi, reklam, sponsor içeriği, kanal duyurusu.
 </at>

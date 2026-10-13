@@ -115,7 +115,8 @@ _DATE_LINE_RE = re.compile(r"^[A-Za-zÇĞİÖŞÜçğıöşü]+\s+\d{1,2},\s+\d{
 # Rapor, özet değil konu konu ayrıntılı bir dökümdür; asıl ölçüt okunabilirlik.
 # Kısaltılmış metinde cümleler arasındaki bağ kopar, okuyucu anlamaz: bu yüzden
 # bilgi atılmaz (yalnızca sohbet, duyuru ve tekrar atılır), her konu bağlamıyla açılır,
-# her cümlenin kaynağı (olgu, başkasının sözü, yorumcunun iddiası, yorum) belli olur.
+# her cümlenin kaynağı belli olur. Cümleler modelin, bilgiler içeriğin: içerikte olmayan
+# hiçbir bilgi, bağlam, neden-sonuç bağı veya değerlendirme eklenmez.
 PROMPT_TEMPLATE = """<transkript>
 {transkript}
 </transkript>
@@ -125,6 +126,7 @@ Yukarıdaki metin, {source_line}
 
 <amaç>
 Bu içeriği izlemeyen veya okumayan biri, raporu okuyunca içerikte işlenen her konuyu, her konudaki bilgileri, iddiaları ve yorumları eksiksiz öğrensin ve ilk okuyuşta anlasın. Rapor bir özet değil, konu konu düzenlenmiş ayrıntılı bir dökümdür. Uzun bir metni kısaltırken cümleler arasındaki bağ kopar ve okuyucu ne anlatıldığını anlayamaz; bu raporun asıl ölçütü okunabilirliktir.
+Cümleler senin, bilgiler içeriğin. Rapordaki her bilgi içerikte geçer; içerikte olmayan hiçbir bilgi, bağlam, görev, sebep, sonuç veya değerlendirme eklenmez. Okunabilirlik için yalnızca cümle kurarsın, bilgi eklemezsin.
 </amaç>
 
 <neyi_tut>
@@ -151,12 +153,12 @@ Yalnızca haber, iddia veya yorum taşımayan kısımları at:
    - olgu ve haber: "AA'ya göre PKK 8 Ekim'de dört barınma alanını boşalttı."
    - başka birinin sözü veya iddiası: "Karayılan, 'Türk devletinden hiçbir şey görmedik' diyor."
    - yorumcunun kendi bilgisi veya iddiası: "Atay'a göre sarayda 50 madde hazır."
-   - yorumcunun yorumu: ayrı bir paragrafta veya "**Yorum:**" ile başlayan ayrı bir satırda.
+   - yorumcunun yorumu: "Atay'a göre bu açıklama sürecin kurallarıyla çelişiyor." Yorumu "Yorum:" gibi bir etiketle değil, yorumcunun adıyla ver.
    Yorumcunun adını metinden biliyorsan soyadıyla kullan; bilmiyorsan "yorumcu" de.
-4. Cümleleri birbirine bağla. Kopuk bilgi dizisi yazma: her cümle bir öncekinden nasıl çıktığını göstersin ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine", "aynı günlerde"). Bir cümlede en fazla iki-üç bilgi olsun; noktalı virgülle bilgi istifleme.
+4. Cümleleri birbirine bağla. Kopuk bilgi dizisi yazma: her cümle bir öncekinden nasıl çıktığını göstersin ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine", "aynı günlerde"). Bağlacı yalnızca içerikte o ilişki kuruluyorsa kullan: "çünkü" yazdığın yerde içerikte de bir sebep söylenmiş olmalı. Bir cümlede en fazla iki-üç bilgi olsun; noktalı virgülle bilgi istifleme.
 5. Belirsiz gönderme yapma. "Bu", "o", "bunlar", "konu" kelimelerinin neyi kastettiği açık değilse ismi tekrarla.
-6. Uzun konuyu böl. Bir konunun birkaç yönü varsa kısa paragraflara veya kalın etiketli maddelere ayır ("**Kariyeri:** ...", "**Hakkındaki iddialar:** ...", "**Yorum:** ..."). Bir paragraf en fazla 5-6 cümle olsun.
-7. Benzetme yerine somut bilgi. Yorumcunun benzetmelerini ve süslü sözlerini ("deprem", "kış geliyor", "kolu kanadı kırıldı", "fitili ateşledi") kopyalama; arkasındaki somut iddiayı yaz. Bir kişinin sözü doğrudan alıntı olarak veriliyorsa tırnak içinde kalabilir.
+6. Uzun konuyu böl. Bir konunun birkaç yönü varsa kısa paragraflara veya kalın etiketli maddelere ayır ("**Kariyeri:** ...", "**Hakkındaki iddialar:** ..."). Bir paragraf en fazla 5-6 cümle olsun.
+7. Benzetme yerine somut bilgi. Yorumcunun benzetmelerini ve süslü sözlerini ("deprem", "kış geliyor", "kolu kanadı kırıldı", "fitili ateşledi") kopyalama. Benzetmenin arkasındaki somut iddia içerikte söyleniyorsa onu yaz; söylenmiyorsa benzetmeyi at, ondan kendin anlam çıkarma. Bir kişinin sözü doğrudan alıntı olarak veriliyorsa tırnak içinde kalabilir.
 8. Aktarım fiilleri sade olsun: "dedi", "diyor", "söylüyor", "iddia ediyor", "soruyor", "-e göre". "Belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir" gibi resmi kalıpları kullanma.
 </okunabilirlik>
 
@@ -179,10 +181,16 @@ Merkez Bankası 250 baz puan indirdi, beklenti 100'dü; dolar 36,20, Karahan "ol
 </yanlış_rapor>
 Neden yanlış: bilgiler tek cümleye istiflenmiş, aralarındaki bağ kopmuş; hangi sözün kime ait olduğu ve hangisinin yorum olduğu anlaşılmıyor.
 
+<yanlış_rapor>
+### Merkez Bankası Başkanı Karahan'dan Sürpriz İndirim
+Merkez Bankası Başkanı Karahan'ın yönetimindeki banka faizi 250 baz puan indirdi. Bu karar enflasyonu yeniden yükseltebilir.
+</yanlış_rapor>
+Neden yanlış: içerikte Karahan'ın görevi geçmiyor ve kararın enflasyona etkisinden hiç söz edilmiyor; ikisi de eklenmiş bilgi.
+
 <doğru_rapor>
 ### Merkez Bankası Faizi Beklentinin Üzerinde İndirdi
 Merkez Bankası dün gece politika faizini 250 baz puan indirerek yüzde 50'den yüzde 47,5'e çekti. Piyasa yalnızca 100 baz puan civarında bir indirim beklediği için karar sürpriz oldu. Karahan açıklamada "enflasyon eğilimi olumlu" dedi. Ancak piyasa karara güvenmedi ve dolar bir gecede 35,80 liradan 36,20 liraya çıktı. Erdoğan ise sabah konuşmasında indirimi "ekonomide normalleşme dönemi" diyerek savundu.
-**Yorum:** Bu indirim, 2024'ten beri uygulanan yüksek faiz politikasında bir dönüm noktası. Yorumcu, Şimşek 2023'te göreve geldiğinde faizin yüzde 8,5'ten yüzde 50'ye çıkarıldığını hatırlatıyor.
+Yorumcuya göre bu indirim, 2024'ten beri uygulanan yüksek faiz politikasında bir dönüm noktası. Yorumcu, Şimşek 2023'te geldiğinde faizin yüzde 8,5'ten yüzde 50'ye çıkarıldığını hatırlatıyor.
 </doğru_rapor>
 Patreon teşekkürü haber taşımadığı için rapora girmedi.
 </örnek>
@@ -199,7 +207,7 @@ Raporu okuyan biri, bütün kanallarda işlenen her konuyu, her konudaki bilgile
 </amaç>
 
 <kurallar>
-1. DIŞ BİLGİ YOK. Rapor yalnızca girdi raporlarındaki bilgileri kullanır. Kendi bilginden veya dış kaynaklardan hiçbir şey (kişinin görevi, olayın tarihi, arka plan, tarihsel referans) ekleme. Girdide olmayan bir şey raporda yoktur.
+1. DIŞ BİLGİ YOK. Cümleler senin, bilgiler girdinin. Rapor yalnızca girdi raporlarındaki bilgileri kullanır. Kendi bilginden veya dış kaynaklardan hiçbir şey (kişinin görevi, olayın tarihi, arka plan, tarihsel referans) ekleme; kendi çıkarımını, değerlendirmeni veya girdide kurulmamış bir neden-sonuç bağını da ekleme. Girdide olmayan bir şey raporda yoktur.
 
 2. BİLGİ ATMA, TEKRARI BİRLEŞTİR. Girdideki her olgu, isim, sayı, tarih, alıntı, iddia ve yorum raporda bir kez yer alır. Hiçbir bilgiyi önemsiz diye atma. Aynı bilgiyi iki kez yazma; aynı olayı önce genel sonra ayrıntılı diye iki kez anlatma. Sayı, isim ve alıntılar girdideki haliyle birebir doğru kalır.
 
@@ -208,16 +216,16 @@ Raporu okuyan biri, bütün kanallarda işlenen her konuyu, her konudaki bilgile
 4. OKUNABİLİRLİK. Kısaltılmış metinde cümleler arasındaki bağ kopar ve okuyucu anlamaz. Bu yüzden:
    - Her konu kendi bağlamıyla açılır: ilk cümle ne olduğunu, kimin yaptığını ve ne zaman olduğunu söyler.
    - Bir kişi veya kurum ilk geçtiğinde girdide geçen görevi veya bağlamıyla tanıtılır.
-   - Cümleler birbirine bağlanır ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine"). Bir cümlede en fazla iki-üç bilgi olur; noktalı virgülle bilgi istiflenmez.
+   - Cümleler birbirine bağlanır ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine"). Bağlaç yalnızca girdide o ilişki kuruluyorsa kullanılır. Bir cümlede en fazla iki-üç bilgi olur; noktalı virgülle bilgi istiflenmez.
    - "Bu", "o", "bunlar" neyi kastettiği açık değilse ismi tekrarla.
    - Uzun bir konu kısa paragraflara veya kalın etiketli maddelere bölünür. Bir paragraf en fazla 5-6 cümle olur.
 
 5. KAYNAK BELLİ OLSUN. Okuyucu her cümlede bilginin kimden geldiğini anlamalı.
    - Ortak Bilgiler'de bilginin sahibi olan kanal veya yorumcu cümlede geçer ("Atay ve Soykan'a göre ...", "Yetkin ve Altaylı ... aktardı"). Her cümleye ayrı kaynak listesi sıkıştırma; kaynak anlatıdan anlaşılsın.
-   - Kanal Katkıları'nda ve Kanallara Özel Haberler'de kanal adı başlıkta yazdığı için kanalın kendi bilgisi ve iddiası doğrudan cümleye dökülür ("Furkan Torlak görevden alındı"). Kanalın aktardığı başka birinin sözü o kişinin adıyla verilir ("Karayılan, '...' diyor"). Kanalın kendi yorumu "**Yorum:**" ile başlayan ayrı bir cümle veya satırda verilir.
+   - Kanal Katkıları'nda ve Kanallara Özel Haberler'de kanal adı başlıkta yazdığı için kanalın kendi bilgisi ve iddiası doğrudan cümleye dökülür ("Furkan Torlak görevden alındı"). Kanalın aktardığı başka birinin sözü o kişinin adıyla verilir ("Karayılan, '...' diyor"). Kanalın kendi yorumu, olgudan ayrılsın diye yorumcunun adıyla verilir ("Atay'a göre ..."); "Yorum:" gibi bir etiket kullanılmaz.
    - Aktarım fiilleri sade olur: "dedi", "diyor", "iddia ediyor", "soruyor", "-e göre". "Belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir" kullanılmaz.
 
-6. BENZETME YERİNE SOMUT BİLGİ. Yorumcuların benzetmelerini ve süslü sözlerini ("deprem", "siyasi rüzgar", "kasırga", "damga vurdu", "fitili ateşledi") kopyalama; arkasındaki somut iddiayı yaz ve cümleler arasındaki neden-sonuç bağını koru. "Büyük", "kritik", "tarihi", "çarpıcı" gibi sıfatları, onları doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede yoksa kullanma.
+6. BENZETME YERİNE SOMUT BİLGİ. Yorumcuların benzetmelerini ve süslü sözlerini ("deprem", "siyasi rüzgar", "kasırga", "damga vurdu", "fitili ateşledi") kopyalama. Arkasındaki somut iddia girdide söyleniyorsa onu yaz ve cümleler arasındaki neden-sonuç bağını koru; söylenmiyorsa benzetmeyi at, ondan kendin anlam çıkarma. "Büyük", "kritik", "tarihi", "çarpıcı" gibi sıfatları, onları doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede yoksa kullanma.
    Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, yeni bir siyasi rüzgar yarattı."
    Doğru: "Özel mitinglerde ivme kazandı. Atay'a göre bu ivme Kılıçdaroğlu'nun tutumundan bağımsız."
 
@@ -237,7 +245,7 @@ Aşağıdaki şablonu birebir kullan:
 ### [Spesifik Konu Başlığı]
 **Ortak Bilgiler:** Olay ve birden fazla kanalın paylaştığı bütün bilgiler, bir kez. Gerekirse birden çok kısa paragraf.
 **Kanal Katkıları:**
-- **[Kanal Adı]:** Bu kanala özgü bütün bilgi, iddia ve yorum. Ortak Bilgiler'de yazılanı tekrarlama. Gerekirse birden çok cümle; kanalın yorumu "**Yorum:**" ile ayrılır. Kanalın söyledikleri tamamen Ortak Bilgiler'de varsa "Ek bilgi yok." yaz.
+- **[Kanal Adı]:** Bu kanala özgü bütün bilgi, iddia ve yorum. Ortak Bilgiler'de yazılanı tekrarlama. Gerekirse birden çok cümle; kanalın yorumu yorumcunun adıyla verilir. Kanalın söyledikleri tamamen Ortak Bilgiler'de varsa "Ek bilgi yok." yaz.
 - **[Diğer Kanal Adı]:** ...
 
 ---

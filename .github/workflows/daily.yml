@@ -1,14 +1,12 @@
 name: Youtube Haber Ajansı
 on:
-  schedule:
-    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       mode:
         description: 'full = normal çalışma; scrape = sadece transkriptleri indir ve manual/icerikler.json olarak repoya yaz (Gemini yok)'
         type: choice
         options: [full, scrape]
-        default: full
+        default: scrape
 jobs:
   run_report:
     runs-on: ubuntu-latest

@@ -490,12 +490,25 @@ def is_short(video_id):
         return False, "? dk"
 
 
+# Hedefli çekim (workflow girdileri): CHANNEL_FILTER = yalnızca bu kanal (CHANNELS'taki ad);
+# LOOKBACK_HOURS = kaç saat geriye bakılacağı (varsayılan 24); LATEST_ONLY = kanal başına
+# yalnızca en yeni uygun video. Kanal filtresi verilince köşe yazıları atlanır.
+CHANNEL_FILTER = (os.getenv("CHANNEL_FILTER") or "").strip()
+LOOKBACK_HOURS = float(os.getenv("LOOKBACK_HOURS") or 24)
+LATEST_ONLY = (os.getenv("LATEST_ONLY") or "").strip().lower() in ("1", "true", "yes")
+
+
 def get_latest_video_list():
     log("📡 YouTube'dan son videolar çekiliyor...")
     found_videos = []
-    yesterday_dt = datetime.now(timezone.utc) - timedelta(days=1)
-    for name, handle in CHANNELS.items():
+    yesterday_dt = datetime.now(timezone.utc) - timedelta(hours=LOOKBACK_HOURS)
+    channels = {n: h for n, h in CHANNELS.items()
+                if not CHANNEL_FILTER or n.casefold() == CHANNEL_FILTER.casefold()}
+    if CHANNEL_FILTER and not channels:
+        log(f"❌ CHANNEL_FILTER '{CHANNEL_FILTER}' CHANNELS içinde yok")
+    for name, handle in channels.items():
         c_res = None
+        taken = 0
         try:
             c_res = requests.get(
                 f"https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={handle}&key={YOUTUBE_API_KEY}",
@@ -508,10 +521,11 @@ def get_latest_video_list():
             ).json()
             for item in res.get("items", []):
                 pub_date = datetime.strptime(item["snippet"]["publishedAt"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-                if pub_date > yesterday_dt:
+                if pub_date > yesterday_dt and not (LATEST_ONLY and taken):
                     video_id = item["snippet"]["resourceId"]["videoId"]
                     short, duration = is_short(video_id)
                     if not short:
+                        taken += 1
                         found_videos.append({
                             "name": name,
                             "title": item["snippet"]["title"],
@@ -1088,7 +1102,8 @@ if __name__ == "__main__":
     log(f"🚀 BAŞLATILIYOR" + (f" (mod: {PIPELINE_MODE})" if PIPELINE_MODE != "full" else ""))
 
     videos = get_latest_video_list()
-    videos += get_latest_articles()
+    if not CHANNEL_FILTER:
+        videos += get_latest_articles()
 
     if not videos:
         log("Son 24 saatte yeni video/yazı bulunamadı.")

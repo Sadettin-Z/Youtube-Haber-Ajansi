@@ -7,6 +7,18 @@ on:
         type: choice
         options: [full, scrape]
         default: scrape
+      channel:
+        description: 'Sadece bu kanal (main.py CHANNELS adı, ör. Erdem Atay); boş = hepsi'
+        type: string
+        default: ''
+      lookback_hours:
+        description: 'Kaç saat geriye bakılsın'
+        type: string
+        default: '24'
+      latest_only:
+        description: 'Kanal başına yalnızca en yeni video'
+        type: boolean
+        default: false
 jobs:
   run_report:
     runs-on: ubuntu-latest
@@ -29,6 +41,9 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}
           PIPELINE_MODE: ${{ inputs.mode || 'full' }}
+          CHANNEL_FILTER: ${{ inputs.channel }}
+          LOOKBACK_HOURS: ${{ inputs.lookback_hours || '24' }}
+          LATEST_ONLY: ${{ inputs.latest_only }}
         run: python main.py
       - name: Transkriptleri repoya kaydet
         if: ${{ inputs.mode == 'scrape' }}

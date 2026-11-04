@@ -461,13 +461,15 @@ def _live_keys(model):
             if i not in _dead_keys and (model, i) not in _quota_dead]
 
 
-def call_gemini(prompt, label="Gemini", response_schema=None):
+def call_gemini(prompt, label="Gemini", response_schema=None, rounds=3):
     """Shared helper: returns text or None.
 
     Runs on MODEL_CHAIN[0], trying each key in order. A key whose daily quota on that model is
-    spent is retired for that model; once every key is spent on a model, the call moves to the
-    next model in MODEL_CHAIN (same keys, fresh per-model quota). A 403/invalid key is retired
-    on every model. If response_schema is provided, the model is forced to return JSON."""
+    spent is retired for that model; a 403/invalid key is retired on every model. When a model
+    fails on every key (quota spent, rate limit or a transient 503 "high demand"), the call moves
+    to the next model in MODEL_CHAIN. When every model failed and at least one failure was
+    transient, the whole chain is tried again after a wait, up to `rounds` times. If
+    response_schema is provided, the model is forced to return JSON."""
     prompt_chars = len(prompt)
     log(f"🤖 [{label}] Gemini çağrısı (prompt: {prompt_chars:,} karakter)", indent=1)
 
@@ -480,70 +482,76 @@ def call_gemini(prompt, label="Gemini", response_schema=None):
         config_kwargs["response_mime_type"] = "application/json"
         config_kwargs["response_schema"] = response_schema
 
-    for m_pos, model in enumerate(MODEL_CHAIN):
-        keys = _live_keys(model)
-        if not keys:
+    for round_no in range(1, rounds + 1):
+        retry_later = False  # a transient or rate-limit failure happened in this round
+        for m_pos, model in enumerate(MODEL_CHAIN):
+            keys = _live_keys(model)
+            if not keys:
+                continue  # quota spent or keys dead on this model — try the next one
+            log(f"🧠 Model: {model} ({len(keys)} kullanılabilir key, tur {round_no}/{rounds})", indent=2)
+
+            for key_idx, key in keys:
+                log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
+                client = genai.Client(api_key=key)
+                for attempt in range(3):
+                    t0 = time.time()
+                    try:
+                        log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
+                        response = client.models.generate_content(
+                            model=model,
+                            contents=prompt,
+                            config=types.GenerateContentConfig(**config_kwargs)
+                        )
+                        elapsed = time.time() - t0
+                        if response.text:
+                            out_chars = len(response.text)
+                            usage_info = ""
+                            try:
+                                if hasattr(response, "usage_metadata") and response.usage_metadata:
+                                    u = response.usage_metadata
+                                    in_tok = getattr(u, "prompt_token_count", "?")
+                                    out_tok = getattr(u, "candidates_token_count", "?")
+                                    think_tok = getattr(u, "thoughts_token_count", "?")
+                                    usage_info = f", tokens: in={in_tok} out={out_tok} think={think_tok}"
+                            except Exception:
+                                pass
+                            log(f"✅ [{label}] Yanıt alındı ({model}, {elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
+                            return response.text.strip()
+                        else:
+                            log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
+                    except Exception as e:
+                        elapsed = time.time() - t0
+                        err_str = str(e)
+                        kind = _gemini_error_kind(e)
+                        if kind == "dead":
+                            _dead_keys[key_idx] = err_str[:120]
+                            log(f"⛔ Key #{key_idx} kullanılamıyor (403/geçersiz), bu çalıştırmada bir daha denenmeyecek: {err_str[:160]}", indent=2)
+                            break
+                        if kind == "daily":
+                            _quota_dead.add((model, key_idx))
+                            log(f"⛔ Key #{key_idx} günlük kotası '{model}' için dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
+                            break
+                        if kind == "rate":
+                            retry_later = True
+                            log(f"🐢 Key #{key_idx} dakikalık limit ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
+                            break
+                        if kind == "transient":
+                            retry_later = True
+                            log(f"🔁 Key #{key_idx} geçici hata ({elapsed:.1f}s): {err_str[:200]} — sıradaki key'e geçiliyor", indent=2)
+                            break
+                        wait = (attempt + 1) * 30
+                        log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
+                        log(f"⏳ {wait} saniye bekleniyor...", indent=2)
+                        time.sleep(wait)
+
             if m_pos + 1 < len(MODEL_CHAIN):
-                continue  # already spent — go straight to the next model
+                log(f"➡️ '{model}' bu turda yanıt vermedi, '{MODEL_CHAIN[m_pos + 1]}' modeline geçiliyor", indent=1)
+
+        if not retry_later or round_no == rounds:
             break
-        log(f"🧠 Model: {model} ({len(keys)} kullanılabilir key)", indent=2)
-
-        for key_idx, key in keys:
-            log(f"🔑 Key #{key_idx} deneniyor...", indent=2)
-            client = genai.Client(api_key=key)
-            for attempt in range(3):
-                t0 = time.time()
-                try:
-                    log(f"📤 API isteği gönderildi (deneme {attempt+1}/3, thinking=HIGH)...", indent=2)
-                    response = client.models.generate_content(
-                        model=model,
-                        contents=prompt,
-                        config=types.GenerateContentConfig(**config_kwargs)
-                    )
-                    elapsed = time.time() - t0
-                    if response.text:
-                        out_chars = len(response.text)
-                        usage_info = ""
-                        try:
-                            if hasattr(response, "usage_metadata") and response.usage_metadata:
-                                u = response.usage_metadata
-                                in_tok = getattr(u, "prompt_token_count", "?")
-                                out_tok = getattr(u, "candidates_token_count", "?")
-                                think_tok = getattr(u, "thoughts_token_count", "?")
-                                usage_info = f", tokens: in={in_tok} out={out_tok} think={think_tok}"
-                        except Exception:
-                            pass
-                        log(f"✅ [{label}] Yanıt alındı ({model}, {elapsed:.1f}s, {out_chars:,} karakter{usage_info})", indent=2)
-                        return response.text.strip()
-                    else:
-                        log(f"⚠️ [{label}] Boş yanıt geldi ({elapsed:.1f}s)", indent=2)
-                except Exception as e:
-                    elapsed = time.time() - t0
-                    err_str = str(e)
-                    kind = _gemini_error_kind(e)
-                    if kind == "dead":
-                        _dead_keys[key_idx] = err_str[:120]
-                        log(f"⛔ Key #{key_idx} kullanılamıyor (403/geçersiz), bu çalıştırmada bir daha denenmeyecek: {err_str[:160]}", indent=2)
-                        break
-                    if kind == "daily":
-                        _quota_dead.add((model, key_idx))
-                        log(f"⛔ Key #{key_idx} günlük kotası '{model}' için dolu ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
-                        break
-                    if kind == "rate":
-                        log(f"🐢 Key #{key_idx} dakikalık limit ({elapsed:.1f}s), sıradaki key'e geçiliyor", indent=2)
-                        break
-                    if kind == "transient":
-                        log(f"🔁 Key #{key_idx} geçici hata ({elapsed:.1f}s): {err_str[:200]} — sıradaki key'e geçiliyor", indent=2)
-                        break
-                    wait = (attempt + 1) * 30
-                    log(f"❌ API hatası ({elapsed:.1f}s, deneme {attempt+1}/3): {err_str[:200]}", indent=2)
-                    log(f"⏳ {wait} saniye bekleniyor...", indent=2)
-                    time.sleep(wait)
-
-        if not _live_keys(model) and m_pos + 1 < len(MODEL_CHAIN):
-            log(f"➡️ '{model}' kotası tüm key'lerde doldu, '{MODEL_CHAIN[m_pos + 1]}' modeline geçiliyor", indent=1)
-            continue
-        break  # keys remain on this model but all failed for other reasons — same outcome as before
+        wait = 60 * round_no
+        log(f"⏳ Tüm modeller geçici hata verdi; {wait} saniye sonra tur {round_no + 1}/{rounds}", indent=1)
+        time.sleep(wait)
 
     log(f"❌ [{label}] Tüm key'ler ve denemeler tükendi", indent=1)
     return None

@@ -57,8 +57,9 @@ CHANNELS = {
     "Cem Gürdeniz": "@cemgurdenizz",
     "Caspian Report": "@CaspianReport",
     "Fatih Altaylı": "@fatihaltayli",
-    "Cüneyt Özdemir": "@cuneytozdemir",
     "Murat Yetkin": "@muratyetkinreport",
+    "Atilla Yeşilada": "@atillayesilada",
+    "Mesele Ekonomi": "@MeseleEkonomi",
 }
 
 # ============================================================================
@@ -557,7 +558,7 @@ def call_gemini(prompt, label="Gemini", response_schema=None, rounds=3):
     return None
 
 
-_NON_PERSON_CHANNEL = re.compile(r"\b(tv|report|haber|ajans|kanal)\b", re.IGNORECASE)
+_NON_PERSON_CHANNEL = re.compile(r"\b(tv|report|haber|ajans|kanal|ekonomi)\b", re.IGNORECASE)
 
 
 def _commentator_line(video):

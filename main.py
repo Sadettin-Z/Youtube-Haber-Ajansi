@@ -1,6 +1,5 @@
 import io
 import json
-import math
 import os
 import re
 import time
@@ -112,225 +111,76 @@ _STOP_MARKERS = (
 _DATE_LINE_RE = re.compile(r"^[A-Za-zÇĞİÖŞÜçğıöşü]+\s+\d{1,2},\s+\d{4}$")
 
 
-# Rapor, özet değil konu konu ayrıntılı bir dökümdür; asıl ölçüt okunabilirlik.
-# Kısaltılmış metinde cümleler arasındaki bağ kopar, okuyucu anlamaz: bu yüzden
-# bilgi atılmaz (yalnızca sohbet, duyuru ve tekrar atılır), her konu bağlamıyla açılır,
-# içerik yorumcunun anlattığı gibi tek bir akan anlatıdır (olgu ve yorum ayrılmaz,
-# etiketlenmez). Cümleler modelin, bilgiler içeriğin: içerikte olmayan
-# hiçbir bilgi, bağlam, neden-sonuç bağı veya değerlendirme eklenmez.
-PROMPT_TEMPLATE = """<transkript>
+# Tek adımda rapor: ham transkript doğrudan konu konu habere çevrilir (önce temizleme yok).
+# Ölçüt haber raporuyla aynıdır: konu bazında ilgi süzgeci, önce konunun özü, sonra belirleyici
+# ayrıntılar birebir; metinde olmayan hiçbir şey eklenmez. Sohbet, duyuru ve reklam atılır.
+REPORT_PROMPT = """<transkript>
 {transkript}
 </transkript>
 
 <görev>
-Yukarıdaki metin, {source_line}
+Yukarıdaki metin, {source_line} Ham, otomatik çevrilmiş bir transkripttir: noktalama eksiktir, konuşmacılar ayrılmamıştır, isimler bozuk yazılmış olabilir. {commentator_line}
 
-<amaç>
-Bu içeriği izlemeyen veya okumayan biri, raporu okuyunca içerikte işlenen her konuyu, her konudaki bilgileri, iddiaları ve yorumları eksiksiz öğrensin ve ilk okuyuşta anlasın. Rapor bir özet değil, konu konu düzenlenmiş ayrıntılı bir dökümdür. Uzun bir metni kısaltırken cümleler arasındaki bağ kopar ve okuyucu ne anlatıldığını anlayamaz; bu raporun asıl ölçütü okunabilirliktir.
-Cümleler senin, bilgiler içeriğin. Rapordaki her bilgi içerikte geçer; içerikte olmayan hiçbir bilgi, bağlam, görev, sebep, sonuç veya değerlendirme eklenmez. Okunabilirlik için yalnızca cümle kurarsın, bilgi eklemezsin.
-</amaç>
+Bu metinden, içeriği izlemeyen bir okuyucu için konu konu bir haber raporu yaz. Rapor tek adımda yazılır: önce metni temizlemez, özetlemez, doğrudan raporu yazarsın.
 
-<neyi_tut>
-İçerikte geçen her haber konusunu ve her konudaki bütün bilgiyi tut:
-- olaylar, kararlar, açıklamalar ve bunların kimden, ne zaman, hangi kaynaktan (ajans, gazete, televizyon, sosyal medya) geldiği;
-- isimler, kişilerin metinde geçen görevleri, sayılar, tarihler, yerler, doğrudan alıntılar;
-- yorumcunun kendi bilgileri ve iddiaları ("kesin bilgi", kulis), bunların gerekçesi ve yorumcunun bu konuda daha önce ne söylediği;
-- yorumcunun yorumları, değerlendirmeleri ve sorduğu sorular.
-Bir bilgiyi önemsiz bulduğun için atma. Tek ölçüt: haber, iddia veya yorum taşıyor mu?
-</neyi_tut>
+<okuyucu>
+Okuyucu Türkiye'de yaşıyor; dünyada olup bitenlerden kendisine ulaşabilecek olanları takip ediyor: Türkiye'nin siyaseti, ekonomisi, güvenliği ve yargısı; savaşlar; büyük güçlerin ülke çapındaki kararları ve devletlerin birbirine yönelik adımları; dünya ölçeğinde ekonomi ve teknoloji kaymaları.
+</okuyucu>
 
-<neyi_at>
-Yalnızca haber, iddia veya yorum taşımayan kısımları at:
-- açılış ve kapanış sohbeti, selamlaşma, şakalar, gündelik muhabbet;
-- kanal ve program duyuruları, sonraki programın tanıtımı, abonelik, bağış ve destek çağrıları (Patreon, Kreosus, YouTube katıl vb.), sponsor ve reklam;
-- yayının kendi akışına dair konuşmalar ("kesiti verelim", "altyazıya bakın", "ekrana getirelim", "buna sonra geleceğiz");
-- aynı bilginin tekrarı: yorumcu bir şeyi birkaç kez söylüyorsa bir kez yaz.
-</neyi_at>
+<adım_1_konular>
+Metni konulara ayır. Konu, belirli bir olay, karar, açıklama, veri, dava, soruşturma ya da yorumcunun belirli bir iddiasıdır. Her konu için karar ver: rapora girer mi?
 
-<okunabilirlik>
-1. Her konu kendi bağlamıyla açılır. Okuyucu içeriği izlemedi: konunun ilk cümlesi ne olduğunu, kimin yaptığını ve ne zaman olduğunu söylesin. Konunun ortasından başlama.
-2. Bir kişi veya kurum ilk geçtiğinde metinde söylenen görevi veya bağlamıyla tanıtılır: "Akın Gürlek'in danışmanı Furkan Torlak", "PKK yöneticisi Murat Karayılan". Görev metinde geçmiyorsa uydurma, yalnızca ismi yaz.
-3. İçeriği yorumcunun anlattığı gibi tek bir akan anlatı olarak yaz. Yorumcunun aktardığı olayları, kendi bilgilerini, iddialarını ve yorumlarını birbirinden ayırma: ayrı paragrafa, ayrı satıra veya etikete ("Yorum:") koyma, her cümlenin başına "Atay'a göre" ekleme. Rapor zaten o yorumcunun içeriğinin raporudur; okuyucu anlatının yorumcuya ait olduğunu bilir.
-   - Yorumcunun adı yalnızca kendisinden söz ettiği yerde geçer: daha önce ne söylediği, başına ne geldiği, ne sorduğu ("Özdil o dönemde bu bilgilerin sızdırıldığını anlatmıştı").
-   - Başka birinin sözü, açıklaması veya iddiası o kişinin adıyla verilir: "Kılıçdaroğlu KRT'de Halk TV'nin 24 saat yalan haber yaptığını söyledi."
-   - İçerikte bir şey iddia olarak geçiyorsa raporda da iddia olarak kalır.
-4. Cümleleri birbirine bağla. Kopuk bilgi dizisi yazma: her cümle bir öncekinden nasıl çıktığını göstersin ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine", "aynı günlerde"). Bağlacı yalnızca içerikte o ilişki kuruluyorsa kullan: "çünkü" yazdığın yerde içerikte de bir sebep söylenmiş olmalı. Bir cümlede en fazla iki-üç bilgi olsun; noktalı virgülle bilgi istifleme.
-5. Belirsiz gönderme yapma. "Bu", "o", "bunlar", "konu" kelimelerinin neyi kastettiği açık değilse ismi tekrarla.
-6. Uzun konuyu böl. Bir konunun birkaç yönü varsa kısa paragraflara veya kalın etiketli maddelere ayır ("**Kariyeri:** ...", "**Hakkındaki iddialar:** ..."). Bir paragraf en fazla 5-6 cümle olsun.
-7. Benzetme yerine somut bilgi. Yorumcunun benzetmelerini ve süslü sözlerini ("deprem", "kış geliyor", "kolu kanadı kırıldı", "fitili ateşledi") kopyalama. Benzetmenin arkasındaki somut iddia içerikte söyleniyorsa onu yaz; söylenmiyorsa benzetmeyi at, ondan kendin anlam çıkarma. Bir kişinin sözü doğrudan alıntı olarak veriliyorsa tırnak içinde kalabilir.
-8. Aktarım fiilleri sade olsun: "dedi", "diyor", "söylüyor", "iddia ediyor", "soruyor", "-e göre". "Belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir" gibi resmi kalıpları kullanma.
-</okunabilirlik>
+GİRER:
+- Türkiye: ulusal siyaset, hükümet ve muhalefetin adımları, Meclis, ekonomi ve geçim (fiyatlar, üretici, ücretler, enflasyon, kur), güvenlik ve terörle mücadele, yargı, ulusal ağırlıkta dava ve soruşturmalar, yolsuzluk ve ifşalar, devlet kurumlarının eylemleri, ulusal figürlerin durumu ve açıklamaları, dış politika. Türkiye'nin ya da bir Türk aktörün geçtiği her yabancı konu.
+- Savaşlar ve çatışmalar: cephe, saldırı, ateşkes, müzakere, yaptırım.
+- Büyük güçler (ABD, Çin, Rusya, AB ve büyük üyeleri, İngiltere, İsrail, İran, Suudi Arabistan ve Körfez, Hindistan): ülke çapında olay ve karar, seçim, hükümet krizi, devletlerin birbirine yönelik adımları.
+- Dünya ölçeğinde ekonomi ve teknoloji: petrol, altın, dolar, faiz, merkez bankaları, ticaret, yapay zekâ yarışı ve en büyük şirketlerin bir savaş, kriz ya da teknoloji kaymasının etkisi olarak okunan sonuçları.
+- Yorumcunun bu konulardaki kendi bilgileri, kulis bilgileri, iddiaları, soruları ve değerlendirmeleri: bunlar ait oldukları konunun parçasıdır.
 
-<kısıtlar>
-- Metinde olmayan bilgi, bağlam, sebep veya görev ekleme. Kendi yorumunu ekleme.
-- Yorumcunun argümanını çarpıtma, yumuşatma veya sertleştirme.
-- Sayı, tarih, isim ve alıntılar birebir doğru olsun. Transkriptte bozuk yazılmış bir isim metnin başka bir yerinde doğru geçiyorsa doğru yazımı kullan.
-- Dil: metnin dili (Türkçe ise Türkçe).
-- Konuları içerikteki sırayla yaz.
-</kısıtlar>
+GİRMEZ:
+- Sohbet, selamlaşma, şakalar, sunucular arası takılmalar; yayın akışına dair sözler ("görüntüyü verelim", "buna sonra geleceğiz").
+- Kanal ve program duyuruları; abonelik, beğeni, bağış ve destek çağrıları (Patreon, Kreosus, YouTube katıl); sponsor ve reklam.
+- Spor, magazin, eğlence, dizi ve film, yaşam tarzı, sağlık ve tüketici tavsiyesi.
+- Tarih ve arka plan dersleri; bir kişinin kariyer geçmişi ve biyografisi; yorumcunun anıları ve kişisel hikâyeleri; profiller. Güncel bir konunun anlaşılması için gereken bağlam en fazla bir cümle olarak o konunun içinde kalır.
+- Türkiye dışında ve bir savaş dışında kalan tekil olaylar: tek bir kaza, suç, saldırı, gözaltı, dava. Büyük güç olmayan ve Türkiye'nin bölgesinde (Orta Doğu, Körfez, Balkanlar, Kafkasya, Karadeniz) olmayan bir ülkenin iç siyaseti.
+- Belirli bir konuya bağlanmayan duygu boşaltma, slogan, temenni, hakaret ve kehanet. Yorumcunun bir sözü ancak belirli bir konu hakkında belirli bir iddia, soru ya da argüman taşıyorsa o konunun içinde yer alır.
+- Aynı bilginin tekrarı: yorumcu bir şeyi birkaç kez söylüyorsa bir kez yazılır.
+</adım_1_konular>
+
+<adım_2_yazım>
+Giren her konu için bir başlık ve tek bir paragraf yaz.
+
+Başlık ("### " ile başlar): en çok 15 kelime; somut aktör + somut eylem + konudaki en çarpıcı unsur (beklenmedik sonuç, çelişki, rakam, karşı karşıya geliş). Aktif fiil, en önemli bilgi başta. Bilgiyi saklayan kalıplar ("Bakın ne oldu"), ünlem, BÜYÜK HARF vurgusu, cevapsız soru başlığı ve "şok", "bomba", "tarihi" gibi sıfatlar kullanılmaz. Başlık yorumcunun iddiasını ya da sorusunu taşıyorsa bu görünür: "Atay: örgütün adı ne?"
+
+Paragraf: 2 ile 6 cümle arası, akan düz yazı; madde işareti, alt başlık, etiket ("Yorum:") yok. Önce konunun özü (ne oldu, kim yaptı, neden önemli), sonra onsuz anlaşılmayacak belirleyici ayrıntılar: sayılar, tarihler, isimler, görevler, alıntılar. Bunlar metindeki haliyle birebir kalır; doğrudan alıntı tırnak içinde verilir. Bir kişi ilk geçtiğinde metinde söylenen göreviyle tanıtılır ("Adalet Bakanı Akın Gürlek"); görev metinde geçmiyorsa uydurulmaz. Başkasının sözü, açıklaması ya da iddiası o kişinin adıyla verilir ("Bahçeli ... dedi"). Metinde iddia olarak geçen şey raporda da iddia olarak kalır.
+
+Yorumcunun kendi bilgisi, iddiası, sorusu ve değerlendirmesi ile aktardığı olay birbirine karışmaz: yorumcuya ait olanlar soyadıyla bağlanır ("Atay'a göre ...", "Atay ... diye sordu", "Atay ... dedi"); ama her cümle bu bağlaçla başlamaz, bir konunun yorum kısmı birkaç cümle sürüyorsa bağlaç bir kez yeter. Yorumcunun benzetmeleri ve süslü sözleri ("deprem", "fitili ateşledi") kopyalanmaz; arkasındaki somut iddia metinde söyleniyorsa o yazılır, söylenmiyorsa atılır. Yorumcunun argümanı yumuşatılmaz, sertleştirilmez, çarpıtılmaz.
+
+Metinde olmayan hiçbir bilgi, bağlam, görev, tarih, sebep, sonuç ya da değerlendirme eklenmez; kendi bilgin ve kendi yorumun rapora girmez. Bağlaç ("çünkü", "bu yüzden", "ancak") yalnızca metinde o ilişki kuruluyorsa kullanılır.
+
+İsimler: kamuoyunda bilinen bir kişi ya da kurumun kastedildiği bağlamdan kesinse doğru yazımı kullan (transkriptte "Akın Gürlü'e" geçiyorsa Akın Gürlek, "Musavat Derbeşoğlu" geçiyorsa Müsavat Dervişoğlu); kesin değilse transkriptteki yazımı koru.
+
+Aktarım fiilleri sade: "dedi", "söyledi", "diyor", "iddia ediyor", "soruyor", "-e göre". "Belirtmektedir", "ifade etmektedir", "vurgulamaktadır" kullanılmaz.
+
+Dil: metnin dili (Türkçe ise Türkçe). Konular metindeki sırayla yazılır. Konular arasına tek başına bir "---" satırı konur.
+</adım_2_yazım>
 
 <örnek>
 <örnek_transkript>
-Şimdi bakın, dün gece Merkez Bankası bir duyuru yaptı. Faizi 250 baz puan birden indirdiler. 50'den 47,5'e. Bu beklenmedik bir hamleydi çünkü piyasa beklentisi sadece 100 baz puan civarındaydı. Açıklamada Karahan "enflasyon eğilimi olumlu" dedi ama dolar bir gecede 35,80'den 36,20'ye fırladı. Yani piyasa karara güvenmedi. Erdoğan ise sabah konuşmasında "ekonomide normalleşme dönemi" diyerek bu indirimi savundu. Aslında bu 2024'ten beri uygulanan yüksek faiz politikasının bir dönüm noktası. Hatırlarsanız 2023'te Şimşek geldiğinde faizi 8,5'tan 50'ye çıkarmıştık. Neyse, programın sonunda Patreon destekçilerimize teşekkür edelim.
+Fon soruşturması kapsamında 31 Ekim'de gözaltına alınan eski Borsa İstanbul AŞ Genel Müdürü Korkmaz Enes Ergün rüşvet almak suçlamasıyla sevk edildiği sufh Ceza Mahkemeliğince tutuklandı. >> Devam edecek. Daha devamı edecek. Dediğimiz gibi devletin içerisinde, kurumların içerisinde birçok kişi görevden alınacak ve birçok kişi de yavaş yavaş ya gözaltı ya da tutuklamalar yapılacak. Buraya kadar normal. Ama tutuklanmayanlar, sessiz bırakılanlar, başka görevlere gönderilenler bunlara dokunulacak mı? Kirlilikse bu adam kirliyse kardeşim diğer adamları da yakalayacaksınız. Ayrım yok. Hukuk dediğin şey herkes hukuk karşısında eşittir. Ben 3 liraya çaldım, ötekisi 5 lira çaldı. Yani kardeşim beni alıyorsun da o 5 lira çalanı niye almıyorsun sorusunu sordurtmayacaksınız bu milleti. Bu milletin artık dayanacak gücü kalmadı. Tabii desteklerinizi bekliyoruz değerli dostlar. Eğer varsa Kreosus'tan, Patreon'dan gücü yetenler bizlere destek olabilirse çok memnun oluruz. Programı beğenmeyi mutlaka yapın.
 </örnek_transkript>
-
-<yanlış_rapor>
-### Faiz İndirimi
-Merkez Bankası 250 baz puan indirdi, beklenti 100'dü; dolar 36,20, Karahan "olumlu", Erdoğan "normalleşme"; 2024'ten beri süren politikanın dönüm noktası, Şimşek 2023'te 8,5'ten 50'ye.
-</yanlış_rapor>
-Neden yanlış: bilgiler tek cümleye istiflenmiş, aralarındaki bağ kopmuş; hangi sözün kime ait olduğu anlaşılmıyor.
-
-<yanlış_rapor>
-### Merkez Bankası Başkanı Karahan'dan Sürpriz İndirim
-Merkez Bankası Başkanı Karahan'ın yönetimindeki banka faizi 250 baz puan indirdi. Bu karar enflasyonu yeniden yükseltebilir.
-</yanlış_rapor>
-Neden yanlış: içerikte Karahan'ın görevi geçmiyor ve kararın enflasyona etkisinden hiç söz edilmiyor; ikisi de eklenmiş bilgi.
-
-<yanlış_rapor>
-### Merkez Bankası Faizi Beklentinin Üzerinde İndirdi
-Merkez Bankası politika faizini 250 baz puan indirerek yüzde 47,5'e çekti. Dolar 35,80 liradan 36,20 liraya çıktı.
-**Yorum:** Yorumcuya göre piyasa karara güvenmedi. Yorumcuya göre bu indirim yüksek faiz politikasında bir dönüm noktası.
-</yanlış_rapor>
-Neden yanlış: yorumcunun söyledikleri olaydan koparılıp etiketlenmiş ve her cümle "yorumcuya göre" diye başlıyor; anlatı bölünüyor ve okumak zorlaşıyor.
-
 <doğru_rapor>
-### Merkez Bankası Faizi Beklentinin Üzerinde İndirdi
-Merkez Bankası dün gece politika faizini 250 baz puan indirerek yüzde 50'den yüzde 47,5'e çekti. Piyasa yalnızca 100 baz puan civarında bir indirim beklediği için karar sürpriz oldu. Karahan açıklamada "enflasyon eğilimi olumlu" dedi, ancak piyasa karara güvenmedi ve dolar bir gecede 35,80 liradan 36,20 liraya çıktı. Erdoğan ise sabah konuşmasında indirimi "ekonomide normalleşme dönemi" diyerek savundu. Bu indirim, 2024'ten beri uygulanan yüksek faiz politikasında bir dönüm noktası. 2023'te Şimşek geldiğinde faiz yüzde 8,5'ten yüzde 50'ye çıkarılmıştı.
+### Eski Borsa İstanbul Genel Müdürü Korkmaz Enes Ergün rüşvetten tutuklandı
+
+Fon soruşturması kapsamında 31 Ekim'de gözaltına alınan eski Borsa İstanbul AŞ Genel Müdürü Korkmaz Enes Ergün, rüşvet almak suçlamasıyla sevk edildiği sulh ceza hâkimliğince tutuklandı. Atay'a göre devletin ve kurumların içinde birçok kişi daha görevden alınacak, gözaltılar ve tutuklamalar sürecek; asıl soru tutuklanmayanlara, sessiz bırakılanlara ve başka görevlere gönderilenlere dokunulup dokunulmayacağı. "Ben 3 liraya çaldım, ötekisi 5 lira çaldı; beni alıyorsun da o 5 lira çalanı niye almıyorsun" sorusunun bu millete sordurulmaması gerektiğini söyledi.
 </doğru_rapor>
-Patreon teşekkürü haber taşımadığı için rapora girmedi.
+Destek ve beğeni çağrısı rapora girmedi; "sufh Ceza Mahkemeliğince" bozuk yazımı düzeltildi; yorumcunun değerlendirmesi olaya "Atay'a göre" ile bir kez bağlandı.
 </örnek>
 
 <çıktı>
-Her konu için "### Başlık" ve altında paragraflar. Başlık konuyu somut olarak söylesin: kim, ne yaptı. Raporu <rapor> ... </rapor> arasına yaz; öncesine hiçbir giriş cümlesi ekleme.
+Raporu <rapor> ... </rapor> arasına yaz; öncesine ve sonrasına hiçbir şey ekleme. Rapora giren konu yoksa <rapor>BOŞ</rapor> döndür.
 </çıktı>
 </görev>"""
-
-# Konsolidasyon ve final birleştirmenin ortak kuralları. Girdi raporları ayrıntılıdır;
-# birleştirme bilgi atmaz, yalnızca kanallar arasındaki tekrarı tek yere toplar.
-_MERGE_RULES = """<amaç>
-Raporu okuyan biri, bütün kanallarda işlenen her konuyu, her konudaki bilgileri ve hangi kanalın ne söylediğini eksiksiz öğrensin ve ilk okuyuşta anlasın. Girdi raporları ayrıntılıdır: birleştirirken bilgi atma, yalnızca tekrarları birleştir.
-</amaç>
-
-<kurallar>
-1. DIŞ BİLGİ YOK. Cümleler senin, bilgiler girdinin. Rapor yalnızca girdi raporlarındaki bilgileri kullanır. Kendi bilginden veya dış kaynaklardan hiçbir şey (kişinin görevi, olayın tarihi, arka plan, tarihsel referans) ekleme; kendi çıkarımını, değerlendirmeni veya girdide kurulmamış bir neden-sonuç bağını da ekleme. Girdide olmayan bir şey raporda yoktur.
-
-2. BİLGİ ATMA, TEKRARI BİRLEŞTİR. Girdideki her olgu, isim, sayı, tarih, alıntı, iddia ve yorum raporda bir kez yer alır. Hiçbir bilgiyi önemsiz diye atma. Aynı bilgiyi iki kez yazma; aynı olayı önce genel sonra ayrıntılı diye iki kez anlatma. Sayı, isim ve alıntılar girdideki haliyle birebir doğru kalır.
-
-3. ORTAK BİLGİLER ORTAK, KATKILAR ÖZGÜN. Birden fazla kanalın paylaştığı bilgiler (olayın kendisi, ortak aktörler, ortak gerçekler, ortak alıntılar) "Ortak Bilgiler" bölümünde bir kez yazılır. Her kanalın katkısında o kanala özgü olan her şey yer alır: başka kanalda geçmeyen bilgi, isim, sayı, alıntı, iddia ve yorum. Kanal katkısı kısa olmak zorunda değildir; o kanala özgü bilgi ne kadarsa o kadar yazılır.
-
-4. OKUNABİLİRLİK. Kısaltılmış metinde cümleler arasındaki bağ kopar ve okuyucu anlamaz. Bu yüzden:
-   - Her konu kendi bağlamıyla açılır: ilk cümle ne olduğunu, kimin yaptığını ve ne zaman olduğunu söyler.
-   - Bir kişi veya kurum ilk geçtiğinde girdide geçen görevi veya bağlamıyla tanıtılır.
-   - Cümleler birbirine bağlanır ("çünkü", "bu yüzden", "ancak", "buna karşılık", "bunun üzerine"). Bağlaç yalnızca girdide o ilişki kuruluyorsa kullanılır. Bir cümlede en fazla iki-üç bilgi olur; noktalı virgülle bilgi istiflenmez.
-   - "Bu", "o", "bunlar" neyi kastettiği açık değilse ismi tekrarla.
-   - Uzun bir konu kısa paragraflara veya kalın etiketli maddelere bölünür. Bir paragraf en fazla 5-6 cümle olur.
-
-5. AYRIŞTIRMA DEĞİL, AKAN ANLATI.
-   - Ortak Bilgiler'de bilgiyi hangi kanalların verdiği anlatıdan anlaşılır ("Atay ve Soykan ... anlattı", "Yetkin ve Altaylı ... aktardı"). Her cümleye ayrı kaynak listesi sıkıştırma.
-   - Kanal Katkıları'nda ve Kanallara Özel Haberler'de kanal adı başlıkta yazdığı için içerik, o kanalın anlattığı gibi tek bir akan anlatı olarak yazılır. Kanalın aktardığı olaylar, kendi bilgileri, iddiaları ve yorumları birbirinden ayrılmaz: ayrı satıra veya etikete ("Yorum:") konmaz, her cümleye "Atay'a göre" eklenmez. Yorumcunun adı yalnızca kendisinden söz ettiği yerde geçer (daha önce ne söylediği, başına ne geldiği, ne sorduğu).
-   - Kanalın aktardığı başka birinin sözü o kişinin adıyla verilir ("Karayılan, '...' diyor"). Girdide iddia olarak geçen bir şey raporda da iddia olarak kalır.
-   - Aktarım fiilleri sade olur: "dedi", "diyor", "iddia ediyor", "soruyor", "-e göre". "Belirtmektedir", "ifade etmektedir", "vurgulamaktadır", "öne sürmektedir" kullanılmaz.
-
-6. BENZETME YERİNE SOMUT BİLGİ. Yorumcuların benzetmelerini ve süslü sözlerini ("deprem", "siyasi rüzgar", "kasırga", "damga vurdu", "fitili ateşledi") kopyalama. Arkasındaki somut iddia girdide söyleniyorsa onu yaz ve cümleler arasındaki neden-sonuç bağını koru; söylenmiyorsa benzetmeyi at, ondan kendin anlam çıkarma. "Büyük", "kritik", "tarihi", "çarpıcı" gibi sıfatları, onları doğuran somut bilgi (sayı, oran, karşılaştırma) cümlede yoksa kullanma.
-   Yanlış: "Özel'in mitinglerde yakaladığı büyük ivme ve meydanlarda oluşan müthiş dalga, yeni bir siyasi rüzgar yarattı."
-   Doğru: "Özel mitinglerde ivme kazandı; bu ivme Kılıçdaroğlu'nun tutumundan bağımsız."
-
-7. KÜMELEME. Aynı somut olayı (aynı karar, aynı açıklama, aynı eylem, aynı süreç) birden fazla kanal işlemişse konu "📌 ORTAK GÜNDEM" bölümüne, yalnızca bir kanal işlemişse "🎙️ KANALLARA ÖZEL HABERLER" bölümüne girer. Aynı kişi veya kurum adının iki haberde geçmesi birleştirmek için yetmez: "Özel'in parti kurma stratejisi" ile "Özel'in eşit yurttaşlık açıklaması" ayrı konulardır. Şüphedeysen ayrı tut. Birbiriyle ilgisiz konuları soyut bir başlık altında birleştirme. ORTAK GÜNDEM'deki konuları en çok kanalın işlediği konu en üstte olacak şekilde azalan sırayla diz.
-
-8. BAŞLIK. ORTAK GÜNDEM başlıkları spesifik olur ve haberin asıl gerilimini taşır: somut aktör + somut eylem + hikâyedeki çarpıcı unsur (beklenmedik sonuç, çelişki, rakam, cepheleşme). Aktif fiil kullan, en önemli bilgiyi başa koy. Başlığın işaret ettiği şey raporda açıkça cevaplanır. Bilgiyi saklayan kalıplar ("Bakın ne oldu", "Şok karar"), ünlem, BÜYÜK HARF vurgusu ve cevapsız soru başlığı yasaktır.
-   Fazla düz: "Merkez Bankası Faiz Kararı"
-   Clickbait: "Merkez Bankası'ndan ŞOK Karar — Piyasalar Alt Üst!"
-   Doğru: "Beklenti 100 Baz Puandı: Merkez Bankası 250 İndirdi, Dolar 36'yı Aştı"
-</kurallar>
-
-<şablon>
-Aşağıdaki şablonu birebir kullan:
-
-📌 ORTAK GÜNDEM
-
-### [Spesifik Konu Başlığı]
-**Ortak Bilgiler:** Olay ve birden fazla kanalın paylaştığı bütün bilgiler, bir kez. Gerekirse birden çok kısa paragraf.
-**Kanal Katkıları:**
-- **[Kanal Adı]:** Bu kanala özgü bütün bilgi, iddia ve yorum. Ortak Bilgiler'de yazılanı tekrarlama. Gerekirse birden çok cümle veya kısa paragraf; kanalın anlattığı gibi akan bir anlatı. Kanalın söyledikleri tamamen Ortak Bilgiler'de varsa "Ek bilgi yok." yaz.
-- **[Diğer Kanal Adı]:** ...
-
----
-
-🎙️ KANALLARA ÖZEL HABERLER
-
-### [Kanal Adı]
-
-**[Konu 1 Başlığı]**
-Konunun bütün bilgisi, bağlamıyla açılan kısa paragraflar halinde.
-
-**[Konu 2 Başlığı]**
-Aynı şekilde.
-
-### [Diğer Kanal Adı]
-
-**[Konu Başlığı]**
-...
-
-Aynı kanalın birden fazla konusu tek bir "### [Kanal Adı]" başlığı altında toplanır; her konu için ayrı kanal başlığı açılmaz.
-</şablon>"""
-
-CONSOLIDATION_PROMPT = """<raporlar>
-{combined_reports}
-</raporlar>
-
-<görev>
-Yukarıda farklı kanallara ait içerik raporları var. Bunları aşağıdaki kurallarla tek bir konsolide rapor haline getir.
-""" + _MERGE_RULES + """
-
-Doğrudan "📌 ORTAK GÜNDEM" ile başla; öncesine hiçbir giriş cümlesi ekleme.
-</görev>"""
-
-FINAL_MERGE_PROMPT = """<batch_raporları>
-{batch_reports}
-</batch_raporları>
-
-<görev>
-Yukarıda kendi içinde birleştirilmiş grup raporları var. Bunları aşağıdaki kurallarla tek bir nihai rapora dönüştür. Farklı gruplarda aynı somut olayı anlatan konuları tek konuda birleştir: ortak bilgileri bir kez yaz, her kanalın özgün katkısını kendi satırında koru. Bir grupta tek kanalın işlediği bir konu başka grupta da işlenmişse artık ORTAK GÜNDEM'e taşınır.
-""" + _MERGE_RULES + """
-
-Doğrudan "📌 ORTAK GÜNDEM" ile başla; öncesine hiçbir giriş cümlesi ekleme.
-</görev>"""
-
-
-# İlgi testi: içerik raporu okuyucuya güncel ve ona ulaşan bir şey söylüyor mu?
-# Tek bir karar sorusu (<karar>), altı ilgi kanalı (<tut>) ve atılacak kategoriler (<at>).
-# Birden fazla konu işleyen içerik, konulardan biri testi geçiyorsa tutulur.
-INTERESTS = """
-<okuyucu>
-Okuyucu Türkiye'de yaşıyor ve bu raporları kendisine ulaşabilecek gelişmeleri takip etmek için okuyor: Türkiye'nin siyaseti ve ekonomisi, komşu coğrafya, günün savaşları, kararları dünyaya yayılan büyük güçler ve dünyanın nereye gittiğini gösteren fikir ve toplum kaymaları. Bir içerik yerini yalnızca bu bağlardan biriyle ve güncel bir gelişme üzerinden kazanır. Ünlü bir isim, dramatik bir anlatım veya uzun bir video tek başına yetmez.
-</okuyucu>
-
-<karar>
-Her içerik raporu için şu soruyu tek cümleyle cevapla: "Bu içerik okuyucuya Türkiye, bir savaş, bir büyük güç veya dünyanın gidişatı hakkında GÜNCEL olarak ne söylüyor?"
-Somut bir cevap verebiliyorsan TUT. Dürüst cevap "güncel bir gelişme yok" veya "olayın kendisinden öte bir şey yok" ise AT.
-Bir içerik birden fazla konu işliyorsa ve bunlardan EN AZ BİRİ bu testi geçiyorsa içeriği TUT.
-</karar>
-
-<tut>
-1. TÜRKİYE, ulusal düzeyde: hükümet ve muhalefetin adımları, Meclis, ulusal ağırlıkta davalar ve mahkeme kararları, soruşturmalar, yolsuzluk ve ifşalar, ekonomi (faiz, kur, enflasyon, piyasalar, bütçe, büyük sektörler), dış politika, güvenlik, büyük düzenlemeler. Terör örgütlerine (PKK, DHKP-C, IŞİD ve diğerleri) yönelik güvenlik ve terörle mücadele operasyonları, ölçeği ne olursa olsun. Türkiye içinde binlerce kişiyi aynı anda etkileyen kitlesel olaylar (toplu hastalık, büyük afet). Son haftaların gelişmeleri.
-2. SAVAŞ VE ÇATIŞMA, her yerde: cephe, saldırılar, ateşkes, müzakere, savaş hedefleri, yaptırımlar, savaşın yayılma riski ve savaşın gidişatına dair analizler.
-3. BÜYÜK GÜÇLER (ABD, Çin, Rusya, AB ve büyük üyeleri, İngiltere, Hindistan, İsrail, İran, Suudi Arabistan): ülke çapında bir olay veya ulusal düzeyde bir karar. Seçimler ve seçmen havası, liderin tutumu ve gücü kullanma biçimi, hükümete karşı büyük mahkeme kararları, ekonomi, büyük düzenleme, hükümet krizi. Ülkenin yönünü sahadan somut gözlemlerle okuyan içerik buraya girer; tek bir kişinin portresi girmez. Bir partinin ne yapabileceğini tartan, bir seçimin neyi değiştireceğini tahmin eden veya bir anketi yeniden anlatan analiz olay değildir, atılır.
-4. FİKİR VE EMSAL KAYMALARI: neyin meşru ve normal sayıldığını değiştiren olaylar, aktörler küçük olsa bile. Bir devletin başka bir ülkenin meşruiyetini reddetmesi, bir ideolojinin ırkçı ilan edilmesi, haklar, ifade, din veya sınırlar hakkında emsal niteliğinde bir karar, ilk kez çıkan bir yasa.
-5. MODEL TOPLUMLARDA ÇATLAKLAR: gelişmiş ve istikrarlı bir ülkede yapısal bir sorunun ortaya çıkması. Bir kurum veya sektör içinde şiddet ve istismar, refah devletinin bir kesimi yüzüstü bırakması, güvenilen bir sistemin bozuk çıkması.
-6. KÜRESEL EKONOMİ: petrol, altın, dolar, tahvil piyasaları, merkez bankaları, ticaret kuralları, yaptırımlar, IMF ve Dünya Bankası, yapay zekânın istihdama etkisi, iklim eşikleri. Türkiye'de fiyatları veya politikayı etkileyen her şey.
-7. BÜTÜN DÜNYANIN OLAYLARI: nerede olursa olsun tüm dünyanın aynı anda izlediği az sayıda olay: Nobel ödülleri, BM Güvenlik Konseyi ve Genel Kurul kararları, G7, G20 ve COP zirveleri.
-</tut>
-
-<at>
-- GÜNCEL OLMAYAN İÇERİK: genel teorik veya tarihsel anlatım ("finans kapital nedir", "Osmanlı nasıl çöktü"), felsefi ve ideolojik söyleşi, zamansız tartışma, güncel bir olaya bağlanmayan açıklayıcı veya eğitim içeriği. Güncel olay yalnızca giriş bahanesi olarak geçiyorsa içerik yine atılır.
-- KİŞİSEL MESELELER: ünlü bir kişinin sağlığı, özel hayatı veya anıları; sanatçı, oyuncu, şarkıcı, sporcu söyleşileri; biyografik içerik; kişisel hikâye, hayata bakış, motivasyon sohbeti; tek bir kişinin kendi deneyimini anlattığı söyleşi.
-- TEKİL OLAYLAR: tek bir kaza, suç, saldırı, gözaltı veya polis olayı, tek bir yerel proje (bir golf sahası, bir bina, bir park) üzerine tek bir dava, ulusal siyasete ulaşmıyorsa. Bu büyük güçler için de geçerlidir: devlet başkanının yenilemek istediği bir golf sahası hakkındaki mahkeme kararı yerel bir anlaşmazlıktır. Savaş bölgesindeki tekil olay SAVAŞ kapsamında kalır. Türkiye'de terörle mücadele operasyonu tekil olay sayılmaz; sıradan suç operasyonu (tefecilik, uyuşturucu, fuhuş) sayılır.
-- YEREL VE KÜÇÜK ÖLÇEKLİ MESELELER: yerel bir olay, bir sektörün maliyet şikâyeti, bir partinin iç düzenlemesi, bir ilin sorunu, ulusal siyasi veya ekonomik ağırlığı yoksa. Binlerce kişiyi etkileyen olay ulusaldır ve tutulur.
-- TEK SES: tek bir adayın kampanya mesajı, tek bir aday hakkındaki söylenti, gaf veya karalama ve bunun çökmesi, tek bir uzmanın bir sektör hakkındaki görüşü, güncel bir olaya bağlanmayan kişisel yorum. Seçimin durumu ilgilidir; içindeki tek bir ses veya tek bir olay değildir, yarış bir meclis çoğunluğunu belirleyecek olsa bile.
-- GÜRÜLTÜ: spor, magazin, eğlence, lifestyle, sağlık tavsiyesi, reklam, sponsor içeriği, kanal duyurusu.
-</at>
-""".strip()
-
 
 def ts():
     """Returns current timestamp string for logging."""
@@ -699,138 +549,40 @@ def call_gemini(prompt, label="Gemini", response_schema=None):
     return None
 
 
+_NON_PERSON_CHANNEL = re.compile(r"\b(tv|report|haber|ajans|kanal)\b", re.IGNORECASE)
+
+
+def _commentator_line(video):
+    """Tells the model whom to attribute the commentator's own claims to."""
+    name = video["name"].split("(")[0].strip()
+    if _NON_PERSON_CHANNEL.search(name):
+        return ("Kanal bir kişi değil; konuşanın adı başlıktan ya da metinden anlaşılıyorsa "
+                "yorumcunun sözlerini o kişinin soyadıyla bağla, anlaşılmıyorsa \"yorumcu\" de.")
+    surname = name.split()[-1]
+    return f"Yorumcu {name}; yorumcunun kendi sözlerini \"{surname}\" soyadıyla bağla."
+
+
 def analyze_video(video, transkript):
+    """One Gemini call per content: raw transcript in, topic-by-topic report out.
+
+    Returns the report text, "" when the model found no topic that passes the
+    relevance test (<rapor>BOŞ</rapor>), or None when every API key failed."""
     if video.get("kind") == "article":
         source_line = (f'{video["name"]} imzasıyla yayımlanan "{video["title"]}" '
                        f'başlıklı köşe yazısının tam metnidir.')
     else:
         source_line = (f'{video["name"]} kanalında yayınlanan "{video["title"]}" '
                        f'başlıklı videonun transkriptidir.')
-    prompt = PROMPT_TEMPLATE.format(source_line=source_line, transkript=transkript)
-    label = f"{video['name'][:20]} özet"
-    result = call_gemini(prompt, label=label)
-    if result:
-        rapor_match = re.search(r"<rapor>(.*?)(?:</rapor>|$)", result, re.DOTALL)
-        if rapor_match:
-            return rapor_match.group(1).strip()
-        return result
-    return f"⚠️ [{video['name']}] \"{video['title']}\" — Tüm API keyleri tükendi."
-
-
-def split_into_batches(items, target_size=3):
-    """Split into balanced batches. e.g. n=7, target=3 → sizes [3,2,2]."""
-    n = len(items)
-    if n <= target_size:
-        return [items]
-    num_batches = math.ceil(n / target_size)
-    base = n // num_batches
-    extra = n % num_batches
-    batches = []
-    idx = 0
-    for i in range(num_batches):
-        size = base + (1 if i < extra else 0)
-        batches.append(items[idx:idx + size])
-        idx += size
-    return batches
-
-
-def consolidate_reports(reports_list):
-    """Batch consolidation: group reports into ~3, consolidate each batch, then merge."""
-    log(f"")
-
-    if len(reports_list) <= 3:
-        combined_text = "\n\n---\n\n".join(reports_list)
-        log(f"🔄 KONSOLİDASYON başlatılıyor ({len(reports_list)} rapor, {len(combined_text):,} karakter)")
-        prompt = CONSOLIDATION_PROMPT.format(combined_reports=combined_text)
-        result = call_gemini(prompt, label="KONSOLİDASYON")
-        if result:
-            log(f"✅ Konsolidasyon tamamlandı ({len(result):,} karakter)")
-            return result
-        log(f"⚠️ Konsolidasyon başarısız, bireysel raporlar gönderiliyor")
-        return combined_text
-
-    batches = split_into_batches(reports_list, target_size=3)
-    log(f"🔄 BATCH KONSOLİDASYON başlatılıyor ({len(reports_list)} rapor → {len(batches)} batch: {[len(b) for b in batches]})")
-
-    batch_outputs = []
-    for i, batch in enumerate(batches, 1):
-        batch_text = "\n\n---\n\n".join(batch)
-        log(f"")
-        log(f"📦 Batch {i}/{len(batches)} işleniyor ({len(batch)} rapor, {len(batch_text):,} karakter)")
-        prompt = CONSOLIDATION_PROMPT.format(combined_reports=batch_text)
-        result = call_gemini(prompt, label=f"Batch {i}/{len(batches)}")
-        if result:
-            log(f"✅ Batch {i} tamamlandı ({len(result):,} karakter)")
-            batch_outputs.append(result)
-        else:
-            log(f"⚠️ Batch {i} başarısız, ham raporlar fallback olarak kullanılacak")
-            batch_outputs.append(batch_text)
-
-    log(f"")
-    merge_input = "\n\n=== BATCH AYIRICI ===\n\n".join(
-        f"[BATCH {i+1}]\n\n{out}" for i, out in enumerate(batch_outputs)
-    )
-    log(f"🔀 FİNAL BİRLEŞTİRME başlatılıyor ({len(batch_outputs)} batch raporu, {len(merge_input):,} karakter)")
-    prompt = FINAL_MERGE_PROMPT.format(batch_reports=merge_input)
-    final = call_gemini(prompt, label="FİNAL BİRLEŞTİRME")
-    if final:
-        log(f"✅ Final birleştirme tamamlandı ({len(final):,} karakter)")
-        return final
-    log(f"⚠️ Final birleştirme başarısız, batch çıktıları yan yana gönderiliyor")
-    return "\n\n---\n\n".join(batch_outputs)
-
-
-def filter_video_reports(items):
-    """Drop reports that don't match INTERESTS. items: list of {video, report}.
-    Returns filtered list. On filter failure, returns the original list (don't lose work)."""
-    if not items:
-        return items
-
-    payload = "\n\n=== İÇERİK AYIRICI ===\n\n".join(
-        f"[{i}] KANAL: {it['video']['name']}\n"
-        f"BAŞLIK: {it['video']['title']}\n\n"
-        f"RAPOR:\n{it['report']}"
-        for i, it in enumerate(items)
-    )
-
-    schema = {
-        "type": "object",
-        "properties": {
-            "drop_indices": {
-                "type": "array",
-                "items": {"type": "integer"},
-            },
-        },
-        "required": ["drop_indices"],
-    }
-
-    prompt = (
-        f"<içerikler>\n{payload}\n</içerikler>\n\n"
-        f"{INTERESTS}\n\n"
-        "<karar> testini yukarıdaki her içerik raporuna uygula. "
-        "ATILACAK içeriklerin indekslerini döndür; listelemediğin içerikler tutulur."
-    )
-
-    log(f"")
-    log(f"🔍 İLGİ FİLTRESİ başlatılıyor ({len(items)} içerik değerlendiriliyor)")
-    try:
-        result = call_gemini(prompt, label="FİLTRE", response_schema=schema)
-        if not result:
-            log(f"⚠️ Filtre çağrısı sonuçsuz, tüm raporlar tutuluyor")
-            return items
-        data = json.loads(result)
-        drop = {i for i in data.get("drop_indices", []) if 0 <= i < len(items)}
-    except Exception as e:
-        log(f"⚠️ Filtre hatası ({e}); tüm raporlar tutuluyor")
-        return items
-
-    kept = [it for i, it in enumerate(items) if i not in drop]
-    log(f"✅ Filtre: {len(kept)}/{len(items)} tutuldu, {len(drop)} atıldı")
-    if drop:
-        for i in sorted(drop):
-            v = items[i]['video']
-            log(f"⊘ ATILDI [{v['name']}] {v['title'][:60]}", indent=1)
-    return kept
+    prompt = REPORT_PROMPT.format(source_line=source_line, transkript=transkript,
+                                  commentator_line=_commentator_line(video))
+    result = call_gemini(prompt, label=f"{video['name'][:20]} rapor")
+    if result is None:
+        return None
+    m = re.search(r"<rapor>(.*?)(?:</rapor>|$)", result, re.DOTALL)
+    report = (m.group(1) if m else result).strip()
+    if not report or report.upper() == "BOŞ":
+        return ""
+    return report
 
 
 def send_to_discord(report):
@@ -1075,26 +827,57 @@ PIPELINE_MODE = (os.getenv("PIPELINE_MODE") or "full").strip().lower()
 CONTENT_FILE = os.getenv("CONTENT_FILE", "manual/icerikler.json")
 
 
+def write_contents(items):
+    """Write the fetched transcripts to CONTENT_FILE (the raw material of the report)."""
+    out = [{
+        "name": v["name"], "title": v["title"], "duration": v.get("duration", ""),
+        "url": v.get("url", ""), "kind": v.get("kind", "video"),
+        "video_id": v.get("video_id", ""), "transkript": v["transkript"],
+    } for v in items]
+    os.makedirs(os.path.dirname(CONTENT_FILE) or ".", exist_ok=True)
+    with open(CONTENT_FILE, "w", encoding="utf-8") as f:
+        json.dump({"date": datetime.now(ISTANBUL_TZ).strftime("%d.%m.%Y"), "items": out},
+                  f, ensure_ascii=False, indent=1)
+    log(f"📝 {len(out)} içerik {CONTENT_FILE} dosyasına yazıldı "
+        f"({sum(len(x['transkript']) for x in out):,} karakter)")
+
+
 def scrape_only(videos):
     """Transkriptleri indir ve Gemini'siz olarak dosyaya yaz."""
-    out = []
+    fetched = []
     for i, video in enumerate(videos, 1):
         log(f"[{i}/{len(videos)}] Transkript: [{video['name']}] {video['title']}")
         transkript = video.get("transkript") or transkript_cek(video["video_id"])
         if not transkript:
             log(f"⚠️ Transkript alınamadı, içerik atlanıyor", indent=1)
             continue
-        out.append({
-            "name": video["name"], "title": video["title"], "duration": video.get("duration", ""),
-            "url": video.get("url", ""), "kind": video.get("kind", "video"),
-            "video_id": video.get("video_id", ""), "transkript": transkript,
-        })
-    os.makedirs(os.path.dirname(CONTENT_FILE) or ".", exist_ok=True)
-    with open(CONTENT_FILE, "w", encoding="utf-8") as f:
-        json.dump({"date": datetime.now(ISTANBUL_TZ).strftime("%d.%m.%Y"), "items": out},
-                  f, ensure_ascii=False, indent=1)
-    log(f"📝 {len(out)}/{len(videos)} içerik {CONTENT_FILE} dosyasına yazıldı "
-        f"({sum(len(x['transkript']) for x in out):,} karakter)")
+        video["transkript"] = transkript
+        fetched.append(video)
+    write_contents(fetched)
+
+
+def build_full_report(analyzed, current_date):
+    """Header + one section per content, each with its topic-by-topic report."""
+    videos_list = "\n".join(
+        f"- **[{it['video']['name']}]** {it['video']['title']} `({it['video']['duration']})`"
+        for it in analyzed
+    )
+    sections = []
+    for idx, it in enumerate(analyzed, 1):
+        v = it["video"]
+        sections.append(
+            f"## {idx}. [{v['name']}] {v['title']} `({v['duration']})`\n\n"
+            f"{v.get('url', '')}\n\n"
+            f"{it['report']}"
+        )
+    return (
+        f"📅 **{current_date}**\n\n"
+        f"📺 **İncelenen İçerikler ({len(analyzed)} adet):**\n"
+        f"{videos_list}\n\n"
+        f"---\n\n"
+        + "\n\n---\n\n".join(sections)
+        + "\n"
+    )
 
 
 if __name__ == "__main__":
@@ -1116,8 +899,8 @@ if __name__ == "__main__":
         for v in videos:
             log(f"  - [{v['name']}] {v['title']} ({v['duration']})")
 
-        analyzed = []  # her eleman: {"video": video, "report": report}
-
+        analyzed = []   # her eleman: {"video": video, "report": report}
+        fetched = []    # transkripti alınan her içerik (CONTENT_FILE için)
         for i, video in enumerate(videos):
             video_start = time.time()
             log(f"")
@@ -1130,44 +913,36 @@ if __name__ == "__main__":
             if not transkript:
                 log(f"⚠️ Transkript alınamadı, içerik atlanıyor", indent=1)
                 continue
+            video["transkript"] = transkript
+            fetched.append(video)
 
             log(f"📝 İlk 300 karakter: {transkript[:300]}...", indent=1)
             report = analyze_video(video, transkript)
-            video["transkript"] = transkript
-            analyzed.append({"video": video, "report": report})
             video_elapsed = time.time() - video_start
-            log(f"✅ İçerik tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
+            if report is None:
+                log(f"❌ Rapor üretilemedi (tüm API key'leri tükendi), içerik atlanıyor ({video_elapsed:.1f}s)", indent=1)
+            elif report == "":
+                log(f"⊘ Rapora girecek konu yok, içerik atlanıyor ({video_elapsed:.1f}s)", indent=1)
+            else:
+                analyzed.append({"video": video, "report": report})
+                log(f"✅ İçerik tamamlandı ({video_elapsed:.1f}s, rapor: {len(report):,} karakter)", indent=1)
             time.sleep(2)
 
+        if fetched:
+            write_contents(fetched)
+
         if not analyzed:
-            log("❌ Hiçbir içerik işlenemedi.")
+            log("❌ Rapora girecek içerik yok, rapor üretilmiyor.")
         else:
-            analyzed = filter_video_reports(analyzed)
-            if not analyzed:
-                log("❌ İlgi filtresi tüm içerikleri eledi, rapor üretilmiyor.")
-
-        if analyzed:
-            all_reports = [
-                f"**{idx}.** 📺 **[{it['video']['name']}]** — {it['video']['title']} `({it['video']['duration']})`\n\n{it['report']}"
-                for idx, it in enumerate(analyzed, 1)
-            ]
-            processed_videos = [it["video"] for it in analyzed]
-
             current_date = datetime.now(ISTANBUL_TZ).strftime("%d.%m.%Y")
+            full_report = build_full_report(analyzed, current_date)
 
-            final_report_body = consolidate_reports(all_reports)
-
-            videos_list = "\n".join(
-                f"- **[{v['name']}]** {v['title']} `({v['duration']})`"
-                for v in processed_videos
-            )
-            full_report = (
-                f"📅 **{current_date}**\n\n"
-                f"📺 **İncelenen İçerikler ({len(processed_videos)} adet):**\n"
-                f"{videos_list}\n\n"
-                f"---\n\n"
-                f"{final_report_body}"
-            )
+            report_path = os.path.join(
+                os.path.dirname(CONTENT_FILE) or ".",
+                f"Youtube Gündem Raporu {datetime.now(ISTANBUL_TZ).strftime('%Y-%m-%d')}.md")
+            with open(report_path, "w", encoding="utf-8") as f:
+                f.write(full_report)
+            log(f"📝 Rapor dosyaya yazıldı: {report_path} ({len(full_report):,} karakter)")
 
             send_to_discord(full_report)
 
@@ -1186,21 +961,6 @@ if __name__ == "__main__":
             secs = int(total_elapsed % 60)
             log(f"")
             log(f"🏁 İŞLEM TAMAMLANDI")
-            log(f"   • {len(all_reports)} içerik işlendi")
+            log(f"   • {len(analyzed)}/{len(fetched)} içerik rapora girdi")
             log(f"   • Toplam süre: {mins} dk {secs} sn")
-            log(f"   • Konsolide rapor Discord'a gönderildi (tek PDF)")
-
-            transcript_filename = f"transkriptler_{datetime.now(ISTANBUL_TZ).strftime('%Y%m%d_%H%M%S')}.txt"
-            total_chars = 0
-            with open(transcript_filename, "w", encoding="utf-8") as f:
-                for i, v in enumerate(processed_videos, 1):
-                    text = v.get("transkript", "(transkript yok)")
-                    total_chars += len(text)
-                    f.write("=" * 70 + "\n")
-                    f.write(f"[{i}/{len(processed_videos)}] {v['name']} — {v['title']} ({v['duration']})\n")
-                    f.write(f"{v.get('url', '')}\n")
-                    f.write("=" * 70 + "\n")
-                    f.write("\n")
-                    f.write(text)
-                    f.write("\n\n")
-            log(f"📝 Transkriptler dosyaya yazıldı: {transcript_filename} ({total_chars:,} karakter)")
+            log(f"   • Rapor Discord'a gönderildi (metin + PDF)")

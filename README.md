@@ -1,12 +1,18 @@
 # Haber Ajansı
 
-Automated News Intelligence Pipeline that monitors YouTube news channels daily and delivers AI-generated reports to Discord.
+YouTube news channels (and one column) are fetched daily and turned into a topic-by-topic Turkish news report, delivered to Discord and saved under `manual/`.
 
 ## What it does
-- Checks YouTube news channels for new videos every day
-- Fetches transcripts via Apify
-- Analyzes transcripts with Google Gemini AI
-- Sends structured reports to a Discord channel
+- Lists each channel's videos of the last 24 hours (YouTube Data API), skips Shorts, fetches the transcript via Apify.
+- Sends the **raw** transcript to Gemini in one call per content (`REPORT_PROMPT` in `main.py`). There is no cleaning, summarising or consolidation step: the model splits the content into topics, keeps only the topics that pass the relevance test (Türkiye, wars, big powers, world-scale economy and technology; chat, promotions, sport, lifestyle, history lectures, profiles and single incidents abroad are dropped) and writes one headline and one 2–6 sentence paragraph per topic, core first, with numbers, names and quotes verbatim and nothing added.
+- Assembles the report: date, list of contents, then one section per content (channel, title, link, its topics).
+- Sends it to Discord (text + PDF) and writes `manual/Youtube Gündem Raporu YYYY-MM-DD.md` and `manual/icerikler.json` (the transcripts), which the workflow commits.
+
+## Modes and inputs (Actions → "Youtube Haber Ajansı" → Run workflow)
+- `mode=full` — the whole pipeline above. `mode=scrape` — only fetch the transcripts into `manual/icerikler.json`, no Gemini, no Discord.
+- `channel` — only this channel (a name from `CHANNELS` in `main.py`, e.g. `Erdem Atay`); the column sources are skipped.
+- `lookback_hours` — how far back to look (default 24).
+- `latest_only` — only the newest video per channel.
 
 ## Setup
 
@@ -25,7 +31,7 @@ Add these to your repository secrets:
 - `DISCORD_WEBHOOK_URL`
 
 ## Deployment
-Runs automatically every day via GitHub Actions.
+Manual runs via GitHub Actions (no schedule).
 
 ---
 

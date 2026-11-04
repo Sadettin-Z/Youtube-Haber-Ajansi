@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'full = normal çalışma; scrape = sadece transkriptleri indir ve manual/icerikler.json olarak repoya yaz (Gemini yok)'
+        description: 'full = transkriptleri indir, Gemini ile raporu yaz, Discord''a gönder, manual/ altına kaydet; scrape = sadece transkriptleri manual/icerikler.json olarak kaydet (Gemini yok)'
         type: choice
         options: [full, scrape]
         default: scrape
@@ -45,11 +45,15 @@ jobs:
           LOOKBACK_HOURS: ${{ inputs.lookback_hours || '24' }}
           LATEST_ONLY: ${{ inputs.latest_only }}
         run: python main.py
-      - name: Transkriptleri repoya kaydet
-        if: ${{ inputs.mode == 'scrape' }}
+      - name: Çıktıları repoya kaydet
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add manual/icerikler.json
-          git commit -m "Transkriptler $(date -u +%Y-%m-%dT%H:%MZ) (mode=scrape run ${{ github.run_number }})" || echo "nothing to commit"
+          git add manual/
+          if [ "${{ inputs.mode }}" = "scrape" ]; then
+            msg="Transkriptler $(date -u +%Y-%m-%dT%H:%MZ) (mode=scrape run ${{ github.run_number }})"
+          else
+            msg="Youtube raporu $(date -u +%Y-%m-%dT%H:%MZ) (run ${{ github.run_number }})"
+          fi
+          git commit -m "$msg" || echo "nothing to commit"
           git push origin HEAD:${{ github.ref_name }}
